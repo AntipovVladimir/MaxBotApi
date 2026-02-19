@@ -1,19 +1,22 @@
-﻿using System.Globalization;
-using System.Runtime.CompilerServices;
-
-namespace MaxBotApi;
+﻿namespace MaxBotApi;
 
 public class MaxBotClientOptions
 {
     public const string BaseMaxUri = "https://platform-api.max.ru";
 
-    /// <summary>API token</summary>
+    /// <summary>
+    /// API токен
+    /// </summary>
     public string Token { get; }
     
-    /// <summary>Automatic retry of failed requests "Too Many Requests: retry after X" when X is less or equal to RetryThreshold</summary>
+    /// <summary>
+    /// Автоматический повтор запроса при получении ошибки "Too Many Requests: retry after X" где X меньше или равно RetryThreshold
+    /// </summary>
     public int RetryThreshold { get; set; } = 60;
 
-    /// <summary><see cref="RetryThreshold">Automatic retry</see> will be attempted for up to RetryCount requests</summary>
+    /// <summary>
+    /// Автоматический повтор запроса будет делать RetryCount попыток
+    /// </summary>
     public int RetryCount { get; set; } = 3; 
     
     

@@ -8,5 +8,5 @@ public class InlineKeyboardAttachmentRequestPayload
     /// Двумерный массив кнопок
     /// </summary>
     [JsonPropertyName("buttons")]
-    public required Button[][] Buttons { get; set; }
+    public required IEnumerable<IEnumerable<Button>> Buttons { get; set; }
 }
