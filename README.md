@@ -2,6 +2,9 @@
 
 Используется **net10 C#14**, построено для работы через webhook.
 
+Для разработки использовалась следующая документация
+https://dev.max.ru/docs-api
+
 
 Пример для minimal api. 
 
@@ -73,4 +76,4 @@ async Task ProcessMessage(Message message, string? userLocale)
     {
         await maxbot.SendMessageToChat(message.Recipient.ChatId, message.MessageBody?.Text);
     }    
-}```
+}
