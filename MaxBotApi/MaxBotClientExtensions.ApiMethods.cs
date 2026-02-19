@@ -20,7 +20,8 @@ public static partial class MaxBotClientExtensions
         /// <param name="updateTypes">Список типов обновлений, которые ваш бот хочет получать. Для полного списка типов см. объект Update</param>
         /// <param name="secretToken">от 5 до 256 символов. Cекрет, который должен быть отправлен в заголовке X-Max-Bot-Api-Secret в каждом запросе Webhook. Разрешены только символы A-Z, a-z, 0-9, и дефис. Заголовок рекомендован, чтобы запрос поступал из установленного веб-узла</param>
         /// <param name="cancellationToken"></param>
-        public async Task<ApiResponse> SetWebhook(string url, string? secretToken = null, UpdateType[]? updateTypes = null,
+        /// <returns>ApiResponse</returns>
+        public async Task<ApiResponse> SetWebhook(string url, string? secretToken = null, IEnumerable<UpdateType>? updateTypes = null,
             CancellationToken cancellationToken = default)
             => await botClient.ThrowIfNull().SendRequest(new SetWebhookRequest
             {
@@ -34,6 +35,7 @@ public static partial class MaxBotClientExtensions
         /// </summary>
         /// <param name="url">URL, который нужно удалить из подписок на WebHook</param>
         /// <param name="cancellationToken"></param>
+        /// <returns>ApiResponse</returns>
         public async Task<ApiResponse> DeleteWebhook(string url, CancellationToken cancellationToken = default)
             => await botClient.ThrowIfNull().SendRequest(new DeleteWebhookRequest(url), cancellationToken)
                 .ConfigureAwait(false);
@@ -57,7 +59,7 @@ public static partial class MaxBotClientExtensions
         /// <param name="types">Список типов обновлений, которые бот хочет получить (например, message_created, message_callback)</param>
         /// <param name="cancellationToken"></param>
         /// <returns>UpdatesResponse</returns>
-        public async Task<UpdatesResponse> GetUpdates(int limit = 100, int timeout = 30, long? marker = null, UpdateType[]? types = null,
+        public async Task<UpdatesResponse> GetUpdates(int limit = 100, int timeout = 30, long? marker = null, IEnumerable<UpdateType>? types = null,
             CancellationToken cancellationToken = default) =>
             await botClient.ThrowIfNull().SendRequest(new GetUpdatesRequest()
             {
@@ -131,7 +133,7 @@ public static partial class MaxBotClientExtensions
         /// <returns>ApiMessage</returns>
         public async Task<ApiMessage> SendMessage(long user_id, string? text, bool disable_link_preview = false, bool notify = true,
             TextFormat? text_format = null,
-            NewMessageLink? newMessageLink = null, AttachmentRequest[]? attachments = null,
+            NewMessageLink? newMessageLink = null, IEnumerable<AttachmentRequest>? attachments = null,
             CancellationToken cancellationToken = default) =>
             await botClient.ThrowIfNull().SendRequest(new SendMessageToUserRequest(user_id, disable_link_preview)
             {
@@ -157,7 +159,7 @@ public static partial class MaxBotClientExtensions
         /// <returns>ApiMessage</returns>
         public async Task<ApiMessage> SendMessageToChat(long chat_id, string? text, bool disable_link_preview = false, bool notify = true,
             TextFormat? text_format = null,
-            NewMessageLink? newMessageLink = null, AttachmentRequest[]? attachments = null,
+            NewMessageLink? newMessageLink = null, IEnumerable<AttachmentRequest>? attachments = null,
             CancellationToken cancellationToken = default) =>
             await botClient.ThrowIfNull().SendRequest(new SendMessageToChatRequest(chat_id, disable_link_preview)
             {
@@ -179,7 +181,7 @@ public static partial class MaxBotClientExtensions
         /// <param name="text_format">Markdown или HTML. Если установлен, текст сообщения будет форматирован данным способом. Для подробной информации загляните в раздел Форматирование https://dev.max.ru/docs-api#%D0%A4%D0%BE%D1%80%D0%BC%D0%B0%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5%20%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%B0</param>
         /// <param name="cancellationToken"></param>
         /// <returns>ApiResponse</returns>
-        public async Task<ApiResponse> EditMessage(string message_id, string? text = null, AttachmentRequest[]? attachments = null, NewMessageLink? link = null,
+        public async Task<ApiResponse> EditMessage(string message_id, string? text = null, IEnumerable<AttachmentRequest>? attachments = null, NewMessageLink? link = null,
             bool notify = true, TextFormat text_format = TextFormat.HTML, CancellationToken cancellationToken = default) =>
             await botClient.ThrowIfNull().SendRequest(new EditMessageRequest(message_id)
             {

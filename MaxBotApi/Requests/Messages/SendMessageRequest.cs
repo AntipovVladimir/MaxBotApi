@@ -39,7 +39,7 @@ public class SendMessageRequest(string urloptions) : RequestBase<ApiMessage>(url
     /// Вложения сообщения. Если пусто, все вложения будут удалены
     /// </summary>
     [JsonPropertyName("attachments")]
-    public AttachmentRequest[]? Attachments { get; set; }
+    public IEnumerable<AttachmentRequest>? Attachments { get; set; }
 
     /// <summary>
     /// Ссылка на сообщение

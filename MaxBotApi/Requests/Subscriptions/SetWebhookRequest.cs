@@ -21,7 +21,7 @@ public class SetWebhookRequest : RequestBase<ApiResponse>
     /// Список типов обновлений, которые ваш бот хочет получать. Для полного списка типов см. объект Update
     /// </summary>
     [JsonPropertyName("update_types")]
-    public required UpdateType[] UpdateTypes { get; set; }
+    public required IEnumerable<UpdateType> UpdateTypes { get; set; }
 
     /// <summary>
     /// Cекрет, который должен быть отправлен в заголовке X-Max-Bot-Api-Secret в каждом запросе Webhook. Разрешены только символы A-Z, a-z, 0-9, и дефис. Заголовок рекомендован, чтобы запрос поступал из установленного веб-узла
