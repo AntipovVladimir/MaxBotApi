@@ -27,7 +27,7 @@ var app = builder.Build();
 app.MapGet("/", () => "Hello World!");
 app.MapPost("/bot", HandleUpdate);
 app.Run();
-await bot.DeleteWebhook(SimpleDI.RuntimeSettings.WebhookUrl);
+await bot.DeleteWebhook(webhookUrl);
 
 async Task HandleUpdate(MaxBotClient _bot, Update update)
 {
