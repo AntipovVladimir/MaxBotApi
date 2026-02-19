@@ -1,11 +1,11 @@
-.NET Client for Max Bot API
+**.NET Client for Max Bot API**
 
-Используется net10 C#14, построено для работы через webhook.
-
-
+Используется **net10 C#14**, построено для работы через webhook.
 
 
-using MaxBot;
+Пример для minimal api. 
+
+```using MaxBot;
 using MaxBotApi;
 using MaxBotApi.Enums;
 using MaxBotApi.Models;
@@ -73,4 +73,4 @@ async Task ProcessMessage(Message message, string? userLocale)
     {
         await maxbot.SendMessageToChat(message.Recipient.ChatId, message.MessageBody?.Text);
     }    
-}
+}```
