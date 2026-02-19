@@ -1,0 +1,204 @@
+﻿using System.Net;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+using MaxBotApi.Exceptions;
+using MaxBotApi.Interfaces;
+using MaxBotApi.Serialization;
+using MaxBotApi.Types;
+
+namespace MaxBotApi;
+
+public class MaxBotClient : IMaxBotClient
+{
+    private readonly MaxBotClientOptions _options;
+    //private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
+
+    /// <summary>Global cancellation token</summary>
+    public CancellationToken GlobalCancelToken { get; }
+
+    private readonly HttpClient _httpClient;
+
+    public TimeSpan Timeout
+    {
+        get => _httpClient.Timeout;
+        set => _httpClient.Timeout = value;
+    }
+
+    /// <summary>Create a new <see cref="MaxBotClient"/> instance.</summary>
+    /// <param name="options">Configuration for <see cref="MaxBotClient" /></param>
+    /// <param name="httpClient">A custom <see cref="HttpClient"/></param>
+    /// <param name="cancellationToken">Global cancellation token</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="options"/> is <see langword="null"/></exception>
+    public MaxBotClient(MaxBotClientOptions options, HttpClient? httpClient = null, CancellationToken cancellationToken = default)
+    {
+        _options = options ?? throw new ArgumentNullException(nameof(options));
+        _httpClient = httpClient ?? new HttpClient(new SocketsHttpHandler { PooledConnectionLifetime = TimeSpan.FromMinutes(3) });
+        GlobalCancelToken = cancellationToken;
+    }
+
+    public IExceptionParser ExceptionsParser { get; set; } = new DefaultExceptionParser();
+
+
+    /// <summary>Create a new <see cref="MaxBotClient"/> instance.</summary>
+    /// <param name="token">The bot token</param>
+    /// <param name="httpClient">A custom <see cref="HttpClient"/></param>
+    /// <param name="cancellationToken">Global cancellation token</param>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="token"/> format is invalid</exception>
+    public MaxBotClient(string token, HttpClient? httpClient = null, CancellationToken cancellationToken = default)
+        : this(new MaxBotClientOptions(token), httpClient, cancellationToken)
+    {
+    }
+
+    /* TODO Investigate
+    public virtual async Task<TResponse> SendFile<TResponse>(string url, string filename, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrEmpty(url)) throw new ArgumentNullException(nameof(url));
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(GlobalCancelToken, cancellationToken);
+        cancellationToken = cts.Token;
+        for (int attempt = 1;; attempt++)
+        {
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
+            httpRequest.Headers.Add("Authorization", _options.Token);
+            HttpResponseMessage httpResponse;
+            try
+            {
+                using var formContent = new MultipartFormDataContent("data");
+                
+                using var stream = File.Open(filename, new FileStreamOptions() { Access = FileAccess.Read });
+                formContent.Add(new StreamContent(stream), "file", Path.GetFileName(filename));
+                httpRequest.Content = formContent;
+                httpResponse = await _httpClient.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
+            }
+            catch (TaskCanceledException exception)
+            {
+                if (cancellationToken.IsCancellationRequested) throw;
+                throw new RequestException("CDN Request timed out", exception);
+            }
+            catch (Exception exception)
+            {
+                throw new RequestException($"CDN Service Failure: {exception.GetType().Name}: {exception.Message}", exception);
+            }
+
+            using (httpResponse)
+            {
+                if (httpResponse.StatusCode != HttpStatusCode.OK)
+                {
+                    var failedApiResponse = await DeserializeContent<ApiResponse>(httpResponse,
+                        response => !response.Success && response.Message != null, cancellationToken).ConfigureAwait(false);
+
+                    if (httpResponse.StatusCode == HttpStatusCode.TooManyRequests && _options.RetryThreshold > 0 && attempt < _options.RetryCount)
+                    {
+                        await Task.Delay(5 * 1000, cancellationToken).ConfigureAwait(false);
+                        continue; // retry attempt
+                    }
+
+                    throw ExceptionsParser.Parse(failedApiResponse);
+                }
+
+                TResponse? deserializedObject;
+                try
+                {
+                    string response = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
+                    deserializedObject = JsonSerializer.Deserialize<TResponse>(response, JsonBotAPI.Options);
+                }
+                catch (Exception exception)
+                {
+                    throw new RequestException("There was an exception during deserialization of the response", httpResponse.StatusCode, exception);
+                }
+
+                return deserializedObject!;
+            }
+        }
+    }*/
+
+    public virtual async Task<TResponse> SendRequest<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default)
+    {
+        if (request is null) throw new ArgumentNullException(nameof(request));
+
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(GlobalCancelToken, cancellationToken);
+        cancellationToken = cts.Token;
+        var url = $"{MaxBotClientOptions.BaseMaxUri}/{request.MethodName}";
+        using var httpContent = request.ToHttpContent();
+        for (int attempt = 1;; attempt++)
+        {
+            var httpRequest = new HttpRequestMessage(request.HttpMethod, url) { Content = httpContent };
+
+            httpRequest.Headers.Add("Authorization", _options.Token);
+            string? message = httpRequest.Content?.ReadAsStringAsync().Result;
+
+            // httpContent.Headers.ContentLength must be called after OnMakingApiRequest, because it enforces the
+            // final ContentLength header, and OnMakingApiRequest might modify the content, leading to discrepancy
+            if (httpContent != null && _options.RetryThreshold > 0 && _options.RetryCount > 1 && httpContent.Headers.ContentLength == null)
+                await httpContent.LoadIntoBufferAsync().ConfigureAwait(false);
+
+            HttpResponseMessage httpResponse;
+            try
+            {
+                httpResponse = await _httpClient.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
+            }
+            catch (TaskCanceledException exception)
+            {
+                if (cancellationToken.IsCancellationRequested) throw;
+                throw new RequestException("Bot API Request timed out", exception);
+            }
+            catch (Exception exception)
+            {
+                throw new RequestException($"Bot API Service Failure: {exception.GetType().Name}: {exception.Message}", exception);
+            }
+
+            using (httpResponse)
+            {
+                if (httpResponse.StatusCode != HttpStatusCode.OK)
+                {
+                    var failedApiResponse = await DeserializeContent<ApiResponse>(httpResponse,
+                        response => !response.Success && response.Message != null, cancellationToken).ConfigureAwait(false);
+
+                    if (httpResponse.StatusCode == HttpStatusCode.TooManyRequests && _options.RetryThreshold > 0 && attempt < _options.RetryCount)
+                    {
+                        await Task.Delay(5 * 1000, cancellationToken).ConfigureAwait(false);
+                        continue; // retry attempt
+                    }
+
+                    throw ExceptionsParser.Parse(failedApiResponse);
+                }
+
+                TResponse? deserializedObject;
+                try
+                {
+                    string response = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
+                    deserializedObject = JsonSerializer.Deserialize<TResponse>(response, JsonBotAPI.Options);
+                }
+                catch (Exception exception)
+                {
+                    throw new RequestException("There was an exception during deserialization of the response", httpResponse.StatusCode, exception);
+                }
+
+                return deserializedObject!;
+            }
+        }
+    }
+
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static async Task<T> DeserializeContent<T>(HttpResponseMessage httpResponse, Func<T, bool> validate,
+        CancellationToken cancellationToken = default) where T : class
+    {
+        if (httpResponse.Content is null)
+            throw new RequestException("Response doesn't contain any content", httpResponse.StatusCode);
+        T? deserializedObject;
+        try
+        {
+            string response = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
+            deserializedObject = JsonSerializer.Deserialize<T>(response, JsonBotAPI.Options);
+        }
+        catch (Exception exception)
+        {
+            throw new RequestException("There was an exception during deserialization of the response", httpResponse.StatusCode, exception);
+        }
+
+        if (deserializedObject is null || !validate(deserializedObject))
+            throw new RequestException("Required properties not found in response", httpResponse.StatusCode);
+        return deserializedObject;
+    }
+}
