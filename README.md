@@ -54,6 +54,7 @@ AddChatAdmins(long chat_id, IEnumerable<ChatAdmin> admins)
 DeleteChatAdmin(long chat_id, long user_id)
 GetChatMembers(long chat_id)
 GetChatMembers(long chat_id, long marker, int count = 20)
+GetChatMembers(long chat_id, IEnumerable<long> user_ids)
 InviteUser(long chat_id, IEnumerable<long> user_ids)
 KickUser(long chat_id, long user_id, bool block = false)            
 ```

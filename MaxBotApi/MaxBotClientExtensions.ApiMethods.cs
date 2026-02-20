@@ -386,6 +386,18 @@ public static partial class MaxBotClientExtensions
         public async Task<ChatMembersResponse> GetChatMembers(long chat_id, CancellationToken cancellationToken = default)
             => await botClient.ThrowIfNull().SendRequest(new GetChatMembersRequest(chat_id), cancellationToken).ConfigureAwait(false);
 
+        
+        /// <summary>
+        /// Возвращает список участников группового чата
+        /// </summary>
+        /// <param name="chat_id">ID чата</param>
+        /// <param name="user_ids">Список ID пользователей, чье членство нужно получить. Когда этот параметр передан, параметры count и marker игнорируются</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>ChatMembersResponse</returns>
+        public async Task<ChatMembersResponse> GetChatMembers(long chat_id, IEnumerable<long> user_ids, CancellationToken cancellationToken = default)
+            => await botClient.ThrowIfNull().SendRequest(new GetChatMembersRequest(chat_id, user_ids), cancellationToken).ConfigureAwait(false);
+
+        
         /// <summary>
         /// Возвращает список участников группового чата
         /// </summary>

@@ -14,11 +14,11 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute((".NET Client for Max Bot API\r\n\t\tLibrary used for developing bots for messenger MAX" +
     " \r\n                https://dev.max.ru/docs-api\r\n\t"))]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1d2c1ca77d624ebedc4ab86b792100864d05d00f")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.2.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.2+b086a6a7e72e97262f2abb887e3d29770fc9c427")]
 [assembly: System.Reflection.AssemblyProductAttribute("MaxBotApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MaxBotApi")]
-[assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
+[assembly: System.Reflection.AssemblyVersionAttribute("1.0.2.0")]
 
 // Создано классом WriteCodeFragment MSBuild.
 

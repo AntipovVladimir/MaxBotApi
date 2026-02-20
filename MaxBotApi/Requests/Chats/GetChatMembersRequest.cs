@@ -13,4 +13,9 @@ public class GetChatMembersRequest : RequestBase<ChatMembersResponse>
     {
         HttpMethod = HttpMethod.Get;
     }
+    
+    public GetChatMembersRequest(long chat_id, IEnumerable<long> user_ids) : base(string.Format("chats/{0}/members?users_ids={1}", chat_id, string.Join(',', user_ids)))
+    {
+        HttpMethod = HttpMethod.Get;
+    }
 }

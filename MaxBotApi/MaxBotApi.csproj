@@ -12,6 +12,7 @@
                 https://dev.max.ru/docs-api
 	</Description>
         <PackageProjectUrl>https://github.com/AntipovVladimir/MaxBotApi</PackageProjectUrl>
+        <Version>1.0.2</Version>
     </PropertyGroup>
 
 </Project>
