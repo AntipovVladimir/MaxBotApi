@@ -4,7 +4,7 @@ using MaxBotApi.Serialization;
 
 namespace MaxBotApi.Models;
 
-public class ChatFullInfo
+public class Chat
 {
     /// <summary>
     /// ID чата

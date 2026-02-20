@@ -127,13 +127,13 @@ public static partial class MaxBotClientExtensions
         /// <param name="disable_link_preview">Если false, сервер не будет генерировать превью для ссылок в тексте сообщения</param>
         /// <param name="notify">Если false, участники чата не будут уведомлены (по умолчанию true)</param>
         /// <param name="text_format">Markdown или HTML. Если установлен, текст сообщения будет форматирован данным способом. Для подробной информации загляните в раздел Форматирование https://dev.max.ru/docs-api#%D0%A4%D0%BE%D1%80%D0%BC%D0%B0%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5%20%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%B0</param>
-        /// <param name="newMessageLink">Ссылка на сообщение (для репостов)</param>
+        /// <param name="link">Ссылка на сообщение (для репостов)</param>
         /// <param name="attachments">Вложения сообщения. Если пусто, все вложения будут удалены</param>
         /// <param name="cancellationToken"></param>
         /// <returns>ApiMessage</returns>
         public async Task<ApiMessage> SendMessage(long user_id, string? text, bool disable_link_preview = false, bool notify = true,
             TextFormat? text_format = null,
-            NewMessageLink? newMessageLink = null, IEnumerable<AttachmentRequest>? attachments = null,
+            NewMessageLink? link = null, IEnumerable<AttachmentRequest>? attachments = null,
             CancellationToken cancellationToken = default) =>
             await botClient.ThrowIfNull().SendRequest(new SendMessageToUserRequest(user_id, disable_link_preview)
             {
@@ -141,7 +141,7 @@ public static partial class MaxBotClientExtensions
                 Attachments = attachments,
                 Notify = notify,
                 Format = text_format ?? TextFormat.HTML,
-                Link = newMessageLink,
+                Link = link,
             }, cancellationToken).ConfigureAwait(false);
 
 
@@ -153,13 +153,13 @@ public static partial class MaxBotClientExtensions
         /// <param name="disable_link_preview">Если false, сервер не будет генерировать превью для ссылок в тексте сообщения</param>
         /// <param name="notify">Если false, участники чата не будут уведомлены (по умолчанию true)</param>
         /// <param name="text_format">Markdown или HTML. Если установлен, текст сообщения будет форматирован данным способом. Для подробной информации загляните в раздел Форматирование https://dev.max.ru/docs-api#%D0%A4%D0%BE%D1%80%D0%BC%D0%B0%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5%20%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%B0</param>
-        /// <param name="newMessageLink">Ссылка на сообщение (для репостов)</param>
+        /// <param name="link">Ссылка на сообщение (для репостов)</param>
         /// <param name="attachments">Вложения сообщения. Если пусто, все вложения будут удалены</param>
         /// <param name="cancellationToken"></param>
         /// <returns>ApiMessage</returns>
         public async Task<ApiMessage> SendMessageToChat(long chat_id, string? text, bool disable_link_preview = false, bool notify = true,
             TextFormat? text_format = null,
-            NewMessageLink? newMessageLink = null, IEnumerable<AttachmentRequest>? attachments = null,
+            NewMessageLink? link = null, IEnumerable<AttachmentRequest>? attachments = null,
             CancellationToken cancellationToken = default) =>
             await botClient.ThrowIfNull().SendRequest(new SendMessageToChatRequest(chat_id, disable_link_preview)
             {
@@ -167,7 +167,7 @@ public static partial class MaxBotClientExtensions
                 Attachments = attachments,
                 Notify = notify,
                 Format = text_format ?? TextFormat.HTML,
-                Link = newMessageLink,
+                Link = link,
             }, cancellationToken).ConfigureAwait(false);
 
         /// <summary>
@@ -244,12 +244,31 @@ public static partial class MaxBotClientExtensions
         #region Chat
 
         /// <summary>
+        /// Возвращает список групповых чатов, в которых участвовал бот, информацию о каждом чате и маркер для перехода к следующей странице списка
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns>ChatsResponse</returns>
+        public async Task<ChatsResponse> GetChats(CancellationToken cancellationToken = default) =>
+            await  botClient.ThrowIfNull().SendRequest(new GetChatsRequest(), cancellationToken).ConfigureAwait(false);
+        
+        /// <summary>
+        /// Возвращает список групповых чатов, в которых участвовал бот, информацию о каждом чате и маркер для перехода к следующей странице списка
+        /// </summary>
+        /// <param name="count">Количество запрашиваемых чатов, по умолчанию 50</param>
+        /// <param name="marker">Указатель на следующую страницу данных. Для первой страницы передайте null</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>ChatsResponse</returns>
+        public async Task<ChatsResponse> GetChats(int count = 50, long? marker = null, CancellationToken cancellationToken = default)
+        =>  await botClient.ThrowIfNull().SendRequest(new GetChatsRequest(count,marker), cancellationToken).ConfigureAwait(false);
+        
+        
+        /// <summary>
         /// Возвращает информацию о групповом чате по его ID
         /// </summary>
         /// <param name="chat_id">ID запрашиваемого чата</param>
         /// <param name="cancellationToken"></param>
         /// <returns>ChatFullInfo</returns>
-        public async Task<ChatFullInfo> GetChat(long chat_id, CancellationToken cancellationToken = default) =>
+        public async Task<Chat> GetChat(long chat_id, CancellationToken cancellationToken = default) =>
             await botClient.ThrowIfNull().SendRequest(new GetChatInfoRequest(chat_id), cancellationToken).ConfigureAwait(false);
 
         /// <summary>
@@ -262,7 +281,7 @@ public static partial class MaxBotClientExtensions
         /// <param name="notify">Если true, участники получат системное уведомление об изменении</param>
         /// <param name="cancellationToken"></param>
         /// <returns>ChatFullInfo</returns>
-        public async Task<ChatFullInfo> EditChatInfo(long chat_id, PhotoAttachmentRequestPayload? icon = null, string? title = null, string? pin = null,
+        public async Task<Chat> EditChatInfo(long chat_id, PhotoAttachmentRequestPayload? icon = null, string? title = null, string? pin = null,
             bool? notify = null, CancellationToken cancellationToken = default)
             => await botClient.ThrowIfNull().SendRequest(new EditChatInfoRequest(chat_id)
             {
@@ -349,10 +368,11 @@ public static partial class MaxBotClientExtensions
         /// Возвращает список всех администраторов группового чата. Бот должен быть администратором в запрашиваемом чате
         /// </summary>
         /// <param name="chat_id">ID чата</param>
+        /// <param name="marker">Указатель на следующую страницу данных</param>
         /// <param name="cancellationToken"></param>
         /// <returns>ChatMembersResponse</returns>
-        public async Task<ChatMembersResponse> GetChatAdmins(long chat_id, CancellationToken cancellationToken = default) =>
-            await botClient.ThrowIfNull().SendRequest(new GetChatAdminsRequest(chat_id), cancellationToken).ConfigureAwait(false);
+        public async Task<ChatMembersResponse> GetChatAdmins(long chat_id, long? marker = null, CancellationToken cancellationToken = default) =>
+            await botClient.ThrowIfNull().SendRequest(new GetChatAdminsRequest(chat_id, marker), cancellationToken).ConfigureAwait(false);
 
 
         /// <summary>

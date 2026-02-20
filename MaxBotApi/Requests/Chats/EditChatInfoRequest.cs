@@ -4,7 +4,7 @@ using MaxBotApi.Models.Payloads;
 
 namespace MaxBotApi.Requests;
 
-public class EditChatInfoRequest:RequestBase<ChatFullInfo>
+public class EditChatInfoRequest:RequestBase<Chat>
 {
     public EditChatInfoRequest(long chat_id) : base(string.Format("chats/{0}", chat_id))
     {
