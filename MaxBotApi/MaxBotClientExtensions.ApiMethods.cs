@@ -100,41 +100,11 @@ public static partial class MaxBotClientExtensions
         {
             if (!File.Exists(filename))
                 throw new FileNotFoundException(filename);
-            await using var stream = new FileStream(filename, FileMode.Open);
+            await using var stream = File.Open(filename, FileMode.Open);
             var response = await botClient.ThrowIfNull().SendRequest(new UploadRequest(type), cancellationToken).ConfigureAwait(false);
             var fs = new InputFileStream { FileName = Path.GetFileName(filename), Content = stream };
             return await botClient.ThrowIfNull().SendFile(new UploadDataRequest(response.Url) { FileStream = fs }, cancellationToken).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Возвращает URL для последующей загрузки файла
-        /// </summary>
-        /// <param name="type">Тип загружаемого файла
-        /// image: JPG, JPEG, PNG, GIF, TIFF, BMP, HEIC
-        /// video: MP4, MOV, MKV, WEBM, MATROSKA
-        /// audio: MP3, WAV, M4A и другие
-        /// file: любые типы файлов
-        /// </param>
-        /// <param name="cancellationToken"></param>
-        /// <returns>UploadUrlResponse</returns>
-        public async Task<UploadUrlResponse> UploadFile(UploadType type, CancellationToken cancellationToken = default)
-            => await botClient.ThrowIfNull().SendRequest(new UploadRequest(type), cancellationToken).ConfigureAwait(false);
-
-        /// <summary>
-        /// Загружает файл по указанной ссылке
-        /// </summary>
-        /// <param name="url">Ссылка для загрузки файла</param>
-        /// <param name="filename">Путь к файлу на диске</param>
-        /// <param name="cancellationToken"></param>
-        /// <returns>UploadDataResponse</returns>
-        public async Task<UploadDataResponse> UploadFile(string url, string filename, CancellationToken cancellationToken = default)
-        {
-            await using var stream = new FileStream(filename, FileMode.Open);
-            return await botClient.ThrowIfNull()
-                .SendRequest(new UploadDataRequest(url) { FileStream = new InputFileStream() { FileName = Path.GetFileName(filename), Content = stream } },
-                    cancellationToken).ConfigureAwait(false);
-        }
-
         #endregion
 
         #region Messages
