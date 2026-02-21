@@ -58,10 +58,9 @@ public class MaxBotClient : IMaxBotClient
         cancellationToken = cts.Token;
         string url = request.MethodName;
         using var httpContent = request.ToHttpContent();
-        httpContent?.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data");
+        //httpContent?.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data");
         var httpRequest = new HttpRequestMessage(request.HttpMethod, url) { Content = httpContent };
-        httpRequest.Headers.Add("Authorization", _options.Token);
-        httpRequest.Method = HttpMethod.Post;
+        //httpRequest.Headers.Add("Authorization", _options.Token);
         HttpResponseMessage httpResponse;
         try
         {
