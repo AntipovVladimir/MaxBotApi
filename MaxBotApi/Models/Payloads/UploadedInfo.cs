@@ -10,3 +10,4 @@ public class UploadedInfo
     [JsonPropertyName("token")]
     public required string Token { get; set; }
 }
+

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using MaxBotApi.Models.Payloads;
 
 namespace MaxBotApi.Types;
 
@@ -9,4 +10,5 @@ public class UploadUrlResponse
     
     [JsonPropertyName("token")]
     public string? Token { get; set; }
+   
 }
