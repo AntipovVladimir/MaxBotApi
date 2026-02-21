@@ -73,7 +73,7 @@ public class MaxBotClient : IMaxBotClient
             };
         
         var content = new MultipartFormDataContent();
-        
+        content.Headers.ContentType=  new MediaTypeHeaderValue("application/json");
         content.Add(fileContent);
         
         HttpResponseMessage httpResponse;
