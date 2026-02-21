@@ -12,7 +12,13 @@
                 https://dev.max.ru/docs-api
 	</Description>
         <PackageProjectUrl>https://github.com/AntipovVladimir/MaxBotApi</PackageProjectUrl>
-        <Version>1.0.4</Version>
+        <Version>1.0.5</Version>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Docs\" />
+     <None Include="docs\README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
 
 </Project>
