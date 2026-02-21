@@ -10,6 +10,9 @@ public class FileRequestBase<TResponse>(string methodName) : RequestBase<TRespon
 {
     [JsonIgnore]
     public required string FileName { get; set; }
+    
+    [JsonIgnore]
+    public string? Token { get; set; }
 
     private static readonly Encoding Latin1 = Encoding.GetEncoding(28591); 
     public override HttpContent? ToHttpContent()

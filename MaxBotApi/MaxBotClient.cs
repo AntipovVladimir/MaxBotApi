@@ -52,7 +52,9 @@ public class MaxBotClient : IMaxBotClient
         : this(new MaxBotClientOptions(token), httpClient, cancellationToken)
     {
     }
+
     private static readonly Encoding Latin1 = Encoding.GetEncoding(28591);
+
     public virtual async Task<TResponse> SendFile<TResponse>(FileRequestBase<TResponse> request, CancellationToken cancellationToken = default)
     {
         if (request is null) throw new ArgumentNullException(nameof(request));
@@ -64,18 +66,17 @@ public class MaxBotClient : IMaxBotClient
         contentDisposition = Latin1.GetString(Encoding.UTF8.GetBytes(contentDisposition));
         await using var fs = File.OpenRead(request.FileName);
         var fileContent = new StreamContent(fs)
+        {
+            Headers =
             {
-                Headers =
-                {
-                    { "Content-Type", "application/octet-stream" },
-                    { "Content-Disposition", contentDisposition },
-                }
-            };
-        
+                { "Content-Type", "application/octet-stream" },
+                { "Content-Disposition", contentDisposition },
+            }
+        };
+
         var content = new MultipartFormDataContent();
-        content.Headers.ContentType=  new MediaTypeHeaderValue("application/json");
         content.Add(fileContent);
-        
+        content.Headers.Add("Accept-Encoding", "application/json"); 
         HttpResponseMessage httpResponse;
         try
         {
