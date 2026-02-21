@@ -664,6 +664,41 @@ KickUser(long chat_id, long user_id, bool block = false)
 + **block** (bool) - Если установлено в true, пользователь будет заблокирован в чате. Применяется только для чатов с публичной или приватной ссылкой.
   Игнорируется в остальных случаях
 
+### Upload
+####
+```csharp
+async Task<UploadDataResponse> UploadFile(UploadType type, string filename)       
+```
+Делает полную операцию по загрузке файла: получет ссылку на загрузку и по ней загружает файл
++ **type** (UploadType) - тип загружаемого файла, может быть Image, Video, Audio, File
++ **filename** (string) - путь до загружаемого файла
+
+#### Типы файлов:
++ + image: JPG, JPEG, PNG, GIF, TIFF, BMP, HEIC
++ + video: MP4, MOV, MKV, WEBM, MATROSKA
++ + audio: MP3, WAV, M4A и другие
++ + file: любые типы файлов
+
+
+Может вызывать исключение типа **FileNotFoundException**.
+Возвращает объект **UploadDataResponse**
+```csharp
+public class UploadDataResponse
+{
+    // Токен, используемый для прикрепления в AttachmentRequest, не используется при UploadType=Image
+    public string? Token { get; set; }
+
+    // Токены, полученные после загрузки изображений, только для UploadType=Image
+    public Dictionary<string, UploadedInfo>? Photos { get; set; }
+}
+
+public class UploadedInfo
+{
+    // Токен — уникальный ID загруженного медиафайла
+    public required string Token { get; set; }
+}
+```
+
 #### Внимание!!! На текущий момент в API нет метода для разблокировки заблокированных пользователей, пока это могут делать только администраторы вручную (Ticket: 4009805)
 
 ### Пример для minimal api.
@@ -692,7 +727,6 @@ await bot.DeleteWebhook(webhookUrl);
 
 async Task HandleUpdate(MaxBotClient _bot, Update update)
 {
-    Log.Info(update.ToString());
     switch (update)
     {
         case MessageEditedUpdate meu:
@@ -727,7 +761,35 @@ async Task ProcessMessage(Message message, string? userLocale)
         await bot.SendMessage(message.Sender.UserID, message.MessageBody?.Text);
     } else if (message.Recipient.ChatType == ChatType.Chat)
     {
-        await maxbot.SendMessageToChat(message.Recipient.ChatId, message.MessageBody?.Text);
+        // пример отправки ботом картинки test.png в ответ на слово test
+        if (message.MessageBody.Text is "test")
+        {
+            try
+            {
+                var data = await bot.UploadFile(UploadType.Image, "test.png");
+                if (data.Photos is not null)
+                {
+                    List<AttachmentRequest> attachments = [];
+                    foreach (var photo in data.Photos)
+                    {
+                        attachments.Add(new ImageAttachmentRequest()
+                        {
+                            Payload = new PhotoAttachmentRequestPayload() { Token = photo.Value.Token }
+                        });
+                    }
+
+                    await bot.SendMessageToChat(message.Recipient.ChatId, "reply", false, false, TextFormat.HTML,
+                        new NewMessageLink() { MessageId = message.MessageBody.MessageId, Type = MessageLinkType.Reply },
+                        attachments);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message)
+            }
+        } else {
+            await maxbot.SendMessageToChat(message.Recipient.ChatId, message.MessageBody?.Text);
+        }        
     }    
 }
 ```
