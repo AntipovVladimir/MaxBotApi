@@ -5,5 +5,11 @@ namespace MaxBotApi.Types;
 public class UploadDataResponse
 {
     [JsonPropertyName("token")]
-    public required string Token { get; set; }
+    public string? Token { get; set; }
+    
+    [JsonPropertyName("error_code")]
+    public int? ErrorCode { get; set; }
+    
+    [JsonPropertyName("error_data")]
+    public string? ErrorData { get; set; }
 }
