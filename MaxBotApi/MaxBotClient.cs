@@ -1,9 +1,9 @@
-﻿using System.Globalization;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
+using System.Xml.Serialization;
 using MaxBotApi.Exceptions;
 using MaxBotApi.Interfaces;
 using MaxBotApi.Serialization;
@@ -116,7 +116,7 @@ public class MaxBotClient : IMaxBotClient
                     throw ExceptionsParser.Parse(failedApiResponse);
                 }
 
-                TResponse? deserializedObject;
+                TResponse? deserializedObject = default;
                 string response = string.Empty;
                 try
                 {
@@ -125,10 +125,20 @@ public class MaxBotClient : IMaxBotClient
                 }
                 catch (Exception exception)
                 {
-                    throw new RequestException(string.Format("There was an exception during deserialization of the response: {0}", response),
-                        httpResponse.StatusCode, exception);
+                    try
+                    {
+                        if (!string.IsNullOrEmpty(response))
+                        {
+                            XmlSerializer xmlSerializer = new XmlSerializer(typeof(TResponse));
+                            deserializedObject = (TResponse)xmlSerializer.Deserialize(new StringReader(response))!;
+                        }
+                    }
+                    catch
+                    {
+                        throw new RequestException(string.Format("There was an exception during deserialization of the response: {0}", response),
+                            httpResponse.StatusCode, exception);
+                    }
                 }
-
                 return deserializedObject!;
             }
         }
