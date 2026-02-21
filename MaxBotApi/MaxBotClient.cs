@@ -1,6 +1,8 @@
-﻿using System.Net;
+﻿using System.Globalization;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.Json;
 using MaxBotApi.Exceptions;
 using MaxBotApi.Interfaces;
@@ -50,31 +52,43 @@ public class MaxBotClient : IMaxBotClient
         : this(new MaxBotClientOptions(token), httpClient, cancellationToken)
     {
     }
-
+    private static readonly Encoding Latin1 = Encoding.GetEncoding(28591);
     public virtual async Task<TResponse> SendFile<TResponse>(FileRequestBase<TResponse> request, CancellationToken cancellationToken = default)
     {
         if (request is null) throw new ArgumentNullException(nameof(request));
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(GlobalCancelToken, cancellationToken);
         cancellationToken = cts.Token;
         string url = request.MethodName;
-        using var httpContent = request.ToHttpContent();
-        //httpContent?.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data");
-        //var httpRequest = new HttpRequestMessage(request.HttpMethod, url) { Content = httpContent };
-        //httpRequest.Headers.Add("Authorization", _options.Token);
+        string filename = Path.GetFileName(request.FileName);
+        string contentDisposition = FormattableString.Invariant($"form-data; name=\"data\"; filename=\"{filename}\"");
+        contentDisposition = Latin1.GetString(Encoding.UTF8.GetBytes(contentDisposition));
+        await using var fs = File.OpenRead(request.FileName);
+        var fileContent = new StreamContent(fs)
+            {
+                Headers =
+                {
+                    { "Content-Type", "application/octet-stream" },
+                    { "Content-Disposition", contentDisposition },
+                }
+            };
+        
+        var content = new MultipartFormDataContent();
+        
+        content.Add(fileContent);
+        
         HttpResponseMessage httpResponse;
         try
         {
-            httpResponse = await _httpClient.PostAsync(url, httpContent, cancellationToken).ConfigureAwait(false);
-            //httpResponse = await _httpClient.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
+            httpResponse = await _httpClient.PostAsync(url, content, cancellationToken).ConfigureAwait(false);
         }
         catch (TaskCanceledException exception)
         {
             if (cancellationToken.IsCancellationRequested) throw;
-            throw new RequestException("Bot API Request timed out", exception);
+            throw new RequestException("CDN Request timed out", exception);
         }
         catch (Exception exception)
         {
-            throw new RequestException(string.Format("Bot API Service Failure: {0}: {1}", exception.GetType().Name, exception.Message), exception);
+            throw new RequestException(string.Format("CDN Service Failure: {0}: {1}", exception.GetType().Name, exception.Message), exception);
         }
 
         for (int attempt = 1;; attempt++)
@@ -114,7 +128,7 @@ public class MaxBotClient : IMaxBotClient
             }
         }
     }
-    
+
 
     public virtual async Task<TResponse> SendRequest<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default)
     {

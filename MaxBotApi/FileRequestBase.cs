@@ -1,4 +1,7 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using MaxBotApi.Serialization;
 using MaxBotApi.Types;
 
 namespace MaxBotApi;
@@ -6,14 +9,11 @@ namespace MaxBotApi;
 public class FileRequestBase<TResponse>(string methodName) : RequestBase<TResponse>(methodName)
 {
     [JsonIgnore]
-    public required InputFileStream FileStream { get; set; }
+    public required string FileName { get; set; }
 
+    private static readonly Encoding Latin1 = Encoding.GetEncoding(28591); 
     public override HttpContent? ToHttpContent()
     {
-        var multipartContent = new MultipartFormDataContent();
-        var mediaPartContent = new StreamContent(FileStream.Content);
-        
-        multipartContent.Add(mediaPartContent, "data", FileStream.FileName);
-        return multipartContent;
+        return null;
     }
 }
