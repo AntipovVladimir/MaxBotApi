@@ -10,7 +10,7 @@ public class FileRequestBase<TResponse>(string methodName) : RequestBase<TRespon
     {
         var multipartContent = new MultipartFormDataContent();
         var mediaPartContent = new StreamContent(FileStream.Content);
-        multipartContent.Add(mediaPartContent);
+        multipartContent.Add(mediaPartContent, "data", FileStream.FileName);
         return multipartContent;
     }
 }
