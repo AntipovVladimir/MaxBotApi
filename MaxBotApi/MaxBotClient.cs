@@ -37,7 +37,7 @@ public class MaxBotClient : IMaxBotClient
     {
         _options = options ?? throw new ArgumentNullException(nameof(options));
         _httpClient = httpClient ?? new HttpClient(new SocketsHttpHandler { PooledConnectionLifetime = TimeSpan.FromMinutes(3) });
-        _httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("application/json"));
+        _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
         GlobalCancelToken = cancellationToken;
     }
 
