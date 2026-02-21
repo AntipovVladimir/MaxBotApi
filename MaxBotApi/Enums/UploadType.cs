@@ -1,9 +1,8 @@
-﻿using System.Net.Mime;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace MaxBotApi.Enums;
-[JsonConverter(typeof(JsonStringEnumConverter))]
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum UploadType
 {
     /// <summary>
