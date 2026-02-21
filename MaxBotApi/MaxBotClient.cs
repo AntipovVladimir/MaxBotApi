@@ -106,14 +106,16 @@ public class MaxBotClient : IMaxBotClient
                 }
 
                 TResponse? deserializedObject;
+                string response = string.Empty;
                 try
                 {
-                    string response = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
+                    response = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
                     deserializedObject = JsonSerializer.Deserialize<TResponse>(response, JsonBotAPI.Options);
                 }
                 catch (Exception exception)
                 {
-                    throw new RequestException("There was an exception during deserialization of the response", httpResponse.StatusCode, exception);
+                    throw new RequestException(string.Format("There was an exception during deserialization of the response: {0}", response),
+                        httpResponse.StatusCode, exception);
                 }
 
                 return deserializedObject!;
@@ -129,14 +131,16 @@ public class MaxBotClient : IMaxBotClient
         if (httpResponse.Content is null)
             throw new RequestException("Response doesn't contain any content", httpResponse.StatusCode);
         T? deserializedObject;
+        string response = string.Empty;
         try
         {
-            string response = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
+            response = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
             deserializedObject = JsonSerializer.Deserialize<T>(response, JsonBotAPI.Options);
         }
         catch (Exception exception)
         {
-            throw new RequestException("There was an exception during deserialization of the response", httpResponse.StatusCode, exception);
+            throw new RequestException(string.Format("There was an exception during deserialization of the response: {0}", response), httpResponse.StatusCode,
+                exception);
         }
 
         if (deserializedObject is null || !validate(deserializedObject))
