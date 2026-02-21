@@ -19,5 +19,5 @@ public interface IMaxBotClient
     /// <returns>Result of the API request</returns>
     Task<TResponse> SendRequest<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default);
 
-    Task<TResponse> SendFile<TResponse>(FileRequestBase<TResponse> request, CancellationToken cancellationToken = default);
+    Task<TResponse?> SendFile<TResponse>(FileRequestBase<TResponse> request, CancellationToken cancellationToken = default);
 }

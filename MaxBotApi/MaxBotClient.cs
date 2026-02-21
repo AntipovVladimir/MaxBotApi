@@ -1,9 +1,7 @@
 ﻿using System.Net;
-using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
-using System.Xml.Serialization;
 using MaxBotApi.Exceptions;
 using MaxBotApi.Interfaces;
 using MaxBotApi.Serialization;
@@ -56,7 +54,7 @@ public class MaxBotClient : IMaxBotClient
 
     private static readonly Encoding Latin1 = Encoding.GetEncoding(28591);
 
-    public virtual async Task<TResponse> SendFile<TResponse>(FileRequestBase<TResponse> request, CancellationToken cancellationToken = default)
+    public virtual async Task<TResponse?> SendFile<TResponse>(FileRequestBase<TResponse> request, CancellationToken cancellationToken = default)
     {
         if (request is null) throw new ArgumentNullException(nameof(request));
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(GlobalCancelToken, cancellationToken);
@@ -119,8 +117,9 @@ public class MaxBotClient : IMaxBotClient
                 try
                 {
                     response = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
-                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(TResponse));
-                    deserializedObject = (TResponse)xmlSerializer.Deserialize(new StringReader(response))!;
+                    if (response.StartsWith("<retval>"))
+                        return default;
+                    deserializedObject = JsonSerializer.Deserialize<TResponse>(response);
                 }
                 catch (Exception exception)
                 {

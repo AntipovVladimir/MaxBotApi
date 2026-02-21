@@ -17,7 +17,7 @@ public class UploadRequest : RequestBase<UploadUrlResponse>
     }
 }
 
-public class UploadDataRequest : FileRequestBase<UploadDataResponse>
+public class UploadDataRequest : FileRequestBase<UploadDataResponse?>
 {
     public UploadDataRequest(string url) : base(url)
     {

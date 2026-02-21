@@ -101,11 +101,10 @@ public static partial class MaxBotClientExtensions
             if (!File.Exists(filename))
                 throw new FileNotFoundException(filename);
             var response = await botClient.ThrowIfNull().SendRequest(new UploadRequest(type), cancellationToken).ConfigureAwait(false);
-            var result=  await botClient.ThrowIfNull().SendFile(new UploadDataRequest(response.Url) { FileName = filename, Token = response.Url }, cancellationToken)
+            var result = await botClient.ThrowIfNull()
+                .SendFile(new UploadDataRequest(response.Url) { FileName = filename, Token = response.Token }, cancellationToken)
                 .ConfigureAwait(false);
-            if (result.Retval.HasValue && result.Token is null)
-                result.Token = response.Token;
-            return result;
+            return result ?? new UploadDataResponse() { Token = response.Token };
         }
 
         #endregion
