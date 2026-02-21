@@ -81,6 +81,24 @@ public static partial class MaxBotClientExtensions
 
         #endregion
 
+        /// <summary>
+        /// Метод изменяет информацию в профиле бота
+        /// </summary>
+        /// <param name="name">Отображаемое имя бота</param>
+        /// <param name="description">Описание бота</param>
+        /// <param name="commands">Перечень доступных комманд</param>
+        /// <param name="photo">Изображение для профиля бота</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>ApiResponse</returns>
+        public async Task<ApiResponse> EditMe(string? name = null, string? description = null, IEnumerable<BotCommand>? commands = null,
+            PhotoAttachmentRequestPayload? photo = null, CancellationToken cancellationToken = default)
+            => await botClient.ThrowIfNull().SendRequest(new EditMeRequest()
+            {
+                Name = name,
+                Description = description,
+                Commands = commands,
+            }, cancellationToken).ConfigureAwait(false);
+
         #region Upload
 
         /// <summary>

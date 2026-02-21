@@ -184,6 +184,21 @@ async Task<BotInfo> GetMe()
 Метод возвращает информацию о боте, который идентифицируется с помощью токена доступа access_token. В ответе приходит объект User с вариантом наследования
 BotInfo, который содержит идентификатор бота, его название, никнейм, время последней активности, описание и аватар (при наличии)
 
+
+#### Изменение информации в профиле бота
+```csharp
+
+async Task<ApiResponse> EditMe(string? name = null, string? description = null, 
+    IEnumerable<BotCommand>? commands = null, PhotoAttachmentRequestPayload? photo = null) 
+```
++ **name** (string?) - отображаемое имя бота
++ **description** (string?) - описание бота
++ **commands** (IEnumerable<BotCommand>?) - перечень доступных комманд бота
++ **photo** (PhotoAttachmentRequestPayload?) - изображение для профиля бота
+
+#### !Внимание! Данный метод не задокументирован в официальной документации и взят из исходников библиотек под TS. Использовать на свой страх и риск!
+
+Возвращает объект **ApiResponse**
 ### messages
 
 #### Получение сообщений
