@@ -4,7 +4,6 @@ using MaxBotApi.Models;
 using MaxBotApi.Models.Payloads;
 using MaxBotApi.Requests;
 using MaxBotApi.Requests.Upload;
-using MaxBotApi.Types;
 
 namespace MaxBotApi;
 
@@ -135,30 +134,31 @@ public static partial class MaxBotClientExtensions
         /// </summary>
         /// <param name="chat_id">ID чата, чтобы получить сообщения из определённого чата
         /// </param>
+        /// <param name="from">Время начала для запрашиваемых сообщений</param>
+        /// <param name="to">Время окончания для запрашиваемых сообщений</param>
+        /// <param name="count">Максимальное количество сообщений в ответе, по умолчанию 50</param>
         /// <param name="cancellationToken"></param>
         /// <returns>MessagesResponse</returns>
-        public async Task<MessagesResponse> GetMessages(long chat_id, CancellationToken cancellationToken = default) =>
-            await botClient.ThrowIfNull().SendRequest(new GetMessagesRequest(chat_id), cancellationToken).ConfigureAwait(false);
+        public async Task<MessagesResponse> GetMessages(long chat_id, DateTime? from = null, DateTime? to = null, int? count = null,
+            CancellationToken cancellationToken = default) =>
+            await botClient.ThrowIfNull().SendRequest(new GetMessagesRequest(chat_id) { From = from, To = to, Count = count }, cancellationToken)
+                .ConfigureAwait(false);
 
         /// <summary>
         /// Метод возвращает информацию о сообщении или массив сообщений из чата.
         /// Можно указать один идентификатор или несколько
         /// </summary>
         /// <param name="messages_ids">Список ID сообщений, которые нужно получить (через запятую)</param>
+        /// <param name="from">Время начала для запрашиваемых сообщений</param>
+        /// <param name="to">Время окончания для запрашиваемых сообщений</param>
+        /// <param name="count">Максимальное количество сообщений в ответе, по умолчанию 50</param>
         /// <param name="cancellationToken"></param>
         /// <returns>MessagesResponse</returns>
-        public async Task<MessagesResponse> GetMessages(IEnumerable<string> messages_ids, CancellationToken cancellationToken = default)
-            => await botClient.ThrowIfNull().SendRequest(new GetMessagesRequest(messages_ids), cancellationToken).ConfigureAwait(false);
+        public async Task<MessagesResponse> GetMessages(IEnumerable<string> messages_ids, DateTime? from = null, DateTime? to = null, int? count = null,
+            CancellationToken cancellationToken = default)
+            => await botClient.ThrowIfNull().SendRequest(new GetMessagesRequest(messages_ids) { From = from, To = to, Count = count }, cancellationToken)
+                .ConfigureAwait(false);
 
-        /// <summary>
-        /// Метод возвращает информацию о сообщении или массив сообщений из чата.
-        /// </summary>
-        /// <param name="chat_id">ID чата, чтобы получить сообщения из определённого чата</param>
-        /// <param name="messages_ids">Список ID сообщений, которые нужно получить (через запятую)</param>
-        /// <param name="cancellationToken"></param>
-        /// <returns>MessagesResponse</returns>
-        public async Task<MessagesResponse> GetMessages(long chat_id, IEnumerable<string> messages_ids, CancellationToken cancellationToken = default)
-            => await botClient.ThrowIfNull().SendRequest(new GetMessagesRequest(chat_id, messages_ids), cancellationToken).ConfigureAwait(false);
 
         /// <summary>
         /// Отправляет сообщение в чат пользователю

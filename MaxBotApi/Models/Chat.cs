@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text;
+using System.Text.Json.Serialization;
 using MaxBotApi.Enums;
 using MaxBotApi.Serialization;
 
@@ -96,4 +97,58 @@ public class Chat
     /// </summary>
     [JsonPropertyName("pinned_message")]
     public Message? PinnedMessage { get; set; }
+
+    public override string ToString()
+    {
+        StringBuilder sb = new();
+        sb.Append("[Chat] ChatId: ");
+        sb.Append(ChatId);
+        sb.Append(", Type: ");
+        sb.Append(Type);
+        sb.Append(", Status: ");
+        sb.Append(Status);
+        if (Title is not null)
+        {
+            sb.Append(", Title: ");
+            sb.Append(Title);
+        }
+
+        sb.Append(", LastEventTime: ");
+        sb.Append(LastEventTime);
+        sb.Append(", Participants count: ");
+        sb.Append(ParticipantsCount);
+        sb.Append(", IsPublic: ");
+        sb.Append(IsPublic);
+        if (Link is not null)
+        {
+            sb.Append(", Link: ");
+            sb.Append(Link);
+        }
+
+        if (Description is not null)
+        {
+            sb.Append(", Description: ");
+            sb.Append(Description);
+        }
+
+        if (DialogWithUser is not null)
+        {
+            sb.Append(", DialogWithUser: ");
+            sb.Append(DialogWithUser);
+        }
+
+        if (ChatMessageId is not null)
+        {
+            sb.Append(", ChatMessageId: ");
+            sb.Append(ChatMessageId);
+        }
+
+        if (PinnedMessage is not null)
+        {
+            sb.Append(", PinnedMessage: ");
+            sb.Append(PinnedMessage);
+        }
+
+        return sb.ToString();
+    }
 }

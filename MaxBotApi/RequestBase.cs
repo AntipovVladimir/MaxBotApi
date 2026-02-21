@@ -10,7 +10,7 @@ public abstract class RequestBase<TResponse>(string methodName) : IRequest<TResp
     public HttpMethod HttpMethod { get; set; } = HttpMethod.Post;
 
     [JsonIgnore]
-    public string MethodName { get; } = methodName;
+    public string MethodName { get; protected init; } = methodName;
 
     [JsonIgnore]
     public bool IsWebhookResponse { get; set; }

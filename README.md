@@ -204,8 +204,8 @@ async Task<ApiResponse> EditMe(string? name = null, string? description = null,
 #### Получение сообщений
 
 ```csharp
-async Task<MessagesResponse> GetMessages(long chat_id)
-async Task<MessagesResponse> GetMessages(IEnumerable<string> messages_ids)
+async Task<MessagesResponse> GetMessages(long chat_id, DateTime? from = null, DateTime? to = null, int? count = null)
+async Task<MessagesResponse> GetMessages(IEnumerable<string> messages_ids, DateTime? from = null, DateTime? to = null, int? count = null)
 ```
 
 Метод возвращает информацию о сообщении или массив сообщений из чата. Для выполнения запроса нужно указать один из параметров — chat_id или message_ids:
@@ -217,6 +217,10 @@ async Task<MessagesResponse> GetMessages(IEnumerable<string> messages_ids)
 
 + **message_ids** (IEnumerable<string>) — метод возвращает информацию о запрошенных сообщениях. Можно указать один идентификатор или несколько. Список ID
   сообщений, которые нужно получить (через запятую). Обязательный параметр, если не указан chat_id
+
++ **from** (DateTime?) - Время начала для запрашиваемых сообщений
++ **to** (DateTime?) - Время окончания для запрашиваемых сообщений
++ **count** (int?) - Максимальное количество сообщений в ответе, по умолчанию 50
 
 Возвращает объект MessagesResponse:
 

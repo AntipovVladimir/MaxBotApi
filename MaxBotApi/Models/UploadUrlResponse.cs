@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MaxBotApi.Types;
+namespace MaxBotApi.Models;
 
 public class UploadUrlResponse
 {

@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json.Serialization;
+using MaxBotApi.Enums;
 
 namespace MaxBotApi.Models;
 

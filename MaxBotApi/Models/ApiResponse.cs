@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MaxBotApi.Types;
+namespace MaxBotApi.Models;
 
 /// <summary>Ответ от API на запрос действия</summary>
 public class ApiResponse

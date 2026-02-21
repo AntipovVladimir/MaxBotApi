@@ -1,4 +1,4 @@
-﻿using MaxBotApi.Types;
+﻿using MaxBotApi.Models;
 
 namespace MaxBotApi.Exceptions;
 
@@ -17,6 +17,6 @@ public class DefaultExceptionParser : IExceptionParser
     public ApiRequestException Parse(ApiResponse apiResponse)
     {
         if (apiResponse is null) throw new ArgumentNullException(nameof(apiResponse));
-        return new(apiResponse.Message!);
+        return new ApiRequestException(apiResponse.Message!);
     }
 }  

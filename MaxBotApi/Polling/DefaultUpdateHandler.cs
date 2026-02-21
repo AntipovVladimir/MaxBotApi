@@ -16,11 +16,11 @@ public class DefaultUpdateHandler(
         : this(updateHandler, (bot, ex, s, ct) => errorHandler(bot, ex, ct))
     { }
 
-    /// <inheritdoc/>
+    
     public async Task HandleUpdateAsync(IMaxBotClient botClient, Update update, CancellationToken cancellationToken)
         => await updateHandler(botClient, update, cancellationToken).ConfigureAwait(false);
 
-    /// <inheritdoc/>
+    
     public async Task HandleErrorAsync(IMaxBotClient botClient, Exception exception, HandleErrorSource source, CancellationToken cancellationToken)
         => await errorHandler(botClient, exception, source, cancellationToken).ConfigureAwait(false);
 } 

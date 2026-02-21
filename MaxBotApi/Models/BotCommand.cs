@@ -18,6 +18,6 @@ public class BotCommand
 
     public override string ToString()
     {
-        return string.Format("Name: {0}, Description : {1}", Name, Description);
+        return string.Format("Name: {0}, Description: {1}", Name, Description);
     }
 }

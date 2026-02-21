@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using MaxBotApi.Enums;
-using MaxBotApi.Types;
+using MaxBotApi.Models;
 
 namespace MaxBotApi.Requests;
 

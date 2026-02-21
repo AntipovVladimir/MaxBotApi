@@ -4,5 +4,9 @@ namespace MaxBotApi.Models;
 
 public class InlineKeyboard
 {
-    [JsonPropertyName("buttons")] public Button[][] Buttons { get; set; } = [];
+    /// <summary>
+    /// двумерный массив кнопок ([строка][столбец])
+    /// </summary>
+    [JsonPropertyName("buttons")]
+    public Button[][] Buttons { get; set; } = [];
 }

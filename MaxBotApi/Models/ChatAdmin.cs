@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text;
+using System.Text.Json.Serialization;
 using MaxBotApi.Enums;
 
 namespace MaxBotApi.Models;
@@ -30,5 +31,21 @@ public class ChatAdmin
     [JsonPropertyName("permissions")]
     public required IEnumerable<ChatAdminPermission> Permissions { get; set; }
 
-    [JsonPropertyName("alias")] public string? Alias { get; set; }
+    /// <summary>
+    /// Титул администратора (вместо "админ" и "владелец")
+    /// </summary>
+    [JsonPropertyName("alias")]
+    public string? Alias { get; set; }
+
+    public override string ToString()
+    {
+        StringBuilder sb = new();
+        sb.Append("[ChatAdmin] UserID: ");
+        sb.Append(UserID);
+        sb.Append(", Permissions: ");
+        sb.Append(string.Join(", ", Permissions));
+        sb.Append("; Alias: ");
+        sb.Append(Alias);
+        return sb.ToString();
+    }
 }

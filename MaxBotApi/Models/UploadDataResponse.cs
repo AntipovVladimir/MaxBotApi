@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using MaxBotApi.Models.Payloads;
 
-namespace MaxBotApi.Types;
+namespace MaxBotApi.Models;
 
 public class UploadDataResponse
 {

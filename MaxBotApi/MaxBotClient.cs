@@ -4,8 +4,8 @@ using System.Text;
 using System.Text.Json;
 using MaxBotApi.Exceptions;
 using MaxBotApi.Interfaces;
+using MaxBotApi.Models;
 using MaxBotApi.Serialization;
-using MaxBotApi.Types;
 
 namespace MaxBotApi;
 
