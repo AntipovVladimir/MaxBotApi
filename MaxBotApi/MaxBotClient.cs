@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using MaxBotApi.Exceptions;
@@ -57,8 +58,10 @@ public class MaxBotClient : IMaxBotClient
         cancellationToken = cts.Token;
         string url = request.MethodName;
         using var httpContent = request.ToHttpContent();
+        httpContent?.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data");
         var httpRequest = new HttpRequestMessage(request.HttpMethod, url) { Content = httpContent };
         httpRequest.Headers.Add("Authorization", _options.Token);
+        httpRequest.Method = HttpMethod.Post;
         HttpResponseMessage httpResponse;
         try
         {
@@ -71,7 +74,7 @@ public class MaxBotClient : IMaxBotClient
         }
         catch (Exception exception)
         {
-            throw new RequestException($"Bot API Service Failure: {exception.GetType().Name}: {exception.Message}", exception);
+            throw new RequestException(string.Format("Bot API Service Failure: {0}: {1}", exception.GetType().Name, exception.Message), exception);
         }
 
         for (int attempt = 1;; attempt++)
@@ -81,7 +84,7 @@ public class MaxBotClient : IMaxBotClient
                 if (httpResponse.StatusCode != HttpStatusCode.OK)
                 {
                     if (httpResponse.StatusCode == HttpStatusCode.BadRequest)
-                        throw new RequestException(string.Format("CDN return BadRequest while uploading to url {0}", url));
+                        throw new RequestException(string.Format("CDN returns BadRequest while uploading to url {0}", url));
                     var failedApiResponse = await DeserializeContent<ApiResponse>(httpResponse,
                         response => !response.Success && response.Message != null, cancellationToken).ConfigureAwait(false);
 
@@ -119,7 +122,7 @@ public class MaxBotClient : IMaxBotClient
 
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(GlobalCancelToken, cancellationToken);
         cancellationToken = cts.Token;
-        string url = $"{MaxBotClientOptions.BaseMaxUri}/{request.MethodName}";
+        string url = string.Format("{0}/{1}", MaxBotClientOptions.BaseMaxUri, request.MethodName);
         using var httpContent = request.ToHttpContent();
         for (int attempt = 1;; attempt++)
         {
@@ -145,7 +148,7 @@ public class MaxBotClient : IMaxBotClient
             }
             catch (Exception exception)
             {
-                throw new RequestException($"Bot API Service Failure: {exception.GetType().Name}: {exception.Message}", exception);
+                throw new RequestException(string.Format("Bot API Service Failure: {0}: {1}", exception.GetType().Name, exception.Message), exception);
             }
 
             using (httpResponse)
