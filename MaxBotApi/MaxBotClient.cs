@@ -79,8 +79,6 @@ public class MaxBotClient : IMaxBotClient
         var content = new MultipartFormDataContent();
         content.Add(fileContent);
         var httpRequest = new HttpRequestMessage(request.HttpMethod, url) { Content = content };
-        httpRequest.Headers.AcceptEncoding.Clear();
-        httpRequest.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("application/json"));
         HttpResponseMessage httpResponse;
         try
         {
