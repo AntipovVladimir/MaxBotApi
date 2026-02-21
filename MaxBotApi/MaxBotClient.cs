@@ -119,24 +119,15 @@ public class MaxBotClient : IMaxBotClient
                 try
                 {
                     response = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
-                    deserializedObject = JsonSerializer.Deserialize<TResponse>(response, JsonBotAPI.Options);
+                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(TResponse));
+                    deserializedObject = (TResponse)xmlSerializer.Deserialize(new StringReader(response))!;
                 }
                 catch (Exception exception)
                 {
-                    try
-                    {
-                        if (!string.IsNullOrEmpty(response))
-                        {
-                            XmlSerializer xmlSerializer = new XmlSerializer(typeof(TResponse));
-                            deserializedObject = (TResponse)xmlSerializer.Deserialize(new StringReader(response))!;
-                        }
-                    }
-                    catch
-                    {
-                        throw new RequestException(string.Format("There was an exception during deserialization of the response: {0}", response),
-                            httpResponse.StatusCode, exception);
-                    }
+                    throw new RequestException(string.Format("There was an exception during deserialization of the response: {0}", response),
+                        httpResponse.StatusCode, exception);
                 }
+
                 return deserializedObject!;
             }
         }
