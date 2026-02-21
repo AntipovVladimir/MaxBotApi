@@ -59,12 +59,13 @@ public class MaxBotClient : IMaxBotClient
         string url = request.MethodName;
         using var httpContent = request.ToHttpContent();
         //httpContent?.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data");
-        var httpRequest = new HttpRequestMessage(request.HttpMethod, url) { Content = httpContent };
+        //var httpRequest = new HttpRequestMessage(request.HttpMethod, url) { Content = httpContent };
         //httpRequest.Headers.Add("Authorization", _options.Token);
         HttpResponseMessage httpResponse;
         try
         {
-            httpResponse = await _httpClient.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
+            httpResponse = await _httpClient.PostAsync(url, httpContent, cancellationToken).ConfigureAwait(false);
+            //httpResponse = await _httpClient.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
         }
         catch (TaskCanceledException exception)
         {
