@@ -100,9 +100,7 @@ public static partial class MaxBotClientExtensions
         {
             if (!File.Exists(filename))
                 throw new FileNotFoundException(filename);
-            await using var stream = File.Open(filename, FileMode.Open);
             var response = await botClient.ThrowIfNull().SendRequest(new UploadRequest(type), cancellationToken).ConfigureAwait(false);
-            //var fs = new InputFileStream { FileName = Path.GetFileName(filename), Content = stream };
             return await botClient.ThrowIfNull().SendFile(new UploadDataRequest(response.Url) {  FileName = filename }, cancellationToken).ConfigureAwait(false);
         }
         #endregion
