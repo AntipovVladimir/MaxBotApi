@@ -74,13 +74,15 @@ public class MaxBotClient : IMaxBotClient
             }
         };
 
+
         var content = new MultipartFormDataContent();
         content.Add(fileContent);
-        content.Headers.Add("Accept-Encoding", "application/json"); 
+        var httpRequest = new HttpRequestMessage(request.HttpMethod, url) { Content = content };
+        httpRequest.Headers.Add("Accept-Encoding", "application/json");
         HttpResponseMessage httpResponse;
         try
         {
-            httpResponse = await _httpClient.PostAsync(url, content, cancellationToken).ConfigureAwait(false);
+            httpResponse = await _httpClient.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
         }
         catch (TaskCanceledException exception)
         {
