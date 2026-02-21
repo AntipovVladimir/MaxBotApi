@@ -1,9 +1,9 @@
 ﻿using MaxBotApi.Enums;
-using MaxBotApi.Models;
+using MaxBotApi.Types;
 
 namespace MaxBotApi.Requests.Upload;
 
-public class UploadRequest : RequestBase<UrlResponse>
+public class UploadRequest : RequestBase<UploadUrlResponse>
 {
     public UploadRequest(UploadType uploadType) : base(string.Format("uploads?type={0}", uploadType switch
     {
@@ -15,13 +15,12 @@ public class UploadRequest : RequestBase<UrlResponse>
     {
         HttpMethod = HttpMethod.Post;
     }
-    
+}
 
-    
-    /*using var formContent = new MultipartFormDataContent("NKdKd9Yk");
-formContent.Headers.ContentType.MediaType = "multipart/form-data";
-using var stream = file.OpenReadStream();
-formContent.Add(new StreamContent(stream), "file", fileName);
-using var response = await httpClient.PostAsync(GetDocumentUpdateRelativeUrl(), formContent);
-*/
+public class UploadDataRequest : FileRequestBase<UploadDataResponse>
+{
+    public UploadDataRequest(string url) : base(url)
+    {
+        HttpMethod = HttpMethod.Post;
+    }
 }

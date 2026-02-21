@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MaxBotApi.Models;
+namespace MaxBotApi.Types;
 
-public class UrlResponse
+public class UploadUrlResponse
 {
     [JsonPropertyName("url")]
     public required string Url { get; set; }

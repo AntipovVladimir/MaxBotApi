@@ -3,6 +3,7 @@ using MaxBotApi.Extensions;
 using MaxBotApi.Models;
 using MaxBotApi.Models.Payloads;
 using MaxBotApi.Requests;
+using MaxBotApi.Requests.Upload;
 using MaxBotApi.Types;
 
 namespace MaxBotApi;
@@ -82,7 +83,60 @@ public static partial class MaxBotClientExtensions
 
         #region Upload
 
-        // TODO Implement
+        /// <summary>
+        /// Делает полную операцию по загрузке файла: получет ссылку на загрузку и по ней загружает файл
+        /// </summary>
+        /// <param name="type">Тип загружаемого файла
+        /// image: JPG, JPEG, PNG, GIF, TIFF, BMP, HEIC
+        /// video: MP4, MOV, MKV, WEBM, MATROSKA
+        /// audio: MP3, WAV, M4A и другие
+        /// file: любые типы файлов
+        /// </param>
+        /// <param name="filename">Путь к файлу на диске</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>UploadDataResponse</returns>
+        /// <exception cref="FileNotFoundException"></exception>
+        public async Task<UploadDataResponse> UploadFile(UploadType type, string filename, CancellationToken cancellationToken = default)
+        {
+            if (!File.Exists(filename))
+                throw new FileNotFoundException(filename);
+            await using var stream = new FileStream(filename, FileMode.Open);
+            var response = await botClient.ThrowIfNull().SendRequest(new UploadRequest(type), cancellationToken).ConfigureAwait(false);
+            return await botClient.ThrowIfNull().SendRequest(new UploadDataRequest(response.Url)
+                {
+                    FileStream = new InputFileStream() { FileName = Path.GetFileName(filename), Content = stream }
+                }
+                , cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Возвращает URL для последующей загрузки файла
+        /// </summary>
+        /// <param name="type">Тип загружаемого файла
+        /// image: JPG, JPEG, PNG, GIF, TIFF, BMP, HEIC
+        /// video: MP4, MOV, MKV, WEBM, MATROSKA
+        /// audio: MP3, WAV, M4A и другие
+        /// file: любые типы файлов
+        /// </param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>UploadUrlResponse</returns>
+        public async Task<UploadUrlResponse> UploadFile(UploadType type, CancellationToken cancellationToken = default)
+            => await botClient.ThrowIfNull().SendRequest(new UploadRequest(type), cancellationToken).ConfigureAwait(false);
+
+        /// <summary>
+        /// Загружает файл по указанной ссылке
+        /// </summary>
+        /// <param name="url">Ссылка для загрузки файла</param>
+        /// <param name="filename">Путь к файлу на диске</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>UploadDataResponse</returns>
+        public async Task<UploadDataResponse> UploadFile(string url, string filename, CancellationToken cancellationToken = default)
+        {
+            await using var stream = new FileStream(filename, FileMode.Open);
+            return await botClient.ThrowIfNull()
+                .SendRequest(new UploadDataRequest(url) { FileStream = new InputFileStream() { FileName = Path.GetFileName(filename), Content = stream } },
+                    cancellationToken).ConfigureAwait(false);
+        }
 
         #endregion
 
@@ -181,7 +235,8 @@ public static partial class MaxBotClientExtensions
         /// <param name="text_format">Markdown или HTML. Если установлен, текст сообщения будет форматирован данным способом. Для подробной информации загляните в раздел Форматирование https://dev.max.ru/docs-api#%D0%A4%D0%BE%D1%80%D0%BC%D0%B0%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5%20%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%B0</param>
         /// <param name="cancellationToken"></param>
         /// <returns>ApiResponse</returns>
-        public async Task<ApiResponse> EditMessage(string message_id, string? text = null, IEnumerable<AttachmentRequest>? attachments = null, NewMessageLink? link = null,
+        public async Task<ApiResponse> EditMessage(string message_id, string? text = null, IEnumerable<AttachmentRequest>? attachments = null,
+            NewMessageLink? link = null,
             bool notify = true, TextFormat text_format = TextFormat.HTML, CancellationToken cancellationToken = default) =>
             await botClient.ThrowIfNull().SendRequest(new EditMessageRequest(message_id)
             {
@@ -249,8 +304,8 @@ public static partial class MaxBotClientExtensions
         /// <param name="cancellationToken"></param>
         /// <returns>ChatsResponse</returns>
         public async Task<ChatsResponse> GetChats(CancellationToken cancellationToken = default) =>
-            await  botClient.ThrowIfNull().SendRequest(new GetChatsRequest(), cancellationToken).ConfigureAwait(false);
-        
+            await botClient.ThrowIfNull().SendRequest(new GetChatsRequest(), cancellationToken).ConfigureAwait(false);
+
         /// <summary>
         /// Возвращает список групповых чатов, в которых участвовал бот, информацию о каждом чате и маркер для перехода к следующей странице списка
         /// </summary>
@@ -259,9 +314,9 @@ public static partial class MaxBotClientExtensions
         /// <param name="cancellationToken"></param>
         /// <returns>ChatsResponse</returns>
         public async Task<ChatsResponse> GetChats(int count = 50, long? marker = null, CancellationToken cancellationToken = default)
-        =>  await botClient.ThrowIfNull().SendRequest(new GetChatsRequest(count,marker), cancellationToken).ConfigureAwait(false);
-        
-        
+            => await botClient.ThrowIfNull().SendRequest(new GetChatsRequest(count, marker), cancellationToken).ConfigureAwait(false);
+
+
         /// <summary>
         /// Возвращает информацию о групповом чате по его ID
         /// </summary>
@@ -406,7 +461,7 @@ public static partial class MaxBotClientExtensions
         public async Task<ChatMembersResponse> GetChatMembers(long chat_id, CancellationToken cancellationToken = default)
             => await botClient.ThrowIfNull().SendRequest(new GetChatMembersRequest(chat_id), cancellationToken).ConfigureAwait(false);
 
-        
+
         /// <summary>
         /// Возвращает список участников группового чата
         /// </summary>
@@ -417,7 +472,7 @@ public static partial class MaxBotClientExtensions
         public async Task<ChatMembersResponse> GetChatMembers(long chat_id, IEnumerable<long> user_ids, CancellationToken cancellationToken = default)
             => await botClient.ThrowIfNull().SendRequest(new GetChatMembersRequest(chat_id, user_ids), cancellationToken).ConfigureAwait(false);
 
-        
+
         /// <summary>
         /// Возвращает список участников группового чата
         /// </summary>
