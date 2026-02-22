@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using MaxBotApi.Models.Payloads;
 
 namespace MaxBotApi.Models;
 
@@ -18,6 +19,10 @@ public partial class InlineKeyboard
     [SetsRequiredMembers]
     public InlineKeyboard() => Buttons = new List<List<Button>>();
 
-    public static explicit operator InlineKeyboardAttachment(InlineKeyboard ik) => new InlineKeyboardAttachment() { Payload = ik };
-    
+    public static explicit operator InlineKeyboardAttachment(InlineKeyboard ik) => new() { Payload = ik };
+
+    public static explicit operator InlineKeyboardAttachmentRequest(InlineKeyboard ik) => new()
+    {
+        Payload = new InlineKeyboardAttachmentRequestPayload() { Buttons = ik.Buttons }
+    };
 }
