@@ -11,6 +11,43 @@ https://www.nuget.org/packages/MaxBotApi
 dotnet add package MaxBotApi
 ```
 
+## Изменения, 1.0.6
++ Добавлены расширения для InlineKeyboard, упрощающие работу с ней. 
+
+
+```csharp
+public InlineKeyboard AddButton(string text, string callbackPayload)
+```
+добавляет CallbackButton в клавиатуру
+
+```csharp
+public InlineKeyboard AddButton(Button button):InlineKeyboard
+```
+добавляет Button в клавиатуру (для иных типов кнопок)
+
+```csharp
+public InlineKeyboard AddNewRow(params Button[] buttons)
+```
+добавляет новую строку в клавиатуру (с кнопками или без)
+
+#### Пример использования
+```csharp
+InlineKeyboard ik = new ();
+ik.AddButton("Кнопка 1 строка 1", "callback payload 1");
+ik.AddButton("Кнопка 2 строка 1", "callback payload 2");
+ik.AddNewRow();
+ik.AddButton("Кнопка 3 строка 2", "callback payload 3");
+ik.AddNewRow().AddButton("Кнопка 4 строка 3", "callback payload 4").AddButton("Кнопка 5 строка 3", "callback payload 5");
+
+NewMessageBody nm = new NewMessageBody()
+{
+    Attachments = [(InlineKeyboardAttachmentRequest)ik],
+    Text = "Нажмите на любую кнопку"
+};
+
+var apiResponse = await maxbot.SendCallbackReact(callback_id, nm);
+```
+
 ## Документация
 
 
