@@ -8,17 +8,18 @@
         <Title>.NET Client for Max Bot API </Title>
         <Authors>Vladimir Antipov</Authors>
         <Description>.NET Client for Max Bot API
+1.0.6 fixed pkg build
 		Library used for developing bots for messenger MAX 
                 https://dev.max.ru/docs-api
 	</Description>
         <PackageProjectUrl>https://github.com/AntipovVladimir/MaxBotApi</PackageProjectUrl>
-        <Version>1.0.5</Version>
+        <Version>1.0.6</Version>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
       <Folder Include="Docs\" />
-     <None Include="docs\README.md" Pack="true" PackagePath="\"/>
+     <None Include="Docs\README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
 </Project>

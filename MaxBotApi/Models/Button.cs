@@ -17,6 +17,11 @@ public abstract class Button
     [JsonPropertyName("type")]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public abstract ButtonType Type { get; }
+
+    
+    public static Button WithCallbackData(string text, string callbackData) =>
+        new CallbackButton(){ Text= text, Payload = callbackData };
+    
 }
 
 public class MessageButton : Button
