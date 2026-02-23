@@ -59,7 +59,7 @@ public static partial class MaxBotClientExtensions
         /// <param name="types">Список типов обновлений, которые бот хочет получить (например, message_created, message_callback)</param>
         /// <param name="cancellationToken"></param>
         /// <returns>UpdatesResponse</returns>
-        public async Task<UpdatesResponse> GetUpdates(int limit = 100, int timeout = 30, long? marker = null, IEnumerable<UpdateType>? types = null,
+        public async Task<UpdatesResponse> GetUpdates(int? limit = 100, int? timeout = 30, long? marker = null, IEnumerable<UpdateType>? types = null,
             CancellationToken cancellationToken = default) =>
             await botClient.ThrowIfNull().SendRequest(new GetUpdatesRequest()
             {

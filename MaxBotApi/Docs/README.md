@@ -21,7 +21,7 @@ public InlineKeyboard AddButton(string text, string callbackPayload)
 добавляет CallbackButton в клавиатуру
 
 ```csharp
-public InlineKeyboard AddButton(Button button):InlineKeyboard
+public InlineKeyboard AddButton(Button button)
 ```
 добавляет Button в клавиатуру (для иных типов кнопок)
 

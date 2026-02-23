@@ -2,9 +2,11 @@
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
+using MaxBotApi.Enums;
 using MaxBotApi.Exceptions;
 using MaxBotApi.Interfaces;
 using MaxBotApi.Models;
+using MaxBotApi.Polling;
 using MaxBotApi.Serialization;
 
 namespace MaxBotApi;
@@ -225,5 +227,66 @@ public class MaxBotClient : IMaxBotClient
         if (deserializedObject is null || !validate(deserializedObject))
             throw new RequestException("Required properties not found in response", httpResponse.StatusCode);
         return deserializedObject;
+    }
+
+
+    private CancellationTokenSource? _receivingEvents;
+
+    public delegate Task OnUpdateHandler(Update update);
+
+    public delegate Task OnMessageHandler(Message message, UpdateType type);
+
+    public delegate Task OnErrorHandler(Exception exception, HandleErrorSource source);
+
+    private OnUpdateHandler? _onUpdate;
+    private OnMessageHandler? _onMessage;
+    public event OnUpdateHandler? OnUpdate { add { _onUpdate += value; StartEventReceiving(); } remove { _onUpdate -= value; StopEventReceiving(); } }
+    /// <summary>Handler to be called when there is an incoming message or edited message</summary>
+    public event OnMessageHandler? OnMessage { add { _onMessage += value; StartEventReceiving(); } remove { _onMessage -= value; StopEventReceiving(); } }
+    /// <summary>Handler to be called when there was a polling error or an exception in your handlers</summary>
+    public event OnErrorHandler? OnError; 
+
+    private void StartEventReceiving()
+    {
+        lock (_options)
+        {
+            if (_receivingEvents != null) return;
+            _receivingEvents = new CancellationTokenSource();
+        }
+
+        this.StartReceiving(UpdateHandler, ErrorHandler, new ReceiverOptions { AllowedUpdates = Update.AllTypes }, _receivingEvents.Token);
+    }
+
+    private async Task ErrorHandler(IMaxBotClient bot, Exception ex, HandleErrorSource source, CancellationToken ct)
+    {
+        var task = OnError?.Invoke(ex, source);
+        if (task != null)
+            await task.ConfigureAwait(true);
+        else
+            System.Diagnostics.Trace.WriteLine(ex); // fallback logging if OnError is unset
+    }
+
+    private async Task UpdateHandler(IMaxBotClient bot, Update update, CancellationToken ct)
+    {
+        var task = _onMessage == null
+            ? _onUpdate?.Invoke(update)
+            : update switch
+            {
+                MessageCreatedUpdate mcu => _onMessage?.Invoke(mcu.Message, UpdateType.MessageCreated),
+                MessageEditedUpdate meu => _onMessage?.Invoke(meu.Message, UpdateType.MessageEdited),
+                _ => _onUpdate?.Invoke(update) // if OnMessage is set, we call OnUpdate only for non-message updates
+            };
+        if (task != null) await task.ConfigureAwait(true);
+    }
+
+    private void StopEventReceiving()
+    {
+        lock (_options)
+        {
+            if (_onUpdate != null || _onMessage != null || _receivingEvents == null) return;
+            _receivingEvents?.Cancel();
+            _receivingEvents?.Dispose();
+            _receivingEvents = null;
+        }
     }
 }
