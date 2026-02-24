@@ -7,7 +7,7 @@ public sealed class ReceiverOptions
     private int? _limit = 100;
 
     /// <summary>Identifier of the first update to be returned. Will be ignored if <see cref="DropPendingUpdates"/> is set to <see langword="true"/>.</summary>
-    public int? Offset { get; set; }
+    public long? Offset { get; set; }
 
     /// <summary>Indicates which <see cref="UpdateType"/>s are allowed to be received. In case of <see langword="null"/> the previous setting will be used</summary>
     public UpdateType[]? AllowedUpdates { get; set; }
