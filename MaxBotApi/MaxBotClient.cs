@@ -240,11 +240,45 @@ public class MaxBotClient : IMaxBotClient
 
     private OnUpdateHandler? _onUpdate;
     private OnMessageHandler? _onMessage;
-    public event OnUpdateHandler? OnUpdate { add { _onUpdate += value; StartEventReceiving(); } remove { _onUpdate -= value; StopEventReceiving(); } }
-    /// <summary>Handler to be called when there is an incoming message or edited message</summary>
-    public event OnMessageHandler? OnMessage { add { _onMessage += value; StartEventReceiving(); } remove { _onMessage -= value; StopEventReceiving(); } }
-    /// <summary>Handler to be called when there was a polling error or an exception in your handlers</summary>
-    public event OnErrorHandler? OnError; 
+
+    /// <summary>
+    /// Обработчик событий, который будет вызван при поступлении апдейтов (кроме MessageCreated/MessageEdited, если задан обработчик OnMessage)
+    /// </summary>
+    public event OnUpdateHandler? OnUpdate
+    {
+        add
+        {
+            _onUpdate += value;
+            StartEventReceiving();
+        }
+        remove
+        {
+            _onUpdate -= value;
+            StopEventReceiving();
+        }
+    }
+
+    /// <summary>
+    /// Обработчик событий, который будет вызван при поступлении апдейтов типа MessageCreated или MessageEdited
+    /// </summary>
+    public event OnMessageHandler? OnMessage
+    {
+        add
+        {
+            _onMessage += value;
+            StartEventReceiving();
+        }
+        remove
+        {
+            _onMessage -= value;
+            StopEventReceiving();
+        }
+    }
+
+    /// <summary>
+    /// Обработчик, который будет вызван при возникновении ошибки поллинга или при срабатывании исключений в иных обработчиках
+    /// </summary>
+    public event OnErrorHandler? OnError;
 
     private void StartEventReceiving()
     {
@@ -274,7 +308,7 @@ public class MaxBotClient : IMaxBotClient
             {
                 MessageCreatedUpdate mcu => _onMessage?.Invoke(mcu.Message, UpdateType.MessageCreated),
                 MessageEditedUpdate meu => _onMessage?.Invoke(meu.Message, UpdateType.MessageEdited),
-                _ => _onUpdate?.Invoke(update) // if OnMessage is set, we call OnUpdate only for non-message updates
+                _ => _onUpdate?.Invoke(update) // Если задан onMessage, обработчик onUpdate будет вызван для всех обновлений кроме MessageCreated и MessageEdited
             };
         if (task != null) await task.ConfigureAwait(true);
     }
