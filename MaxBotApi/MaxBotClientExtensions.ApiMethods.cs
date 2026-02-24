@@ -262,6 +262,21 @@ public static partial class MaxBotClientExtensions
                     Notification = notification,
                 },
                 cancellationToken).ConfigureAwait(false);
+        /// <summary>
+        /// Этот метод используется для отправки ответа после того, как пользователь нажал на кнопку. Ответом может быть обновленное сообщение и/или одноразовое уведомление для пользователя
+        /// </summary>
+        /// <param name="callback_id">Идентификатор кнопки, по которой пользователь кликнул. Бот получает идентификатор как часть Update с типом message_callback.</param>
+        /// <param name="newMessageBody">Заполните это, если хотите изменить текущее сообщение</param>
+        /// <param name="notification">Заполните это, если хотите просто отправить одноразовое уведомление пользователю</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>ApiResponse</returns>
+        public async Task<ApiResponse> AnswerCallback(string callback_id, NewMessageBody? newMessageBody = null, string? notification = null,
+            CancellationToken cancellationToken = default)=> await botClient.ThrowIfNull().SendRequest(new SendCallbackReactRequest(callback_id)
+            {
+                Message = newMessageBody,
+                Notification = notification,
+            },
+            cancellationToken).ConfigureAwait(false);
 
         /// <summary>
         /// Возвращает сообщение по его ID

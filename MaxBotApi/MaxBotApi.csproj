@@ -8,12 +8,12 @@
         <Title>.NET Client for Max Bot API </Title>
         <Authors>Vladimir Antipov</Authors>
         <Description>.NET Client for Max Bot API
-1.0.6 fixed pkg build
+1.0.7 added long-polling support
 		Library used for developing bots for messenger MAX 
                 https://dev.max.ru/docs-api
 	</Description>
         <PackageProjectUrl>https://github.com/AntipovVladimir/MaxBotApi</PackageProjectUrl>
-        <Version>1.0.6</Version>
+        <Version>1.0.7</Version>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
