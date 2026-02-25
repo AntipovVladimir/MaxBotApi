@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -13,13 +12,15 @@
                 https://dev.max.ru/docs-api
 	</Description>
         <PackageProjectUrl>https://github.com/AntipovVladimir/MaxBotApi</PackageProjectUrl>
+	<PackageLicenseFile>LICENSE</PackageLicenseFile>
         <Version>1.0.7</Version>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Docs\" />
      <None Include="Docs\README.md" Pack="true" PackagePath="\"/>
+     <None Include="Docs\LICENSE" Pack="true" PackagePath=""/>
     </ItemGroup>
 
 </Project>
