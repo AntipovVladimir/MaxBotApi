@@ -10,8 +10,67 @@ https://www.nuget.org/packages/MaxBotApi
 ```
 dotnet add package MaxBotApi
 ```
+## изменения 1.0.7
++ добавлена поддержка **long-polling** (из документации: Long Polling — для разработки и тестирования, только Webhook — для production-окружения)
++ добавлен метод AnswerCallback идентичный SendCallbackReact, более привычный для тех кто переносит код с телеграм-бота
 
-## Изменения, 1.0.6
+Для работы long-polling достаточно задать обработчики событий OnError и OnUpdate, опционально можно задать обработчик OnMessage (без него, события типа MessageCreated и MessageEdited будут обрабатываться в OnUpdate) и поддерживать рабочий цикл ПО до завершения.
+
+
+
+#### Минимальный рабочий пример long-polling исполнения:
+```csharp
+using MaxBotApi;
+using MaxBotApi.Enums;
+using MaxBotApi.Models;
+
+CancellationTokenSource cts = new();
+string botToken = "токен вашего бота";
+MaxBotClient  bot = new(botToken, cancellationToken: cts.Token);
+
+EventWaitHandle waitHandle = new(false, EventResetMode.AutoReset, null, out bool createdNew);
+bool signaled;
+
+bot.OnError += OnError;
+bot.OnMessage += OnMessage;
+bot.OnUpdate += OnUpdate;
+
+var me = await bot.GetMe();
+Console.WriteLine(string.Format("@{0} запущен... Наберите 'shutdown' в лс боту для завершения", me.FirstName));
+if (!createdNew)
+    waitHandle.Set();
+else
+    do { signaled = waitHandle.WaitOne(TimeSpan.FromMilliseconds(33)); }
+    while (!signaled);
+
+cts.Cancel(); // stop the bot
+Console.WriteLine("exit!");
+
+async Task OnError(Exception exception, HandleErrorSource source)
+{
+    Console.WriteLine(exception.ToString());
+    await Task.CompletedTask;
+}
+
+async Task OnUpdate(Update update)
+{
+    Console.WriteLine(update);
+    await Task.CompletedTask;
+}
+
+async Task OnMessage(Message msg, UpdateType type)
+{
+    if (msg.MessageBody?.Text == "shutdown")
+    {
+        waitHandle.Set();
+    }
+    Console.WriteLine(msg);
+    await Task.CompletedTask;
+}
+```
+
+
+## Изменения 1.0.6
 + Добавлены расширения для InlineKeyboard, упрощающие работу с ней.
 
 
@@ -342,6 +401,8 @@ _С помощью метода можно удалять сообщения, к
 
 ```csharp
 async Task<ApiResponse> SendCallbackReact(string callback_id, NewMessageBody? newMessageBody = null, string? notification = null)
+// дополнительное название одного и того же метода 
+async Task<ApiResponse> AnswerCallback(string callback_id, NewMessageBody? newMessageBody = null, string? notification = null)    
 ```
 
 Этот метод используется для отправки ответа после того, как пользователь нажал на кнопку. Ответом может быть обновленное сообщение и/или одноразовое уведомление
