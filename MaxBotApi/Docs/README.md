@@ -10,6 +10,10 @@ https://www.nuget.org/packages/MaxBotApi
 ```
 dotnet add package MaxBotApi
 ```
+## изменения 1.0.8
++ добавлен метод расширения **ReplyMessage**
+
+
 ## изменения 1.0.7
 + добавлена поддержка **long-polling** (из документации: Long Polling — для разработки и тестирования, только Webhook — для production-окружения)
 + добавлен метод AnswerCallback идентичный SendCallbackReact, более привычный для тех кто переносит код с телеграм-бота
@@ -361,6 +365,18 @@ public class ApiMessage
     public required Message Message { get; set; }
 }
 ```
+
+#### Ответ на сообщение (вспомогательный метод)
+```csharp
+async Task<ApiMessage> ReplyMessage(Message message, string? text, bool disable_link_preview = false,
+            bool notify = true,
+            TextFormat? text_format = null,
+            NewMessageLink? link = null, IEnumerable<AttachmentRequest>? attachments = null)
+```
+Данный метод отвечает на входящее сообщение, автоматически выбирая SendMessage или SendMessageToChat
+
+Возвращает объект **ApiMessage**
+
 
 #### Редактирование сообщения
 

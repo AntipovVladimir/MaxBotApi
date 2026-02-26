@@ -13,9 +13,8 @@ dotnet add package MaxBotApi
 ### Актуальная документация по MaxBotApi теперь здесь: 
 https://github.com/AntipovVladimir/MaxBotApi/blob/main/MaxBotApi/Docs/README.md
 
-### изменения 1.0.7
-+ добавлена поддержка **long-polling** (из документации: Long Polling — для разработки и тестирования, только Webhook — для production-окружения)
-+ добавлен метод AnswerCallback идентичный SendCallbackReact, более привычный для тех кто переносит код с телеграм-бота
+### изменения 1.0.8
++ добавлен метод расширения **ReplyMessage**
 
 ### Данный клиент будет постепенно дорабатываться, документация дополняться.
 
