@@ -7,10 +7,11 @@ namespace MaxBotApi.Models;
 public class Message
 {
     /// <summary>
-    /// Пользователь, отправивший сообщение
+    /// Пльзователь, отправивший сообщение.  Опционально, может отсутствовать для сообщений в каналах.
     /// </summary>
     [JsonPropertyName("sender")]
-    public required User Sender { get; set; }
+    
+    public User? Sender { get; set; }
     
     /// <summary>
     /// Получатель сообщения. Может быть пользователем или чатом
@@ -52,8 +53,11 @@ public class Message
     public override string ToString()
     {
         StringBuilder sb = new();
-        sb.Append("Sender: ");
-        sb.Append(Sender);
+        if (Sender != null)
+        {
+            sb.Append("Sender: ");
+            sb.Append(Sender);
+        }
         sb.Append(", Recipient: ");
         sb.Append(Recipient);
         sb.Append(", TimeStamp: ");
