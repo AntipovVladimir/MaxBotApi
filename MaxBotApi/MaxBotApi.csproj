@@ -7,13 +7,14 @@
         <Title>.NET Client for Max Bot API </Title>
         <Authors>Vladimir Antipov</Authors>
         <Description>.NET Client for Max Bot API
-1.0.8 added ReplyMessage extension
+1.0.9 fix: forgot about used_added/user_removed updates
+
 		Library used for developing bots for messenger MAX 
                 https://dev.max.ru/docs-api
 	</Description>
         <PackageProjectUrl>https://github.com/AntipovVladimir/MaxBotApi</PackageProjectUrl>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
-        <Version>1.0.8</Version>
+        <Version>1.0.9</Version>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>

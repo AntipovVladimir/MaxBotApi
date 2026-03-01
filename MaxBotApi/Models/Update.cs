@@ -20,6 +20,8 @@ namespace MaxBotApi.Models;
 [CustomJsonDerivedType(typeof(BotStartedUpdate), "bot_started")]
 [CustomJsonDerivedType(typeof(BotStoppedUpdate), "bot_stopped")]
 [CustomJsonDerivedType(typeof(ChatTitleChangedUpdate), "chat_title_changed")]
+[CustomJsonDerivedType(typeof(UserAddedUpdate),"user_added")]
+[CustomJsonDerivedType(typeof(UserRemovedUpdate), "user_removed")]
 public abstract class Update
 {
     /// <summary>

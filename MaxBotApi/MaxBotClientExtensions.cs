@@ -26,7 +26,7 @@ public static partial class MaxBotClientExtensions
             NewMessageLink? link = null, IEnumerable<AttachmentRequest>? attachments = null,
             CancellationToken cancellationToken = default) =>
             message.Recipient.ChatType == ChatType.Dialog
-                ? await client.SendMessage(message.Sender.UserID, text, disable_link_preview, notify, text_format, link, attachments, cancellationToken)
+                ? await client.SendMessage(message.Sender!.UserID, text, disable_link_preview, notify, text_format, link, attachments, cancellationToken)
                 : await client.SendMessageToChat(message.Recipient.ChatId, text, disable_link_preview, notify, text_format, link, attachments, cancellationToken);
     }
 }

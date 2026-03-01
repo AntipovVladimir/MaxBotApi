@@ -13,6 +13,9 @@ dotnet add package MaxBotApi
 ### Актуальная документация по MaxBotApi теперь здесь: 
 https://github.com/AntipovVladimir/MaxBotApi/blob/main/MaxBotApi/Docs/README.md
 
+### изменения 1.0.9
++ [FIX] не обрабатывались апдейты типа used_added/user_removed
+
 ### изменения 1.0.8
 + добавлен метод расширения **ReplyMessage**
 

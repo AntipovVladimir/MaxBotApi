@@ -10,6 +10,9 @@ https://www.nuget.org/packages/MaxBotApi
 ```
 dotnet add package MaxBotApi
 ```
+## изменения 1.0.9
++ [FIX] не обрабатывались апдейты типа used_added/user_removed
+
 ## изменения 1.0.8
 + добавлен метод расширения **ReplyMessage**
 
