@@ -17,6 +17,6 @@ public class DefaultExceptionParser : IExceptionParser
     public ApiRequestException Parse(ApiResponse apiResponse)
     {
         if (apiResponse is null) throw new ArgumentNullException(nameof(apiResponse));
-        return new ApiRequestException(apiResponse.Message!);
+        return new ApiRequestException(apiResponse.Message!, apiResponse.Code ?? string.Empty);
     }
 }  

@@ -16,4 +16,10 @@ public class ApiResponse
     /// </summary>
     [JsonPropertyName("message")]
     public string? Message { get; set; }
+    
+    /// <summary>
+    /// Код ошибки, если возникает
+    /// </summary>
+    [JsonPropertyName("code")]
+    public string? Code { get; set; }
 }

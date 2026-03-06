@@ -177,13 +177,19 @@ public class MaxBotClient : IMaxBotClient
                     var failedApiResponse = await DeserializeContent<ApiResponse>(httpResponse,
                         response => !response.Success && response.Message != null, cancellationToken).ConfigureAwait(false);
 
-                    if (httpResponse.StatusCode == HttpStatusCode.TooManyRequests && _options.RetryThreshold > 0 && attempt < _options.RetryCount)
+                    if (httpResponse.StatusCode == HttpStatusCode.TooManyRequests && _options.RetryThreshold > 0 && attempt <= _options.RetryCount)
                     {
                         await Task.Delay(5 * 1000, cancellationToken).ConfigureAwait(false);
                         continue; // retry attempt
                     }
 
-                    throw ExceptionsParser.Parse(failedApiResponse);
+                    var apiResponseException = ExceptionsParser.Parse(failedApiResponse);
+                    if (apiResponseException.Code.Equals("attachment.not.ready") && attempt <= _options.RetryWaitAttachment)
+                    {
+                        await Task.Delay(attempt*5000, cancellationToken).ConfigureAwait(false);
+                        continue;
+                    }
+                    throw apiResponseException;
                 }
 
                 TResponse? deserializedObject;
