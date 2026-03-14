@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using MaxBotApi.Extensions;
 
 namespace MaxBotApi.Models.Payloads;
 
@@ -14,4 +15,5 @@ public class ShareAttachmentPayload
     /// </summary>
     [JsonPropertyName("token")]
     public string? Token { get; set; }
+    public override string ToString() => this.SerializeToString();
 }

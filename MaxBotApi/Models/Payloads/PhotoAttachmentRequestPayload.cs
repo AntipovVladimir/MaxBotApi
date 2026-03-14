@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using MaxBotApi.Extensions;
 
 namespace MaxBotApi.Models.Payloads;
 
@@ -21,4 +22,5 @@ public class PhotoAttachmentRequestPayload
     /// </summary>
     [JsonPropertyName("photos")]
     public UploadedInfo? Photos { get; set; }
+    public override string ToString() => this.SerializeToString();
 }

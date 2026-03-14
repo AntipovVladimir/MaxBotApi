@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using MaxBotApi.Extensions;
 using MaxBotApi.Models.Payloads;
 
 namespace MaxBotApi.Models;
@@ -40,4 +41,6 @@ public class VideoInfo
     /// </summary>
     [JsonPropertyName("duration")]
     public int Duration { get; set; }
+    
+    public override string ToString() => this.SerializeToString();
 }

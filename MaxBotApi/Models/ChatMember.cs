@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using MaxBotApi.Enums;
+using MaxBotApi.Extensions;
 using MaxBotApi.Serialization;
 
 namespace MaxBotApi.Models;
@@ -71,5 +72,5 @@ public class ChatMember:User
     /// </summary>
     [JsonPropertyName("alias")]
     public string? Alias { get; set; }
-    
+    public override string ToString() => this.SerializeToString();
 }

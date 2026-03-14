@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using MaxBotApi.Enums;
+using MaxBotApi.Extensions;
 using MaxBotApi.Models.Payloads;
 using MaxBotApi.Serialization;
 
@@ -24,6 +25,7 @@ public abstract class AttachmentRequest
     /// </summary>
     [JsonPropertyName("type")]
     public abstract AttachmentType Type { get; }
+    public override string ToString() => this.SerializeToString();
     
 }
 

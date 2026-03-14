@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json.Serialization;
 using MaxBotApi.Enums;
+using MaxBotApi.Extensions;
 using MaxBotApi.Serialization;
 
 namespace MaxBotApi.Models;
@@ -58,15 +59,7 @@ public abstract class Update
         UpdateType.ChatTitleChanged
     ];
 
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("UpdateType: ");
-        sb.Append(UpdateType);
-        sb.Append(", TimeStamp: ");
-        sb.Append(TimeStamp);
-        return sb.ToString();
-    }
+    public override string ToString() => this.SerializeToString();
 }
 
 public class MessageCreatedUpdate : Update
@@ -84,24 +77,7 @@ public class MessageCreatedUpdate : Update
     /// </summary>
     [JsonPropertyName("user_locale")]
     public string? UserLocale { get; set; }
-
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("UpdateType: ");
-        sb.Append(UpdateType);
-        sb.Append(", TimeStamp: ");
-        sb.Append(TimeStamp);
-        sb.Append(", Message: ");
-        sb.Append(Message);
-        if (UserLocale != null)
-        {
-            sb.Append(", UserLocale: ");
-            sb.Append(UserLocale);
-        }
-
-        return sb.ToString();
-    }
+ 
 }
 
 public class MessageCallbackUpdate : Update
@@ -125,30 +101,7 @@ public class MessageCallbackUpdate : Update
     /// </summary>
     [JsonPropertyName("user_locale")]
     public string? UserLocale { get; set; }
-
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("UpdateType: ");
-        sb.Append(UpdateType);
-        sb.Append(", TimeStamp: ");
-        sb.Append(TimeStamp);
-        if (Message != null)
-        {
-            sb.Append(", Message: ");
-            sb.Append(Message);
-        }
-
-        sb.Append(", Callback: ");
-        sb.Append(Callback);
-        if (UserLocale != null)
-        {
-            sb.Append(", UserLocale: ");
-            sb.Append(UserLocale);
-        }
-
-        return sb.ToString();
-    }
+   
 }
 
 public class MessageEditedUpdate : Update
@@ -161,17 +114,6 @@ public class MessageEditedUpdate : Update
     [JsonPropertyName("message")]
     public required Message Message { get; set; }
 
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("UpdateType: ");
-        sb.Append(UpdateType);
-        sb.Append(", TimeStamp: ");
-        sb.Append(TimeStamp);
-        sb.Append(", EditedMessage: ");
-        sb.Append(Message);
-        return sb.ToString();
-    }
 }
 
 public class MessageRemovedUpdate : Update
@@ -196,19 +138,6 @@ public class MessageRemovedUpdate : Update
     [JsonPropertyName("user_id")]
     public long UserId { get; set; }
 
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("UpdateType: ");
-        sb.Append(UpdateType);
-        sb.Append(", TimeStamp: ");
-        sb.Append(TimeStamp);
-        sb.Append(", ChatId: ");
-        sb.Append(ChatId);
-        sb.Append(", UserId: ");
-        sb.Append(UserId);
-        return sb.ToString();
-    }
 }
 
 public class BotAddedUpdate : Update
@@ -233,19 +162,6 @@ public class BotAddedUpdate : Update
     [JsonPropertyName("is_channel")]
     public bool IsChannel { get; set; }
 
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("UpdateType: ");
-        sb.Append(UpdateType);
-        sb.Append(", TimeStamp: ");
-        sb.Append(TimeStamp);
-        sb.Append(", User: ");
-        sb.Append(User);
-        sb.Append(", IsChannel: ");
-        sb.Append(IsChannel);
-        return sb.ToString();
-    }
 }
 
 public class BotRemovedUpdate : Update
@@ -270,19 +186,6 @@ public class BotRemovedUpdate : Update
     [JsonPropertyName("is_channel")]
     public bool IsChannel { get; set; }
 
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("UpdateType: ");
-        sb.Append(UpdateType);
-        sb.Append(", TimeStamp: ");
-        sb.Append(TimeStamp);
-        sb.Append(", User: ");
-        sb.Append(User);
-        sb.Append(", IsChannel: ");
-        sb.Append(IsChannel);
-        return sb.ToString();
-    }
 }
 
 public class DialogMutedUpdate : Update
@@ -313,27 +216,6 @@ public class DialogMutedUpdate : Update
     [JsonPropertyName("user_locale")]
     public string? UserLocale { get; set; }
 
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("UpdateType: ");
-        sb.Append(UpdateType);
-        sb.Append(", TimeStamp: ");
-        sb.Append(TimeStamp);
-        sb.Append(", ChatId: ");
-        sb.Append(ChatId);
-        sb.Append(", User: ");
-        sb.Append(User);
-        sb.Append(", MutedUntil: ");
-        sb.Append(MutedUntil);
-        if (UserLocale != null)
-        {
-            sb.Append(", UserLocale: ");
-            sb.Append(UserLocale);
-        }
-
-        return sb.ToString();
-    }
 }
 
 public class DialogUnmutedUpdate : Update
@@ -358,25 +240,6 @@ public class DialogUnmutedUpdate : Update
     [JsonPropertyName("user_locale")]
     public string? UserLocale { get; set; }
 
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("UpdateType: ");
-        sb.Append(UpdateType);
-        sb.Append(", TimeStamp: ");
-        sb.Append(TimeStamp);
-        sb.Append(", ChatId: ");
-        sb.Append(ChatId);
-        sb.Append(", User: ");
-        sb.Append(User);
-        if (UserLocale != null)
-        {
-            sb.Append(", UserLocale: ");
-            sb.Append(UserLocale);
-        }
-
-        return sb.ToString();
-    }
 }
 
 public class DialogClearedUpdate : Update
@@ -401,25 +264,6 @@ public class DialogClearedUpdate : Update
     [JsonPropertyName("user_locale")]
     public string? UserLocale { get; set; }
 
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("UpdateType: ");
-        sb.Append(UpdateType);
-        sb.Append(", TimeStamp: ");
-        sb.Append(TimeStamp);
-        sb.Append(", ChatId: ");
-        sb.Append(ChatId);
-        sb.Append(", User: ");
-        sb.Append(User);
-        if (UserLocale != null)
-        {
-            sb.Append(", UserLocale: ");
-            sb.Append(UserLocale);
-        }
-
-        return sb.ToString();
-    }
 }
 
 public class DialogRemovedUpdate : Update
@@ -444,25 +288,6 @@ public class DialogRemovedUpdate : Update
     [JsonPropertyName("user_locale")]
     public string? UserLocale { get; set; }
 
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("UpdateType: ");
-        sb.Append(UpdateType);
-        sb.Append(", TimeStamp: ");
-        sb.Append(TimeStamp);
-        sb.Append(", ChatId: ");
-        sb.Append(ChatId);
-        sb.Append(", User: ");
-        sb.Append(User);
-        if (UserLocale != null)
-        {
-            sb.Append(", UserLocale: ");
-            sb.Append(UserLocale);
-        }
-
-        return sb.ToString();
-    }
 }
 
 public class UserAddedUpdate : Update
@@ -493,27 +318,6 @@ public class UserAddedUpdate : Update
     [JsonPropertyName("is_channel")]
     public bool IsChannel { get; set; }
 
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("UpdateType: ");
-        sb.Append(UpdateType);
-        sb.Append(", TimeStamp: ");
-        sb.Append(TimeStamp);
-        sb.Append(", ChatId: ");
-        sb.Append(ChatId);
-        sb.Append(", User: ");
-        sb.Append(User);
-        if (InviterId != null)
-        {
-            sb.Append(", InviterId: ");
-            sb.Append(InviterId);
-        }
-
-        sb.Append(", IsChannel: ");
-        sb.Append(IsChannel);
-        return sb.ToString();
-    }
 }
 
 public class UserRemovedUpdate : Update
@@ -544,27 +348,6 @@ public class UserRemovedUpdate : Update
     [JsonPropertyName("is_channel")]
     public bool IsChannel { get; set; }
 
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("UpdateType: ");
-        sb.Append(UpdateType);
-        sb.Append(", TimeStamp: ");
-        sb.Append(TimeStamp);
-        sb.Append(", ChatId: ");
-        sb.Append(ChatId);
-        sb.Append(", User: ");
-        sb.Append(User);
-        if (AdminId != null)
-        {
-            sb.Append(", AdminId: ");
-            sb.Append(AdminId);
-        }
-
-        sb.Append(", IsChannel: ");
-        sb.Append(IsChannel);
-        return sb.ToString();
-    }
 }
 
 public class BotStartedUpdate : Update
@@ -595,31 +378,6 @@ public class BotStartedUpdate : Update
     [JsonPropertyName("user_locale")]
     public string? UserLocale { get; set; }
 
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("UpdateType: ");
-        sb.Append(UpdateType);
-        sb.Append(", TimeStamp: ");
-        sb.Append(TimeStamp);
-        sb.Append(", ChatId: ");
-        sb.Append(ChatId);
-        sb.Append(", User: ");
-        sb.Append(User);
-        if (Payload != null)
-        {
-            sb.Append(", Payload: ");
-            sb.Append(Payload);
-        }
-
-        if (UserLocale != null)
-        {
-            sb.Append(", UserLocale: ");
-            sb.Append(UserLocale);
-        }
-
-        return sb.ToString();
-    }
 }
 
 public class BotStoppedUpdate : Update
@@ -644,25 +402,6 @@ public class BotStoppedUpdate : Update
     [JsonPropertyName("user_locale")]
     public string? UserLocale { get; set; }
 
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("UpdateType: ");
-        sb.Append(UpdateType);
-        sb.Append(", TimeStamp: ");
-        sb.Append(TimeStamp);
-        sb.Append(", ChatId: ");
-        sb.Append(ChatId);
-        sb.Append(", User: ");
-        sb.Append(User);
-        if (UserLocale != null)
-        {
-            sb.Append(", UserLocale: ");
-            sb.Append(UserLocale);
-        }
-
-        return sb.ToString();
-    }
 }
 
 public class ChatTitleChangedUpdate : Update
@@ -687,23 +426,4 @@ public class ChatTitleChangedUpdate : Update
     [JsonPropertyName("user")]
     public required User User { get; set; }
 
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("UpdateType: ");
-        sb.Append(UpdateType);
-        sb.Append(", TimeStamp: ");
-        sb.Append(TimeStamp);
-        sb.Append(", ChatId: ");
-        sb.Append(ChatId);
-        sb.Append(", User: ");
-        sb.Append(User);
-        if (Title != null)
-        {
-            sb.Append(", Title: ");
-            sb.Append(Title);
-        }
-
-        return sb.ToString();
-    }
 }

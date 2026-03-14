@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using MaxBotApi.Enums;
+using MaxBotApi.Extensions;
 using MaxBotApi.Serialization;
 
 namespace MaxBotApi.Models;
@@ -21,7 +22,7 @@ public abstract class Button
     
     public static Button WithCallbackData(string text, string callbackData) =>
         new CallbackButton(){ Text= text, Payload = callbackData };
-    
+    public override string ToString() => this.SerializeToString();
 }
 
 public class MessageButton : Button

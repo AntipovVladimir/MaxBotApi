@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using MaxBotApi.Extensions;
 
 namespace MaxBotApi.Models;
 
@@ -45,5 +46,6 @@ public class VideoUrls
     /// </summary>
     [JsonPropertyName("hls")]
     public string? HLS { get; set; }
-    
+ 
+    public override string ToString() => this.SerializeToString();
 }

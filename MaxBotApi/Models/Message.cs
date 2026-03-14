@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json.Serialization;
+using MaxBotApi.Extensions;
 using MaxBotApi.Serialization;
 
 namespace MaxBotApi.Models;
@@ -50,42 +51,5 @@ public class Message
     [JsonPropertyName("url")]
     public string? Url { get; set; }
 
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        if (Sender != null)
-        {
-            sb.Append("Sender: ");
-            sb.Append(Sender);
-        }
-        sb.Append(", Recipient: ");
-        sb.Append(Recipient);
-        sb.Append(", TimeStamp: ");
-        sb.Append(TimeStamp);
-        if (Link != null)
-        {
-            sb.Append(", Link: ");
-            sb.Append(Link);
-        }
-
-        if (MessageBody != null)
-        {
-            sb.Append(", Body: ");
-            sb.Append(MessageBody);
-        }
-
-        if (Stat != null)
-        {
-            sb.Append(", Stat: ");
-            sb.Append(Stat);
-        }
-
-        if (Url != null)
-        {
-            sb.Append(", Url: ");
-            sb.Append(Url);
-        }
-
-        return sb.ToString();
-    }
+    public override string ToString() => this.SerializeToString();
 }
