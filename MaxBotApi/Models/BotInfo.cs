@@ -1,5 +1,5 @@
-﻿using System.Text;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using MaxBotApi.Extensions;
 
 namespace MaxBotApi.Models;
 
@@ -31,36 +31,5 @@ public class BotInfo : User
     [JsonPropertyName("commands")]
     public BotCommand[]? Commands { get; set; }
 
-    public override string ToString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.Append(base.ToString());
-        if (Description != null)
-        {
-            sb.Append(", Description:");
-            sb.Append(Description);
-        }
-
-        if (AvatarUrl != null)
-        {
-            sb.Append(", AvatarUrl:");
-            sb.Append(AvatarUrl);
-        }
-
-        if (FullAvatarUrl != null)
-        {
-            sb.Append(", FullAvatarUrl");
-            sb.Append(FullAvatarUrl);
-        }
-
-        if (Commands != null)
-        {
-            sb.AppendLine(", Commands:");
-            foreach (BotCommand command in Commands)
-                sb.AppendLine(command.ToString());
-
-            sb.AppendLine("===");
-        }
-        return sb.ToString();
-    }
+    public override string ToString() => this.SerializeToString();
 }

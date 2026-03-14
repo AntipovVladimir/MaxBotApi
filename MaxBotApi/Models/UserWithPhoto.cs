@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using MaxBotApi.Extensions;
 
 namespace MaxBotApi.Models;
 
-public class UserWithPhoto:User
+public class UserWithPhoto : User
 {
     /// <summary>
     /// до 16000 символов
@@ -23,4 +24,5 @@ public class UserWithPhoto:User
     [JsonPropertyName("full_avatar_url")]
     public string? FullAvatarUrl { get; set; }
 
+    public override string ToString() => this.SerializeToString();
 }

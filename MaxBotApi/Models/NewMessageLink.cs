@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using MaxBotApi.Enums;
+using MaxBotApi.Extensions;
 
 namespace MaxBotApi.Models;
 
@@ -16,4 +17,5 @@ public class NewMessageLink
     /// </summary>
     [JsonPropertyName("mid")]
     public required string MessageId { get; set; }
+    public override string ToString() => this.SerializeToString();
 }

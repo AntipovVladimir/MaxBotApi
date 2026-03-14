@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json.Serialization;
+using MaxBotApi.Extensions;
 
 namespace MaxBotApi.Models;
 
@@ -35,45 +36,5 @@ public class MessageBody
     [JsonPropertyName("markup")]
     public MarkupElement[]? Markup { get; set; }
 
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("Message Id: ");
-        sb.Append(MessageId);
-        sb.Append(", SequenceId: ");
-        sb.Append(SequenceId);
-        if (Text != null)
-        {
-            sb.Append(", Text: ");
-            sb.Append(Text);
-        }
-
-        if (Attachments?.Length > 0)
-        {
-            sb.AppendLine();
-            sb.AppendLine(" Attachments: ");
-            for (int i = 0; i < Attachments.Length; i++)
-            {
-                sb.Append("[");
-                sb.Append(Attachments[i]);
-                sb.AppendLine("]");
-            }
-            sb.AppendLine("---");
-        }
-
-        if (Markup?.Length > 0)
-        {
-            sb.AppendLine();
-            sb.AppendLine(" Markup: ");
-            for (int i = 0; i < Markup.Length; i++)
-            {
-                sb.Append("[");
-                sb.Append(Markup[i]);
-                sb.AppendLine("]");
-            }
-            sb.AppendLine("---");
-        }
-
-        return sb.ToString();
-    }
+    public override string ToString() => this.SerializeToString();
 }

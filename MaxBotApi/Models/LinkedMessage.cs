@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json.Serialization;
 using MaxBotApi.Enums;
+using MaxBotApi.Extensions;
 
 namespace MaxBotApi.Models;
 
@@ -30,17 +31,5 @@ public class LinkedMessage
     [JsonPropertyName("message")]
     public required MessageBody MessageBody { get; set; }
 
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("Type: ");
-        sb.Append(Type);
-        sb.Append(", Sender: ");
-        sb.Append(Sender);
-        sb.Append(", Chat Id: ");
-        sb.Append(ChatId);
-        sb.Append(", Text: ");
-        sb.Append(MessageBody);
-        return sb.ToString();
-    }
+    public override string ToString() => this.SerializeToString();
 }

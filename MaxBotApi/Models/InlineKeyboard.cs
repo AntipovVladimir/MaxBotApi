@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using MaxBotApi.Extensions;
 using MaxBotApi.Models.Payloads;
 
 namespace MaxBotApi.Models;
@@ -25,4 +26,5 @@ public partial class InlineKeyboard
     {
         Payload = new InlineKeyboardAttachmentRequestPayload() { Buttons = ik.Buttons }
     };
+    public override string ToString() => this.SerializeToString();
 }

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using MaxBotApi.Extensions;
 
 namespace MaxBotApi.Models;
 
@@ -16,8 +17,5 @@ public class BotCommand
     [JsonPropertyName("description")]
     public string? Description { get; set; }
 
-    public override string ToString()
-    {
-        return string.Format("Name: {0}, Description: {1}", Name, Description);
-    }
+    public override string ToString() => this.SerializeToString();
 }

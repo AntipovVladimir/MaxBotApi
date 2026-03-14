@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using MaxBotApi.Extensions;
 using MaxBotApi.Serialization;
 
 namespace MaxBotApi.Models;
@@ -61,9 +62,5 @@ public class User : IEquatable<User>
                && other.LastActivityTime == LastActivityTime;
     }
 
-    public override string ToString()
-    {
-        return string.Format("User: UserId: {0}, Name: {1}, FirstName: {2}, LastName: {3}, UserName: {4}, IsBot: {5}, LastActivityTime: {6}", UserID, Name,
-            FirstName, LastName, UserName, IsBot, LastActivityTime);
-    }
+    public override string ToString() => this.SerializeToString();
 }

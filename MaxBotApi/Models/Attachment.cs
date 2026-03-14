@@ -1,5 +1,7 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text;
+using System.Text.Json.Serialization;
 using MaxBotApi.Enums;
+using MaxBotApi.Extensions;
 using MaxBotApi.Models.Payloads;
 using MaxBotApi.Serialization;
 
@@ -25,16 +27,14 @@ public abstract class Attachment
     [JsonPropertyName("type")]
     public abstract AttachmentType Type { get; set; }
 
-    public override string ToString()
-    {
-        return string.Format("Attachment Type: {0}", Type);
-    }
+    public override string ToString() => this.SerializeToString();
 }
 
 public class ContactAttachment : Attachment
 {
     public override AttachmentType Type { get; set; } = AttachmentType.Contact;
     [JsonPropertyName("payload")] public required ContactAttachmentPayload Payload { get; set; }
+    
 }
 
 public class InlineKeyboardAttachment : Attachment

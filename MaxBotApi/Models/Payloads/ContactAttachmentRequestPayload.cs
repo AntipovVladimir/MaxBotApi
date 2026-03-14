@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using MaxBotApi.Extensions;
 
 namespace MaxBotApi.Models.Payloads;
 
@@ -27,4 +28,5 @@ public class ContactAttachmentRequestPayload
     /// </summary>
     [JsonPropertyName("vcf_phone")]
     public string? VCF_Phone { get; set; }
+    public override string ToString() => this.SerializeToString();
 }

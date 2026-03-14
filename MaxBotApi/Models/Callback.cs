@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json.Serialization;
+using MaxBotApi.Extensions;
 using MaxBotApi.Serialization;
 
 namespace MaxBotApi.Models;
@@ -31,20 +32,5 @@ public class Callback
     [JsonPropertyName("user")]
     public required User User { get; set; }
 
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("Callback Timestamp: ");
-        sb.Append(TimeStamp);
-        sb.Append(", CallbackId: ");
-        sb.Append(CallbackId);
-        if (Payload != null)
-        {
-            sb.Append(", Payload: ");
-            sb.Append(Payload);
-        }
-        sb.Append(", User: ");
-        sb.Append(User);
-        return sb.ToString();
-    }
+    public override string ToString() => this.SerializeToString();
 }

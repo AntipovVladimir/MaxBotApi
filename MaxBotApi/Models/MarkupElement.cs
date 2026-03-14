@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json.Serialization;
 using MaxBotApi.Enums;
+using MaxBotApi.Extensions;
 using MaxBotApi.Serialization;
 
 namespace MaxBotApi.Models;
@@ -36,17 +37,7 @@ public abstract class MarkupElement
     [JsonPropertyName("length")]
     public int Length { get; set; }
 
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append("Type: ");
-        sb.Append(Type);
-        sb.Append(", From: ");
-        sb.Append(From);
-        sb.Append(", Length: ");
-        sb.Append(Length);
-        return sb.ToString();
-    }
+    public override string ToString() => this.SerializeToString();
 }
 
 public class StrongMarkupElement : MarkupElement
@@ -74,15 +65,6 @@ public class LinkMarkupElement : MarkupElement
     /// </summary>
     [JsonPropertyName("url")]
     public required string Url { get; set; }
-
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append(base.ToString());
-        sb.Append(", Url: ");
-        sb.Append(Url);
-        return sb.ToString();
-    }
 }
 
 public class StrikethroughMarkupElement : MarkupElement
@@ -110,22 +92,4 @@ public class UserMentionMarkupElement : MarkupElement
     /// </summary>
     [JsonPropertyName("user_id")]
     public long? UserID { get; set; }
-
-    public override string ToString()
-    {
-        StringBuilder sb = new();
-        sb.Append(base.ToString());
-        if (UserLink != null)
-        {
-            sb.Append(", UserLink: ");
-            sb.Append(UserLink);
-        }
-
-        if (UserID != null)
-        {
-            sb.Append(", UserID: ");
-            sb.Append(UserID);
-        }
-        return sb.ToString();
-    }
 }

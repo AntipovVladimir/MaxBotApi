@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using MaxBotApi.Enums;
+using MaxBotApi.Extensions;
 
 namespace MaxBotApi.Models;
 
@@ -23,8 +24,5 @@ public class Recipient
     [JsonPropertyName("user_id")]
     public long? UserId { get; set; }
 
-    public override string ToString()
-    {
-        return string.Format("Recepient: ChatId:{0}, ChatType:{1}, UserId:{2}", ChatId, ChatType, UserId);
-    }
+    public override string ToString() => this.SerializeToString();
 }

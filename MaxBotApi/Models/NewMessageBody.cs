@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using MaxBotApi.Enums;
+using MaxBotApi.Extensions;
 
 namespace MaxBotApi.Models;
 
@@ -33,4 +34,5 @@ public class NewMessageBody
     
     [JsonPropertyName("format")]
     public TextFormat? TextFormat { get; set; }
+    public override string ToString() => this.SerializeToString();
 }
