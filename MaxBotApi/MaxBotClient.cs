@@ -65,31 +65,17 @@ public class MaxBotClient : IMaxBotClient
         string filename = Path.GetFileName(request.FileName);
         string contentDisposition = FormattableString.Invariant($"form-data; name=\"data\"; filename=\"{filename}\"");
         contentDisposition = Latin1.GetString(Encoding.UTF8.GetBytes(contentDisposition));
-        StreamContent fileContent;
-        if (request.FileStream != null)
+
+        Stream? fs = request.FileStream;
+        if (fs is null)
         {
-            fileContent = new StreamContent(request.FileStream)
-            {
-                Headers =
-                {
-                    { "Content-Type", "application/octet-stream" },
-                    { "Content-Disposition", contentDisposition },
-                }
-            };
-        }
-        else
-        {
-            var fs = File.OpenRead(request.FileName);
+            fs = File.OpenRead(request.FileName);
             await using var _ = fs.ConfigureAwait(false);
-            fileContent = new StreamContent(fs)
-            {
-                Headers =
-                {
-                    { "Content-Type", "application/octet-stream" },
-                    { "Content-Disposition", contentDisposition },
-                }
-            };
         }
+
+        using StreamContent fileContent = new(fs);
+        fileContent.Headers.Add("Content-Type", "application/octet-stream");
+        fileContent.Headers.Add("Content-Disposition", contentDisposition);
 
         var content = new MultipartFormDataContent();
         content.Add(fileContent);
@@ -201,9 +187,10 @@ public class MaxBotClient : IMaxBotClient
                     var apiResponseException = ExceptionsParser.Parse(failedApiResponse);
                     if (apiResponseException.Code.Equals("attachment.not.ready") && attempt <= _options.RetryWaitAttachment)
                     {
-                        await Task.Delay(attempt*5000, cancellationToken).ConfigureAwait(false);
+                        await Task.Delay(attempt * 5000, cancellationToken).ConfigureAwait(false);
                         continue;
                     }
+
                     throw apiResponseException;
                 }
 
@@ -329,7 +316,8 @@ public class MaxBotClient : IMaxBotClient
             {
                 MessageCreatedUpdate mcu => _onMessage?.Invoke(mcu.Message, UpdateType.MessageCreated),
                 MessageEditedUpdate meu => _onMessage?.Invoke(meu.Message, UpdateType.MessageEdited),
-                _ => _onUpdate?.Invoke(update) // Если задан onMessage, обработчик onUpdate будет вызван для всех обновлений кроме MessageCreated и MessageEdited
+                _ => _onUpdate?.Invoke(
+                    update) // Если задан onMessage, обработчик onUpdate будет вызван для всех обновлений кроме MessageCreated и MessageEdited
             };
         if (task != null) await task.ConfigureAwait(true);
     }
