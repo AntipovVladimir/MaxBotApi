@@ -124,6 +124,28 @@ public static partial class MaxBotClientExtensions
             return result ?? new UploadDataResponse() { Token = response.Token };
         }
 
+        /// <summary>
+        /// Делает полную операцию по загрузке файла: получет ссылку на загрузку и по ней загружает файл
+        /// </summary>
+        /// <param name="type">Тип загружаемого файла
+        /// image: JPG, JPEG, PNG, GIF, TIFF, BMP, HEIC
+        /// video: MP4, MOV, MKV, WEBM, MATROSKA
+        /// audio: MP3, WAV, M4A и другие
+        /// file: любые типы файлов
+        /// </param>
+        /// <param name="filename">Имя файла для загрузке потока</param>
+        /// <param name="fileStream">Поток с данными файла</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>UploadDataResponse</returns>
+        /// <exception cref="FileNotFoundException"></exception>
+        public async Task<UploadDataResponse> UploadFile(UploadType type, string filename, Stream fileStream, CancellationToken cancellationToken = default)
+        {
+            var response = await botClient.ThrowIfNull().SendRequest(new UploadRequest(type), cancellationToken).ConfigureAwait(false);
+            var result = await botClient.ThrowIfNull()
+                .SendFile(new UploadDataRequest(response.Url) { FileName = filename, FileStream = fileStream, Token = response.Token }, cancellationToken)
+                .ConfigureAwait(false);
+            return result ?? new UploadDataResponse() { Token = response.Token };
+        }
         #endregion
 
         #region Messages

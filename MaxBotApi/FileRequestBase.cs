@@ -5,6 +5,8 @@ namespace MaxBotApi;
 public class FileRequestBase<TResponse>(string methodName) : RequestBase<TResponse>(methodName)
 {
     [JsonIgnore] public required string FileName { get; set; }
+    
+    [JsonIgnore] public Stream? FileStream { get; set; }
 
     [JsonIgnore] public string? Token { get; set; }
 
