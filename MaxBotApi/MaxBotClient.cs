@@ -316,8 +316,7 @@ public class MaxBotClient : IMaxBotClient
             {
                 MessageCreatedUpdate mcu => _onMessage?.Invoke(mcu.Message, UpdateType.MessageCreated),
                 MessageEditedUpdate meu => _onMessage?.Invoke(meu.Message, UpdateType.MessageEdited),
-                _ => _onUpdate?.Invoke(
-                    update) // Если задан onMessage, обработчик onUpdate будет вызван для всех обновлений кроме MessageCreated и MessageEdited
+                _ => _onUpdate?.Invoke(update) //Если задан onMessage, обработчик onUpdate будет вызван для всех обновлений кроме MessageCreated и MessageEdited
             };
         if (task != null) await task.ConfigureAwait(true);
     }
