@@ -11,6 +11,14 @@ https://www.nuget.org/packages/MaxBotApi
 dotnet add package MaxBotApi
 ```
 
+## изменения 1.0.11
++ добавлен опциональный параметр Stream в метод UploadFile, для возможности работы с программно-подготовленным контентом вместо чтения с диска.
+```csharp
+async Task<UploadDataResponse> UploadFile(UploadType type, string filename, Stream? fileStream = null)
+```
+
+
+
 ## изменения 1.0.10
 + Добавлен механизм повторных запросов при отправке сообщения, вложения которого требуют время на обработку платформой. Обработка ошибки "Key: errors.process.attachment.file.not.processed".
   При возникновении ошибки "errors.process.attachment.file.not.processed", будет произведена повторная попытка отправки сообщения. Задержка перед повторной попыткой расчитывается по формуле [номер попытки * 5 сек], за количество попыток в **MaxBotClientOptions** отвечает
@@ -809,11 +817,12 @@ KickUser(long chat_id, long user_id, bool block = false)
 ### Upload
 ####
 ```csharp
-async Task<UploadDataResponse> UploadFile(UploadType type, string filename)       
+async Task<UploadDataResponse> UploadFile(UploadType type, string filename, Stream? fileStream = null)       
 ```
 Делает полную операцию по загрузке файла: получет ссылку на загрузку и по ней загружает файл
 + **type** (UploadType) - тип загружаемого файла, может быть Image, Video, Audio, File
 + **filename** (string) - путь до загружаемого файла
++ **fileStream** (Stream?) - опциональный параметр для загрузки файлов с помощью Stream (с 1.0.11)
 
 #### Типы файлов:
 + + image: JPG, JPEG, PNG, GIF, TIFF, BMP, HEIC

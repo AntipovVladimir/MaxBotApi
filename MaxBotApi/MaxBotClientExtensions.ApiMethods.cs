@@ -110,42 +110,22 @@ public static partial class MaxBotClientExtensions
         /// file: любые типы файлов
         /// </param>
         /// <param name="filename">Путь к файлу на диске</param>
+        /// <param name="fileStream">Поток с данными файла (опционально)</param>
         /// <param name="cancellationToken"></param>
         /// <returns>UploadDataResponse</returns>
         /// <exception cref="FileNotFoundException"></exception>
-        public async Task<UploadDataResponse> UploadFile(UploadType type, string filename, CancellationToken cancellationToken = default)
+        public async Task<UploadDataResponse> UploadFile(UploadType type, string filename, Stream? fileStream = null,
+            CancellationToken cancellationToken = default)
         {
             if (!File.Exists(filename))
                 throw new FileNotFoundException(filename);
-            var response = await botClient.ThrowIfNull().SendRequest(new UploadRequest(type), cancellationToken).ConfigureAwait(false);
-            var result = await botClient.ThrowIfNull()
-                .SendFile(new UploadDataRequest(response.Url) { FileName = filename, Token = response.Token }, cancellationToken)
-                .ConfigureAwait(false);
-            return result ?? new UploadDataResponse() { Token = response.Token };
-        }
-
-        /// <summary>
-        /// Делает полную операцию по загрузке файла: получет ссылку на загрузку и по ней загружает файл
-        /// </summary>
-        /// <param name="type">Тип загружаемого файла
-        /// image: JPG, JPEG, PNG, GIF, TIFF, BMP, HEIC
-        /// video: MP4, MOV, MKV, WEBM, MATROSKA
-        /// audio: MP3, WAV, M4A и другие
-        /// file: любые типы файлов
-        /// </param>
-        /// <param name="filename">Имя файла для загрузке потока</param>
-        /// <param name="fileStream">Поток с данными файла</param>
-        /// <param name="cancellationToken"></param>
-        /// <returns>UploadDataResponse</returns>
-        /// <exception cref="FileNotFoundException"></exception>
-        public async Task<UploadDataResponse> UploadFile(UploadType type, string filename, Stream fileStream, CancellationToken cancellationToken = default)
-        {
             var response = await botClient.ThrowIfNull().SendRequest(new UploadRequest(type), cancellationToken).ConfigureAwait(false);
             var result = await botClient.ThrowIfNull()
                 .SendFile(new UploadDataRequest(response.Url) { FileName = filename, FileStream = fileStream, Token = response.Token }, cancellationToken)
                 .ConfigureAwait(false);
             return result ?? new UploadDataResponse() { Token = response.Token };
         }
+
         #endregion
 
         #region Messages
@@ -284,6 +264,7 @@ public static partial class MaxBotClientExtensions
                     Notification = notification,
                 },
                 cancellationToken).ConfigureAwait(false);
+
         /// <summary>
         /// Этот метод используется для отправки ответа после того, как пользователь нажал на кнопку. Ответом может быть обновленное сообщение и/или одноразовое уведомление для пользователя
         /// </summary>
@@ -293,7 +274,7 @@ public static partial class MaxBotClientExtensions
         /// <param name="cancellationToken"></param>
         /// <returns>ApiResponse</returns>
         public async Task<ApiResponse> AnswerCallback(string callback_id, NewMessageBody? newMessageBody = null, string? notification = null,
-            CancellationToken cancellationToken = default)=> await botClient.ThrowIfNull().SendRequest(new SendCallbackReactRequest(callback_id)
+            CancellationToken cancellationToken = default) => await botClient.ThrowIfNull().SendRequest(new SendCallbackReactRequest(callback_id)
             {
                 Message = newMessageBody,
                 Notification = notification,
