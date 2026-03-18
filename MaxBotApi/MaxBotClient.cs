@@ -65,16 +65,31 @@ public class MaxBotClient : IMaxBotClient
         string filename = Path.GetFileName(request.FileName);
         string contentDisposition = FormattableString.Invariant($"form-data; name=\"data\"; filename=\"{filename}\"");
         contentDisposition = Latin1.GetString(Encoding.UTF8.GetBytes(contentDisposition));
-        await using var fs = File.OpenRead(request.FileName);
-        var fileContent = new StreamContent(fs)
+        StreamContent fileContent;
+        if (request.FileStream != null)
         {
-            Headers =
+            fileContent = new StreamContent(request.FileStream)
             {
-                { "Content-Type", "application/octet-stream" },
-                { "Content-Disposition", contentDisposition },
-            }
-        };
-
+                Headers =
+                {
+                    { "Content-Type", "application/octet-stream" },
+                    { "Content-Disposition", contentDisposition },
+                }
+            };
+        }
+        else
+        {
+            var fs = File.OpenRead(request.FileName);
+            await using var _ = fs.ConfigureAwait(false);
+            fileContent = new StreamContent(fs)
+            {
+                Headers =
+                {
+                    { "Content-Type", "application/octet-stream" },
+                    { "Content-Disposition", contentDisposition },
+                }
+            };
+        }
 
         var content = new MultipartFormDataContent();
         content.Add(fileContent);
