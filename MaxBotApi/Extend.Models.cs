@@ -1,6 +1,4 @@
-﻿using MaxBotApi.Models;
-
-namespace MaxBotApi.Models;
+﻿namespace MaxBotApi.Models;
 
 public partial class InlineKeyboard
 {
@@ -14,6 +12,9 @@ public partial class InlineKeyboard
 
     public InlineKeyboard AddButton(string text, string callbackData)
         => AddButton(Button.WithCallbackData(text, callbackData));
+
+    public InlineKeyboard AddButton(string text)
+        => AddButton(Button.WithMessage(text));
 
     public InlineKeyboard AddButton(Button button)
     {
