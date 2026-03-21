@@ -19,6 +19,7 @@ public abstract class Button
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public abstract ButtonType Type { get; }
 
+    public static Button WithMessage(string text) => new MessageButton { Text = text };
     
     public static Button WithCallbackData(string text, string callbackData) =>
         new CallbackButton(){ Text= text, Payload = callbackData };
