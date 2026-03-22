@@ -11,6 +11,16 @@ https://www.nuget.org/packages/MaxBotApi
 dotnet add package MaxBotApi
 ```
 
+### добавлен проект-пример SampleBot
+проект реализует сценарий бота уведомлений для событий из Zabbix.
+
+## изменения 1.0.12
++ добавлена перегрузка для метода AddButton(string text), добавляющая MessageButton в InlineKeyboard
+
+```csharp
+InlineKeyboard AddButton(string text)
+```
+
 ## изменения 1.0.11
 + добавлен опциональный параметр Stream в метод UploadFile, для возможности работы с программно-подготовленным контентом вместо чтения с диска.
 ```csharp
@@ -860,10 +870,10 @@ using MaxBotApi;
 using MaxBotApi.Enums;
 using MaxBotApi.Models;
 string token = "токен бота";
-string webhookurl = "https://адресвашегобота/bot";
+string webhookUrl = "https://адресвашегобота/bot";
 string secret = "проверочныйкод"; // этим кодом будет сопровождаться каждый запрос от платформы
 var bot = new MaxBotClient(token);
-await bot.SetWebhook(webhookurl, secret);
+await bot.SetWebhook(webhookUrl, secret);
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.ConfigureHttpJsonOptions(options => { options.SerializerOptions.PropertyNamingPolicy = null; });
@@ -939,7 +949,7 @@ async Task ProcessMessage(Message message, string? userLocale)
                 Console.WriteLine(e.Message)
             }
         } else {
-            await maxbot.SendMessageToChat(message.Recipient.ChatId, message.MessageBody?.Text);
+            await bot.SendMessageToChat(message.Recipient.ChatId, message.MessageBody?.Text);
         }        
     }    
 }
