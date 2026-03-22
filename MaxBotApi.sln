@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaxBotApi", "MaxBotApi\MaxBotApi.csproj", "{59AB505A-5CC2-43F7-93E0-6449CED97D4F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleBot", "SampleBot\SampleBot.csproj", "{F5A74189-3F67-4F41-AA73-BE228B655C75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{59AB505A-5CC2-43F7-93E0-6449CED97D4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59AB505A-5CC2-43F7-93E0-6449CED97D4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59AB505A-5CC2-43F7-93E0-6449CED97D4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5A74189-3F67-4F41-AA73-BE228B655C75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5A74189-3F67-4F41-AA73-BE228B655C75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5A74189-3F67-4F41-AA73-BE228B655C75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5A74189-3F67-4F41-AA73-BE228B655C75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
