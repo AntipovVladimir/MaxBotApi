@@ -11,9 +11,70 @@ https://www.nuget.org/packages/MaxBotApi
 dotnet add package MaxBotApi
 ```
 
+
+### Реализованы методы API
+### bots
+|          | метод         | описание                                      |
+|----------|---------------|-----------------------------------------------|
+| &#10004; | **GET** /me   | [Получение информации о боте](#method-getme)  |
+| &#10004; | **PATCH** /me | [Изменение информации о боте](#method-editme) |
+
+### messages
+|          | метод                           | описание                                            |
+|----------|---------------------------------|-----------------------------------------------------|
+| &#10004; | **GET** /messages               | [Получение сообщений](#method-getmessages)          |
+| &#10004; | **POST** /messages              | [Отправить сообщение](#method-sendmessage)          |
+| &#10004; | **PUT** /messages               | [Редактирование сообщения](#method-editmessage)     |
+| &#10004; | **DELETE** /messages            | [Удалить сообщение](#method-deletemessage)          |
+| &#10004; | **GET** /messages/{_messageId_} | [Получить сообщение](#method-getmessage)            |
+| &#10004; | **GET** /videos/{_videoToken_}  | [Получить информацию о видео](#method-getvideoinfo) |
+| &#10004; | **POST** /answers               | [Ответ на Callback](#method-answercallback)         |
+
+### chats
+|          | метод                                       | описание                                                                           |
+|----------|---------------------------------------------|------------------------------------------------------------------------------------|
+| &#10004; | **GET** /chats                              | [Получение списка всех групповых чатов](#method-getchats)                          |
+| &#10004; | **GET** /chats/{_chatId_}                   | [Получение информации о групповом чате](#method-getchat)                           |
+| &#10004; | **PATCH** /chats/{_chatId_}                 | [Изменение информации о групповом чате](#method-editchatinfo)                      |
+| &#10004; | **DELETE** /chats/{_chatId_}                | [Удаление группового чата](#method-deletechat)                                     |                
+| &#10004; | **POST** /chats/{_chatId_}/actions          | [Отправка действия в групповой чат](#method-sendchataction)                        |          
+| &#10004; | **GET** /chats/{_chatId_}/pin               | [Получение закрепленного сообщения в групповом чате](#method-getchatpinnedmessage) |        
+| &#10004; | **PUT** /chats/{_chatId_}/pin               | [Закрепление сообщения в групповом чате](#method-pinmessage)                       |      
+| &#10004; | **DELETE** /chats/{_chatId_}/pin            | [Удаление закрепленного сообщения в групповом чате](#method-unpinmessage)          |    
+| &#10004; | **GET** /chats/{_chatId_}/members/me        | [Получение информации о членстве бота в групповом чате](#method-getchatmyinfo)     |  
+| &#10004; | **DELETE** /chats/{_chatId_}/members/me     | [Удаление бота из группового чата](#method-leavechat)                              |
+| &#10004; | **GET** /chats/{_chatId_}/members/admins    | [Получение списка администраторов группового чата](#method-getchatadmins)          |
+| &#10004; | **POST** /chats/{_chatId_}/members/admins   | [Назначить администратора группового чата](#method-addchatadmins)                  |
+| &#10004; | **DELETE** /chats/{_chatId_}/members/admins | [Отменить права администратора группового чата](#method-deletechatadmin)           |
+| &#10004; | **GET** /chats/{_chatId_}/members           | [Получение участников группового чата](#method-getchatmembers)                     |
+| &#10004; | **POST** /chats/{_chatId_}/members          | [Добавление участников в групповой чат](#method-inviteuser)                        |
+| &#10004; | **DELETE** /chats/{_chatId_}/members        | [Удаление участников из группового чата](#method-kickuser)                         |
+
+### upload
+|          | метод             | описание                              |
+|----------|-------------------|---------------------------------------|
+| &#10004; | **POST** /uploads | [Загрузка файлов](#method-uploadfile) |
+
+### subscriptions
+|          | метод                     | описание                                       |
+|----------|---------------------------|------------------------------------------------|
+| &#10004; | **GET** /subscriptions    | [Получение подписок](#method-getwebhookinfo)   |
+| &#10004; | **POST** /subscriptions   | [Подписка на обновления](#method-setwebhook)   |
+| &#10004; | **DELETE** /subscriptions | [Отписка от обновлений](#method-deletewebhook) |
+| &#10004; | **GET** /updates          | [Получение обновлений](#method-getupdates)     |
+
+### [Список изменений](#changelog) 
+### [Документация](#documentation) 
+### [Пример для minimal api](#example)
+
 ### добавлен проект-пример SampleBot
 проект реализует сценарий бота уведомлений для событий из Zabbix.
 
+---
+## Список изменений
+<a id="changelog"></a>
+
+---
 ## изменения 1.0.12
 + добавлена перегрузка для метода AddButton(string text), добавляющая MessageButton в InlineKeyboard
 
@@ -137,16 +198,17 @@ NewMessageBody nm = new NewMessageBody()
 
 var apiResponse = await maxbot.SendCallbackReact(callback_id, nm);
 ```
-
+---
 ## Документация
+<a id="documentation"></a>
 
-
+---
 ### Методы:
 
 ### subscriptions
 
 #### Подписка на события (регистрация webhook)
-
+<a id="method-setwebhook"></a>
 ```csharp
 async Task<ApiRespone> SetWebhook(string url, string? secretToken = null, IEnumerable<UpdateType>? updateTypes = null)
 ```
@@ -205,7 +267,7 @@ public class ApiResponse
 ```
 
 #### Удаление подписки на события
-
+<a id="method-deletewebhook"></a>
 ```csharp
 async Task<ApiResponse> DeleteWebhook(string url)
 ```
@@ -218,7 +280,7 @@ async Task<ApiResponse> DeleteWebhook(string url)
 Возвращает **ApiResponse** объект
 
 #### Запрос действующих подписок на события
-
+<a id="method-getwebhookinfo"></a>
 ```csharp
 async Task<Subscriptions> GetWebhookInfo()
 ```
@@ -250,7 +312,7 @@ public class Subscription
 ```
 
 #### Запрос обновлений (long-polling)
-
+<a id="method-getupdates"></a>
 ```csharp
 async Task<UpdatesResponse> GetUpdates(int limit = 100, int timeout = 30, long? marker = null, IEnumerable<UpdateType>? types = null)
 ```
@@ -303,7 +365,7 @@ ChatTitleChangedUpdate
 ### bot
 
 #### Получение информации о профиле бота
-
+<a id="method-getme"></a>
 ```csharp
 async Task<BotInfo> GetMe()
 ```
@@ -313,6 +375,7 @@ BotInfo, который содержит идентификатор бота, е
 
 
 #### Изменение информации в профиле бота
+<a id="method-editme"></a>
 ```csharp
 
 async Task<ApiResponse> EditMe(string? name = null, string? description = null, 
@@ -329,7 +392,7 @@ async Task<ApiResponse> EditMe(string? name = null, string? description = null,
 ### messages
 
 #### Получение сообщений
-
+<a id="method-getmessages"></a>
 ```csharp
 async Task<MessagesResponse> GetMessages(long chat_id, DateTime? from = null, DateTime? to = null, int? count = null)
 async Task<MessagesResponse> GetMessages(IEnumerable<string> messages_ids, DateTime? from = null, DateTime? to = null, int? count = null)
@@ -360,7 +423,7 @@ public class MessagesResponse
 ```
 
 #### отправка сообщений
-
+<a id="method-sendmessage"></a>
 ```csharp
 async Task<ApiMessage> SendMessage(long user_id, string? text, bool disable_link_preview = false, bool notify = true,
             TextFormat? text_format = null,
@@ -406,7 +469,7 @@ async Task<ApiMessage> ReplyMessage(Message message, string? text, bool disable_
 
 
 #### Редактирование сообщения
-
+<a id="method-editmessage"></a>
 ```csharp
 async Task<ApiResponse> EditMessage(string message_id, string? text = null, IEnumberable<AttachmentRequest>? attachments = null, NewMessageLink? link = null,
             bool notify = true, TextFormat text_format = TextFormat.HTML)
@@ -427,7 +490,7 @@ _С помощью метода можно отредактировать соо
 Возвращает объект **ApiResponse**
 
 #### Удалить сообщение
-
+<a id="method-deletemessage"></a>
 ```csharp
 async Task<ApiResponse> DeleteMessage(string messageId)
 ```
@@ -441,7 +504,7 @@ _С помощью метода можно удалять сообщения, к
 Возвращает объект **ApiResponse**
 
 #### Ответ на callback
-
+<a id="method-answercallback"></a>
 ```csharp
 async Task<ApiResponse> SendCallbackReact(string callback_id, NewMessageBody? newMessageBody = null, string? notification = null)
 // дополнительное название одного и того же метода 
@@ -460,7 +523,7 @@ async Task<ApiResponse> AnswerCallback(string callback_id, NewMessageBody? newMe
 Возвращает объект **ApiResponse**
 
 #### Получить сообщение
-
+<a id="method-getmessage"></a>
 ```csharp
 async Task<Message> GetMessage(string message_id)
 ```
@@ -498,7 +561,7 @@ public class Message
 ```
 
 #### Получить информацию о видео
-
+<a id="method-getvideoinfo"></a>
 ```csharp
 async Task<VideoInfo> GetVideoInfo(string video_token)                        
 ```
@@ -535,7 +598,7 @@ public class VideoInfo
 ### chat
 
 #### Получение списка всех групповых чатов
-
+<a id="method-getchats"></a>
 ```csharp
 async Task<ChatsResponse> GetChats()
 async Task<ChatsResponse> GetChats(int count = 50, long? marker = null)
@@ -556,7 +619,7 @@ public class ChatsResponse
 ```
 
 #### Получение информации о групповом чате
-
+<a id="method-getchat"></a>
 ```csharp
 async Task<Chat> GetChat(long chat_id)
 ```
@@ -616,7 +679,7 @@ public class Chat
 ```
 
 #### Изменение информации о групповом чате
-
+<a id="method-editchatinfo"></a>
 ```csharp
 async Task<Chat> EditChatInfo(long chat_id, PhotoAttachmentRequestPayload? icon = null, string? title = null, string? pin = null,
             bool? notify = null)
@@ -633,7 +696,7 @@ async Task<Chat> EditChatInfo(long chat_id, PhotoAttachmentRequestPayload? icon 
 Возвращает объект **Chat**
 
 #### Удаление группового чата
-
+<a id="method-deletechat"></a>
 ```csharp
 async Task<ApiResponse>DeleteChat(long chat_id)
 ```
@@ -645,7 +708,7 @@ async Task<ApiResponse>DeleteChat(long chat_id)
 Возвращает объект **ApiResponse**
 
 #### Отправка действия бота в групповой чат
-
+<a id="method-sendchataction"></a>
 ```csharp
 async Task<ApiResponse> SendChatAction(long chat_id, SenderAction action)
 ```
@@ -670,7 +733,7 @@ async Task<ApiResponse> SendChatAction(long chat_id, SenderAction action)
 Возвращает объект **ApiResponse**
 
 #### Получение закреплённого сообщения в групповом чате
-
+<a id="method-getchatpinnedmessage"></a>
 ```csharp
 async Task<ApiMessage> GetChatPinnedMessage(long chat_id)
 ```
@@ -682,7 +745,7 @@ async Task<ApiMessage> GetChatPinnedMessage(long chat_id)
 Возвращает объект **ApiMessage**
 
 #### Закрепление сообщения в групповом чате
-
+<a id="method-pinmessage"></a>
 ```csharp
 async Task<ApiResponse> PinMessage(long chat_id, string message_id, bool notify = true)
 ```
@@ -694,7 +757,7 @@ async Task<ApiResponse> PinMessage(long chat_id, string message_id, bool notify 
 Возвращает объект **ApiResponse**
 
 #### Удаление закреплённого сообщения в групповом чате
-
+<a id="method-unpinmessage"></a>
 ```csharp
 async Task<ApiResponse> UnpinMessage(long chat_id)
 ```
@@ -706,7 +769,7 @@ async Task<ApiResponse> UnpinMessage(long chat_id)
 Возвращает объект **ApiResponse**
 
 #### Получение информации о членстве бота в групповом чате
-
+<a id="method-getchatmyinfo"></a>
 ```csharp
 async Task<ChatMember> GetChatMyInfo(long chat_id)
 ```
@@ -718,7 +781,7 @@ async Task<ChatMember> GetChatMyInfo(long chat_id)
 Возвращает наследованный от **User** объект **ChatMember**
 
 #### Удаление бота из группового чата
-
+<a id="method-leavechat"></a>
 ```csharp
 async Task<ApiResponse> LeaveChat(long chat_id)
 ```
@@ -730,7 +793,7 @@ async Task<ApiResponse> LeaveChat(long chat_id)
 Возвращает объект **ApiResponse**
 
 #### Получение списка администраторов группового чата
-
+<a id="method-getchatadmins"></a>
 ```csharp
 async TaskChatMembersResponse> GetChatAdmins(long chat_id, long? marker = null)
 ```
@@ -754,7 +817,7 @@ public class ChatMembersResponse
 ```
 
 #### Назначить администратора группового чата
-
+<a id="method-addchatadmins"></a>
 ```csharp
 async Task<ApiResponse> AddChatAdmins(long chat_id, IEnumerable<ChatAdmin> admins)
 ```
@@ -769,7 +832,7 @@ _В группе может быть не более 50 администрато
 Возвращает объект **ApiResponse**
 
 #### Отменить права администратора в групповом чате
-
+<a id="method-deletechatadmin"></a>
 ```csharp
 async Task<ApiResponse> DeleteChatAdmin(long chat_id, long user_id)
 ```
@@ -782,7 +845,7 @@ async Task<ApiResponse> DeleteChatAdmin(long chat_id, long user_id)
 Возвращает объект **ApiResponse**
 
 #### Получение участников группового чата
-
+<a id="method-getchatmembers"></a>
 ```csharp
 async Task<ChatMembersResponse> GetChatMembers(long chat_id)
 async Task<ChatMembersResponse> GetChatMembers(long chat_id, long marker, int count = 20)
@@ -799,7 +862,7 @@ async Task<ChatMembersResponse> GetChatMembers(long chat_id, IEnumerable<long> u
 Возвращает объект **ChatMembersReponse**
 
 #### Добавление участников в групповой чат
-
+<a id="method-inviteuser"></a>
 ```csharp
 async Task<ApiResponse> InviteUser(long chat_id, IEnumerable<long> user_ids)
 ```
@@ -812,7 +875,7 @@ async Task<ApiResponse> InviteUser(long chat_id, IEnumerable<long> user_ids)
 Возвращает объект **ApiResponse**
 
 #### Удаление участника из группового чата
-
+<a id="method-kickuser"></a>
 ```csharp
 KickUser(long chat_id, long user_id, bool block = false)            
 ```
@@ -826,6 +889,7 @@ KickUser(long chat_id, long user_id, bool block = false)
 
 ### Upload
 ####
+<a id="method-uploadfile"></a>
 ```csharp
 async Task<UploadDataResponse> UploadFile(UploadType type, string filename, Stream? fileStream = null)       
 ```
@@ -862,7 +926,8 @@ public class UploadedInfo
 
 #### Внимание!!! На текущий момент в API нет метода для разблокировки заблокированных пользователей, пока это могут делать только администраторы вручную (Ticket: 4009805)
 
-### Пример для minimal api.
+<a id="example"></a>
+## Пример для minimal api.
 
 ```csharp
 using MaxBot;

@@ -5,6 +5,29 @@ Type = Webhook
 Url = указываем ссылку на сервер, где размещен бот (в program.cs этот же сервер используется в webhookUrl, только вместо /bot пишем /zabbix, например https://zbx.test.ru/zabbix)
 To, Subject и Message оставляем по умолчанию
 
+Script - вписываем следующий скрипт:
+try {
+    var params = JSON.parse(value),
+        req = new HttpRequest(),
+        response;
+
+    req.addHeader('Content-Type: application/json');
+
+    Zabbix.log(4, '[ bot webhook ] Webhook request with value=' + value);
+
+    response = req.post(params.URL, value);
+    Zabbix.log(4, '[ bot webhook ] Responded with code: ' + req.getStatus() + '. Response: ' + response);
+
+    if (req.getStatus() !== 200) {
+        throw response.error;
+    }
+    return 'OK';
+}
+catch (error) {
+    Zabbix.log(3, '[ bot webhook ] Sending failed. Error: ' + error);
+    throw 'Failed with error: ' + error;
+}
+
 
 Для сборки и работы потребуется .NET 10 (dotnet-sdk-10), инструкции по установке под вашу ОС смотрим здесь: https://learn.microsoft.com/en-us/dotnet/core/install/
 Будет работать как под windows так и под linux. 
