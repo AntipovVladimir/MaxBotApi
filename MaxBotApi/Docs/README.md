@@ -5,12 +5,28 @@
 Для разработки использовалась следующая документация
 https://dev.max.ru/docs-api
 
+
+
+---
+
 ### Доступно в nuget:
 https://www.nuget.org/packages/MaxBotApi
+
+<details>
+<summary>Установка</summary>
+
+#### установка через .NET CLi
 ```
 dotnet add package MaxBotApi
 ```
+#### установка через NuGet package manager
+```
+Install-Package MaxBotApi
+```
 
+</details>
+
+---
 
 ### Реализованы методы API
 ### bots
@@ -1020,8 +1036,8 @@ async Task ProcessMessage(Message message, string? userLocale)
 }
 ```
 
-### Данный клиент будет постепенно дорабатываться, документация дополняться.
+---
+#### Данный клиент будет постепенно дорабатываться, документация дополняться.
 
-###### По вопросам связанным с данным кодом можно писать мне в MAX https://max.ru/join/rGHhNOyyFyG4p2I7IwryhaWPxecPHqykNC0plzA3X2Q
-
-###### либо в телеграм https://t.me/darkagent
+#### По любым вопросам, связанным с данным кодом и документацией к нему, можно писать мне в MAX
+### [🔗 MaxBotApi - Группа разработки](https://max.ru/join/rGHhNOyyFyG4p2I7IwryhaWPxecPHqykNC0plzA3X2Q)
