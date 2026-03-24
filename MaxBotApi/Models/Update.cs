@@ -208,7 +208,8 @@ public class DialogMutedUpdate : Update
     /// Время в формате Unix, до наступления которого диалог был отключён
     /// </summary>
     [JsonPropertyName("muted_until")]
-    public long MutedUntil { get; set; }
+    [JsonConverter(typeof(UnixDateTimeConverter))]
+    public DateTime MutedUntil { get; set; }
 
     /// <summary>
     /// Текущий язык пользователя в формате IETF BCP 47
