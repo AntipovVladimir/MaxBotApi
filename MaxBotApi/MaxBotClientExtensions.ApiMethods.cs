@@ -117,7 +117,7 @@ public static partial class MaxBotClientExtensions
         public async Task<UploadDataResponse> UploadFile(UploadType type, string filename, Stream? fileStream = null,
             CancellationToken cancellationToken = default)
         {
-            if (!File.Exists(filename))
+            if (fileStream is null && !File.Exists(filename))
                 throw new FileNotFoundException(filename);
             var response = await botClient.ThrowIfNull().SendRequest(new UploadRequest(type), cancellationToken).ConfigureAwait(false);
             var result = await botClient.ThrowIfNull()
