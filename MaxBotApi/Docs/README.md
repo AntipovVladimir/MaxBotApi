@@ -94,6 +94,11 @@ Install-Package MaxBotApi
 <a id="changelog"></a>
 
 ---
+## изменения 1.0.13
++ изменение MutedUntil поля в DialogMutedUpdate с long на DateTime
++ исправлена загрузка файла с помощью Stream 
++ исправлена сериализация значения по умолчанию для поля Type (критично при отправке репостов)
+
 ## изменения 1.0.12
 + добавлена перегрузка для метода AddButton(string text), добавляющая MessageButton в InlineKeyboard
 
