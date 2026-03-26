@@ -10,6 +10,7 @@ public class NewMessageLink
     /// Тип ссылки сообщения
     /// </summary>
     [JsonPropertyName("type")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public required MessageLinkType Type { get; set; }
     
     /// <summary>

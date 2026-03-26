@@ -18,6 +18,7 @@ public class Chat
     /// Тип чата: dialog, chat, channel
     /// </summary>
     [JsonPropertyName("type")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public ChatType Type { get; set; }
 
     /// <summary>
