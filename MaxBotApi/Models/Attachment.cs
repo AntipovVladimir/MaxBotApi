@@ -25,6 +25,7 @@ public abstract class Attachment
     /// </summary>
     [JsonInclude]
     [JsonPropertyName("type")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public abstract AttachmentType Type { get; set; }
 
     public override string ToString() => this.SerializeToString();

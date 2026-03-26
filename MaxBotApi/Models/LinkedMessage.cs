@@ -11,6 +11,7 @@ public class LinkedMessage
     /// Тип связанного сообщения
     /// </summary>
     [JsonPropertyName("type")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public MessageLinkType Type { get; set; }
     
     /// <summary>
