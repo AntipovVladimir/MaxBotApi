@@ -7,14 +7,14 @@
         <Title>.NET Client for Max Bot API </Title>
         <Authors>Vladimir Antipov</Authors>
         <Description>.NET Client for Max Bot API
-1.0.13.1 UploadFile: исправлено преждевременное закрытие потока при чтении из файла
+1.0.13 исправление сериализации поля Type при значении по умолчанию, критично при репосте сообщений
 
 		Library used for developing bots for messenger MAX 
                 https://dev.max.ru/docs-api
 	</Description>
         <PackageProjectUrl>https://github.com/AntipovVladimir/MaxBotApi</PackageProjectUrl>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
-        <Version>1.0.13.1</Version>
+        <Version>1.0.13</Version>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
