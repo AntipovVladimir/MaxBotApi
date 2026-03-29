@@ -67,10 +67,11 @@ public class MaxBotClient : IMaxBotClient
         contentDisposition = Latin1.GetString(Encoding.UTF8.GetBytes(contentDisposition));
 
         Stream? fs = request.FileStream;
+        bool disposeFs = false;
         if (fs is null)
         {
+            disposeFs = true;
             fs = File.OpenRead(request.FileName);
-            await using var _ = fs.ConfigureAwait(false);
         }
 
         using StreamContent fileContent = new(fs);
@@ -93,6 +94,11 @@ public class MaxBotClient : IMaxBotClient
         catch (Exception exception)
         {
             throw new RequestException(string.Format("CDN Service Failure: {0}: {1}", exception.GetType().Name, exception.Message), exception);
+        }
+        finally
+        {
+            if (disposeFs)
+                await fs.DisposeAsync();
         }
 
         for (int attempt = 1;; attempt++)
