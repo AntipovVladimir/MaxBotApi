@@ -94,6 +94,9 @@ Install-Package MaxBotApi
 <a id="changelog"></a>
 
 ---
+## изменения 1.0.13.1
++ UploadFile (SendFile) исправлено преждевременное закрытие потока при чтении из файла 
+
 ## изменения 1.0.13
 + изменение MutedUntil поля в DialogMutedUpdate с long на DateTime
 + исправлена загрузка файла с помощью Stream 
