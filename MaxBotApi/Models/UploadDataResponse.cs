@@ -31,9 +31,10 @@ public class UploadDataResponse
 
     public static explicit operator ImageAttachmentRequest(UploadDataResponse response) => new ImageAttachmentRequest()
     {
+        
         Payload = new PhotoAttachmentRequestPayload()
         {
-            Photos = response.Photos?.First().Value ?? throw new ArgumentNullException(nameof(response.Photos))
+            Photos = [response.Photos?.First().Value.Token?? throw new ArgumentNullException(nameof(response.Photos))]
             //Token = response.Photos?.First().Value.Token ?? throw new ArgumentNullException(nameof(response.Photos))
         }
     };

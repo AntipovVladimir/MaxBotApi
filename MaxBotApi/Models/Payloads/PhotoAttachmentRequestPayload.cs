@@ -21,6 +21,6 @@ public class PhotoAttachmentRequestPayload
     /// Токены, полученные после загрузки изображений
     /// </summary>
     [JsonPropertyName("photos")]
-    public UploadedInfo? Photos { get; set; }
+    public IEnumerable<string>? Photos { get; set; }
     public override string ToString() => this.SerializeToString();
 }
