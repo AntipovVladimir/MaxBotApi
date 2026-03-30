@@ -25,9 +25,18 @@ public class UploadDataResponse
 
     public static explicit operator VideoAttachmentRequest(UploadDataResponse response) => new VideoAttachmentRequest()
         { Payload = new UploadedInfo() { Token = response.Token ?? throw new ArgumentNullException(nameof(response.Token)) } };
-    
+
     public static explicit operator AudioAttachmentRequest(UploadDataResponse response) => new AudioAttachmentRequest()
         { Payload = new UploadedInfo() { Token = response.Token ?? throw new ArgumentNullException(nameof(response.Token)) } };
+
+    public static explicit operator ImageAttachmentRequest(UploadDataResponse response) => new ImageAttachmentRequest()
+    {
+        Payload = new PhotoAttachmentRequestPayload()
+        {
+            Photos = response.Photos?.First().Value ?? throw new ArgumentNullException(nameof(response.Photos))
+            //Token = response.Photos?.First().Value.Token ?? throw new ArgumentNullException(nameof(response.Photos))
+        }
+    };
 
 
     public override string ToString() => this.SerializeToString();
