@@ -94,6 +94,30 @@ Install-Package MaxBotApi
 <a id="changelog"></a>
 
 ---
+## изменения 1.0.14
++ добавлены операторы преобразования UploadDataResponse в ImageAttachmentRequest, FileAttachmentRequest, AudioAttachmentRequest и VideoAttachmentRequest для упрощения использования выходных данных после UploadFile.
+
+Пример использования: 
+
+```csharp
+    List<AttachmentRequest> attachments = [];
+    var file1 = await bot.UploadFile(UploadType.File, "test.pdf");
+    attachments.Add((FileAttachmentRequest)file1);
+    var pic1 = await bot.UploadFile(UploadType.Image, "test.jpg");
+    attachments.Add((ImageAttachmentRequest)pic1);
+    var audio = await bot.UploadFile(UploadType.Audio, "test.mp3");
+    attachments.Add((AudioAttachmentRequest)audio);
+    var video = await bot.UploadFile(UploadType.Video, "test.mp4");
+    attachments.Add((VideoAttachmentRequest)video);
+    await bot.SendMessage(targetUid, "reply", attachments: attachments);
+```
+
+_!! **Внимание**, в примере указана использование сразу нескольких типов вложений, но платформа на данный момент этого не позволяет, и будет возвращать одну из следующих **ошибок** (зависит от того, какой типа вложения использован первым):_
+- Must be only one file attachment in message
+- Must be only one audio attachment in message
+- Must be only one video attachment in message
+
+
 ## изменения 1.0.13.1
 + UploadFile (SendFile) исправлено преждевременное закрытие потока при чтении из файла
 
@@ -719,6 +743,22 @@ async Task<UploadDataResponse> UploadFile(UploadType type, string filename, Stre
 
 Может вызывать исключение типа **FileNotFoundException**.
 Возвращает объект [**UploadDataResponse**](#model-uploaddataresponse)
+
+Для использования загруженного вложения, его необходимо преобразовать в AttachmentRequest и отправить сообщение с вложениями.
+
+```csharp
+    List<AttachmentRequest> attachments = [];
+    var file1 = await bot.UploadFile(UploadType.File, "test.pdf");
+    attachments.Add((FileAttachmentRequest)file1);
+    var pic1 = await bot.UploadFile(UploadType.Image, "test.jpg");
+    attachments.Add((ImageAttachmentRequest)pic1);
+    var audio = await bot.UploadFile(UploadType.Audio, "test.mp3");
+    attachments.Add((AudioAttachmentRequest)audio);
+    var video = await bot.UploadFile(UploadType.Video, "test.mp4");
+    attachments.Add((VideoAttachmentRequest)video);
+    await bot.SendMessage(targetUid, "reply", attachments: attachments);
+```
+
 
 ---
 <a id="datamodels"></a>

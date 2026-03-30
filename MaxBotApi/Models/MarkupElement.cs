@@ -21,7 +21,7 @@ public abstract class MarkupElement
     /// Тип элемента разметки. Может быть жирный, курсив, зачеркнутый, подчеркнутый, моноширинный, ссылка или упоминание пользователя
     /// strong , emphasized, monospaced, link, strikethrough, underline, user_mention
     /// </summary>
-    [JsonInclude]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("type")]
     public abstract MarkupElementType Type { get; set; }
 

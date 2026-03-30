@@ -23,7 +23,6 @@ public abstract class Attachment
     /// <summary>
     /// image, video, audio, file, sticker, contact, inline_keyboard, share, location 
     /// </summary>
-    [JsonInclude]
     [JsonPropertyName("type")]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public abstract AttachmentType Type { get; set; }
@@ -35,7 +34,6 @@ public class ContactAttachment : Attachment
 {
     public override AttachmentType Type { get; set; } = AttachmentType.Contact;
     [JsonPropertyName("payload")] public required ContactAttachmentPayload Payload { get; set; }
-    
 }
 
 public class InlineKeyboardAttachment : Attachment
@@ -148,7 +146,9 @@ public class ShareAttachment : Attachment
 
 public class ImageAttachment : Attachment
 {
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public override AttachmentType Type { get; set; } = AttachmentType.Image;
+
     [JsonPropertyName("payload")] public required PhotoAttachmentPayload Payload { get; set; }
 }
 
