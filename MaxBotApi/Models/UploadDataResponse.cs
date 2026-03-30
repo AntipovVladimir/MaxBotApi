@@ -29,19 +29,8 @@ public class UploadDataResponse
     public static explicit operator AudioAttachmentRequest(UploadDataResponse response) => new AudioAttachmentRequest()
         { Payload = new UploadedInfo() { Token = response.Token ?? throw new ArgumentNullException(nameof(response.Token)) } };
 
-    public static explicit operator ImageAttachmentRequest(UploadDataResponse response)
-    {
-        ImageAttachmentRequest iar = new() { Payload = new PhotoAttachmentRequestPayload()  };
-        if (response.Photos is not null)
-        {
-            iar.Payload.Photos = response.Photos;
-        }
-        else
-        {
-            iar.Payload.Token = response.Token;
-        }
-        return iar;
-    }
+    public static explicit operator ImageAttachmentRequest(UploadDataResponse response) =>
+        new() { Payload = new PhotoAttachmentRequestPayload() { Photos = response.Photos } };
 
 
     public override string ToString() => this.SerializeToString();
