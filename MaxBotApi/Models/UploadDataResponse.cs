@@ -34,11 +34,7 @@ public class UploadDataResponse
         ImageAttachmentRequest iar = new() { Payload = new PhotoAttachmentRequestPayload()  };
         if (response.Photos is not null)
         {
-            iar.Payload.Photos = new Dictionary<string, string>();
-            foreach (var photo in response.Photos)
-            {
-                iar.Payload.Photos.Add(photo.Key, photo.Value.Token);
-            }
+            iar.Payload.Photos = response.Photos;
         }
         else
         {
