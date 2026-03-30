@@ -29,15 +29,23 @@ public class UploadDataResponse
     public static explicit operator AudioAttachmentRequest(UploadDataResponse response) => new AudioAttachmentRequest()
         { Payload = new UploadedInfo() { Token = response.Token ?? throw new ArgumentNullException(nameof(response.Token)) } };
 
-    public static explicit operator ImageAttachmentRequest(UploadDataResponse response) => new ImageAttachmentRequest()
+    public static explicit operator ImageAttachmentRequest(UploadDataResponse response)
     {
-        
-        Payload = new PhotoAttachmentRequestPayload()
+        ImageAttachmentRequest iar = new() { Payload = new PhotoAttachmentRequestPayload()  };
+        if (response.Photos is not null)
         {
-            Photos = [response.Photos?.First().Value.Token?? throw new ArgumentNullException(nameof(response.Photos))]
-            //Token = response.Photos?.First().Value.Token ?? throw new ArgumentNullException(nameof(response.Photos))
+            iar.Payload.Photos = new Dictionary<string, string>();
+            foreach (var photo in response.Photos)
+            {
+                iar.Payload.Photos.Add(photo.Key, photo.Value.Token);
+            }
         }
-    };
+        else
+        {
+            iar.Payload.Token = response.Token;
+        }
+        return iar;
+    }
 
 
     public override string ToString() => this.SerializeToString();
