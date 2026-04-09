@@ -34,4 +34,10 @@ public enum ButtonType
     /// </summary>
     [JsonStringEnumMemberName("message")]
     Message,
+    
+    /// <summary>
+    /// Кнопка с копированием данных в буфер обмена
+    /// </summary>
+    [JsonStringEnumMemberName("clipboard")]
+    Clipboard,
 }

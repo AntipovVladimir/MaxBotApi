@@ -94,6 +94,9 @@ Install-Package MaxBotApi
 <a id="changelog"></a>
 
 ---
+## изменения 1.0.15
++ добавлен новый тип кнопки - ClipboardButton
+
 ## изменения 1.0.14
 + добавлены операторы преобразования UploadDataResponse в ImageAttachmentRequest, FileAttachmentRequest, AudioAttachmentRequest и VideoAttachmentRequest для упрощения использования выходных данных после UploadFile.
 
@@ -1052,7 +1055,8 @@ public class BotInfo : User
 [RequestContactButton](#model-requestcontactbutton) |
 [RequestGeoLocationButton](#model-requestgeolocationbutton) |
 [LinkButton](#model-linkbutton) |
-[CallbackButton](#model-callbackbutton)
+[CallbackButton](#model-callbackbutton) |
+[ClipboardButton](#model-clipboardbutton)
 ```csharp
 public abstract class Button
 {
@@ -1137,7 +1141,22 @@ public class CallbackButton : Button
     // Токен кнопки
     public required string Payload { get; set; }
 }
+
 ```
+<a id="model-clipboardbutton"></a>
+- **ClipboardButton**
+```csharp
+public class ClipboardButton : Button
+{
+    // от 1 до 128 символов
+    // Видимый текст кнопки. Чтобы он отображался полностью, рекомендуем не превышать заданное количество символов в зависимости от размещения текста: 20 символов — при 1 кнопке в ряду, 10 — при 2, 5 — при 3, 3 — при 4
+    public required string Text { get; set; }
+
+    // Текст, который копируется в буфер обмена после нажатия на кнопку
+    public required string Payload { get; set; }
+}
+```
+
 <a id="model-callback"></a>
 #### Callback
 ```csharp
@@ -2001,7 +2020,9 @@ public enum ButtonType
     // Кнопка открытия приложения
     OpenApp,
     // Кнопка сообщения (текст кнопки будет использован как выбор ответа в сообщении при нажатии)
-    Message
+    Message,
+    // Кнопка, содержимое которой копируется в буфер обмена
+    Clipboard
 }
 ```
 <a id="enum-chatadminpermissions"></a>

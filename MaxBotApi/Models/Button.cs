@@ -13,6 +13,7 @@ namespace MaxBotApi.Models;
 [CustomJsonDerivedType(typeof(RequestGeoLocationButton), "request_geo_location")]
 [CustomJsonDerivedType(typeof(RequestContactButton), "request_contact")]
 [CustomJsonDerivedType(typeof(OpenAppButton), "open_app")]
+[CustomJsonDerivedType(typeof(ClipboardButton), "clipboard")]
 public abstract class Button
 {
     [JsonPropertyName("type")]
@@ -129,6 +130,24 @@ public class CallbackButton : Button
     /// <summary>
     /// до 1024 символов
     /// Токен кнопки
+    /// </summary>
+    [JsonPropertyName("payload")]
+    public required string Payload { get; set; }
+}
+
+public class ClipboardButton : Button
+{
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    public override ButtonType Type => ButtonType.Clipboard;
+    /// <summary>
+    /// от 1 до 128 символов
+    /// Видимый текст кнопки. Чтобы он отображался полностью, рекомендуем не превышать заданное количество символов в зависимости от размещения текста: 20 символов — при 1 кнопке в ряду, 10 — при 2, 5 — при 3, 3 — при 4
+    /// </summary>
+    [JsonPropertyName("text")]
+    public required string Text { get; set; }
+
+    /// <summary>
+    /// Текст, который копируется в буфер обмена после нажатия на кнопку
     /// </summary>
     [JsonPropertyName("payload")]
     public required string Payload { get; set; }
