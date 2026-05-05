@@ -10,16 +10,20 @@ https://dev.max.ru/docs-api
 ---
 
 ### Доступно в nuget:
+
 https://www.nuget.org/packages/MaxBotApi
 
 <details>
 <summary>Установка</summary>
 
 #### установка через .NET CLi
+
 ```
 dotnet add package MaxBotApi
 ```
+
 #### установка через NuGet package manager
+
 ```
 Install-Package MaxBotApi
 ```
@@ -29,13 +33,16 @@ Install-Package MaxBotApi
 ---
 
 ### Реализованы методы API
+
 ### bots
+
 |          | метод         | описание                                      |
 |----------|---------------|-----------------------------------------------|
 | &#10004; | **GET** /me   | [Получение информации о боте](#method-getme)  |
 | &#10004; | **PATCH** /me | [Изменение информации о боте](#method-editme) |
 
 ### messages
+
 |          | метод                           | описание                                            |
 |----------|---------------------------------|-----------------------------------------------------|
 | &#10004; | **GET** /messages               | [Получение сообщений](#method-getmessages)          |
@@ -47,6 +54,7 @@ Install-Package MaxBotApi
 | &#10004; | **POST** /answers               | [Ответ на Callback](#method-answercallback)         |
 
 ### chats
+
 |          | метод                                       | описание                                                                           |
 |----------|---------------------------------------------|------------------------------------------------------------------------------------|
 | &#10004; | **GET** /chats                              | [Получение списка всех групповых чатов](#method-getchats)                          |
@@ -67,11 +75,13 @@ Install-Package MaxBotApi
 | &#10004; | **DELETE** /chats/{_chatId_}/members        | [Удаление участников из группового чата](#method-kickuser)                         |
 
 ### upload
+
 |          | метод             | описание                              |
 |----------|-------------------|---------------------------------------|
 | &#10004; | **POST** /uploads | [Загрузка файлов](#method-uploadfile) |
 
 ### subscriptions
+
 |          | метод                     | описание                                       |
 |----------|---------------------------|------------------------------------------------|
 | &#10004; | **GET** /subscriptions    | [Получение подписок](#method-getwebhookinfo)   |
@@ -79,28 +89,44 @@ Install-Package MaxBotApi
 | &#10004; | **DELETE** /subscriptions | [Отписка от обновлений](#method-deletewebhook) |
 | &#10004; | **GET** /updates          | [Получение обновлений](#method-getupdates)     |
 
-### [Список изменений](#changelog) 
-### [Документация](#documentation) 
+### [Список изменений](#changelog)
+
+### [Документация](#documentation)
+
 ### [Модели данных](#datamodels)
+
 ### [Перечисления типов](#enums)
+
 ### [Пример для minimal api - webhook](#example)
+
 ### [Пример консольного приложения - long-polling](#example2)
 
 ### добавлен проект-пример SampleBot
+
 проект реализует сценарий бота уведомлений для событий из Zabbix.
 
 ---
+
 ## Список изменений
+
 <a id="changelog"></a>
 
 ---
+## изменения 1.0.16.1
++ расширен ответ на запрос [InviteUser](#method-inviteuser) - теперь возвращается [ApiInviteResponse](#model-apiinviteresponse)
+## изменения 1.0.16
++ добавлены новые типы markup: [HeadingMarkupElement](#model-headingmarkupelement), [HighlightedMarkupElement](#model-highlightedmarkupelement), [QuoteMarkupElement](#model-quotemarkupelement)
+
 ## изменения 1.0.15
-+ добавлен новый тип кнопки - ClipboardButton
+
++ добавлен новый тип кнопки - [ClipboardButton](#model-clipboardbutton)
 
 ## изменения 1.0.14
-+ добавлены операторы преобразования UploadDataResponse в ImageAttachmentRequest, FileAttachmentRequest, AudioAttachmentRequest и VideoAttachmentRequest для упрощения использования выходных данных после UploadFile.
 
-Пример использования: 
++ добавлены операторы преобразования UploadDataResponse в ImageAttachmentRequest, FileAttachmentRequest, AudioAttachmentRequest и VideoAttachmentRequest для
+  упрощения использования выходных данных после UploadFile.
+
+Пример использования:
 
 ```csharp
     List<AttachmentRequest> attachments = [];
@@ -115,21 +141,25 @@ Install-Package MaxBotApi
     await bot.SendMessage(targetUid, "reply", attachments: attachments);
 ```
 
-_!! **Внимание**, в примере указана использование сразу нескольких типов вложений, но платформа на данный момент этого не позволяет, и будет возвращать одну из следующих **ошибок** (зависит от того, какой типа вложения использован первым):_
+_!! **Внимание**, в примере указана использование сразу нескольких типов вложений, но платформа на данный момент этого не позволяет, и будет возвращать одну из
+следующих **ошибок** (зависит от того, какой типа вложения использован первым):_
+
 - Must be only one file attachment in message
 - Must be only one audio attachment in message
 - Must be only one video attachment in message
 
-
 ## изменения 1.0.13.1
+
 + UploadFile (SendFile) исправлено преждевременное закрытие потока при чтении из файла
 
 ## изменения 1.0.13
+
 + изменение MutedUntil поля в DialogMutedUpdate с long на DateTime
-+ исправлена загрузка файла с помощью Stream 
++ исправлена загрузка файла с помощью Stream
 + исправлена сериализация значения по умолчанию для поля Type (критично при отправке репостов)
 
 ## изменения 1.0.12
+
 + добавлена перегрузка для метода AddButton(string text), добавляющая MessageButton в InlineKeyboard
 
 ```csharp
@@ -137,54 +167,62 @@ InlineKeyboard AddButton(string text)
 ```
 
 ## изменения 1.0.11
+
 + добавлен опциональный параметр Stream в метод UploadFile, для возможности работы с программно-подготовленным контентом вместо чтения с диска.
+
 ```csharp
 async Task<UploadDataResponse> UploadFile(UploadType type, string filename, Stream? fileStream = null)
 ```
 
-
-
 ## изменения 1.0.10
-+ Добавлен механизм повторных запросов при отправке сообщения, вложения которого требуют время на обработку платформой. Обработка ошибки "Key: errors.process.attachment.file.not.processed".
-  При возникновении ошибки "errors.process.attachment.file.not.processed", будет произведена повторная попытка отправки сообщения. Задержка перед повторной попыткой расчитывается по формуле [номер попытки * 5 сек], за количество попыток в **MaxBotClientOptions** отвечает
-  **RetryWaitAttachment** (значение по умолчанию - **10**, итого, максимум времени ожидания - до 275 сек), после этого исключение будет выброшено во внешнюю обработку.
+
++ Добавлен механизм повторных запросов при отправке сообщения, вложения которого требуют время на обработку платформой. Обработка ошибки "Key:
+  errors.process.attachment.file.not.processed".
+  При возникновении ошибки "errors.process.attachment.file.not.processed", будет произведена повторная попытка отправки сообщения. Задержка перед повторной
+  попыткой расчитывается по формуле [номер попытки * 5 сек], за количество попыток в **MaxBotClientOptions** отвечает
+  **RetryWaitAttachment** (значение по умолчанию - **10**, итого, максимум времени ожидания - до 275 сек), после этого исключение будет выброшено во внешнюю
+  обработку.
 
 ## изменения 1.0.9
+
 + [FIX] не обрабатывались апдейты типа used_added/user_removed
 
 ## изменения 1.0.8
+
 + добавлен метод расширения **ReplyMessage**
 
-
 ## изменения 1.0.7
+
 + добавлена поддержка **long-polling** (из документации: Long Polling — для разработки и тестирования, только Webhook — для production-окружения)
 + добавлен метод AnswerCallback идентичный SendCallbackReact, более привычный для тех кто переносит код с телеграм-бота
 
-Для работы long-polling достаточно задать обработчики событий OnError и OnUpdate, опционально можно задать обработчик OnMessage (без него, события типа MessageCreated и MessageEdited будут обрабатываться в OnUpdate) и поддерживать рабочий цикл ПО до завершения.
-
-
-
+Для работы long-polling достаточно задать обработчики событий OnError и OnUpdate, опционально можно задать обработчик OnMessage (без него, события типа
+MessageCreated и MessageEdited будут обрабатываться в OnUpdate) и поддерживать рабочий цикл ПО до завершения.
 
 ## Изменения 1.0.6
-+ Добавлены расширения для InlineKeyboard, упрощающие работу с ней.
 
++ Добавлены расширения для InlineKeyboard, упрощающие работу с ней.
 
 ```csharp
 public InlineKeyboard AddButton(string text, string callbackPayload)
 ```
+
 добавляет CallbackButton в клавиатуру
 
 ```csharp
 public InlineKeyboard AddButton(Button button)
 ```
+
 добавляет Button в клавиатуру (для иных типов кнопок)
 
 ```csharp
 public InlineKeyboard AddNewRow(params Button[] buttons)
 ```
+
 добавляет новую строку в клавиатуру (с кнопками или без)
 
 #### Пример использования
+
 ```csharp
 InlineKeyboard ik = new ();
 ik.AddButton("Кнопка 1 строка 1", "callback payload 1");
@@ -201,17 +239,23 @@ NewMessageBody nm = new NewMessageBody()
 
 var apiResponse = await maxbot.SendCallbackReact(callback_id, nm);
 ```
+
 ---
+
 ## Документация
+
 <a id="documentation"></a>
 
 ---
+
 ### Методы:
 
 ### subscriptions
 
 #### Подписка на события (регистрация webhook)
+
 <a id="method-setwebhook"></a>
+
 ```csharp
 async Task<ApiRespone> SetWebhook(string url, string? secretToken = null, IEnumerable<UpdateType>? updateTypes = null)
 ```
@@ -222,44 +266,47 @@ async Task<ApiRespone> SetWebhook(string url, string? secretToken = null, IEnume
 + **url** (string) URL HTTP(S)-эндпойнта вашего бота. Должен начинаться с http(s)://
 + **secret** (string?) от 5 до 256 символов. Cекрет, который должен быть отправлен в заголовке X-Max-Bot-Api-Secret в каждом запросе Webhook. Разрешены только
   символы A-Z, a-z, 0-9, и дефис. Заголовок рекомендован, чтобы запрос поступал из установленного веб-узла.
-+ **updateTypes** (IEnumerable<[UpdateType](#enum-updatetype)>?) - Список типов обновлений, которые ваш бот хочет получать. Если передается null - бот будет получать все возможные
++ **updateTypes** (IEnumerable<[UpdateType](#enum-updatetype)>?) - Список типов обновлений, которые ваш бот хочет получать. Если передается null - бот будет
+  получать все возможные
   обновления.
   Возможные типы обновлений на текущий момент:
 +
-  + MessageCreated,
+    + MessageCreated,
 +
-  + MessageCallback,
+    + MessageCallback,
 +
-  + MessageEdited,
+    + MessageEdited,
 +
-  + MessageRemoved,
+    + MessageRemoved,
 +
-  + BotAdded,
+    + BotAdded,
 +
-  + BotRemoved,
+    + BotRemoved,
 +
-  + DialogMuted,
+    + DialogMuted,
 +
-  + DialogUnmuted,
+    + DialogUnmuted,
 +
-  + DialogCleared,
+    + DialogCleared,
 +
-  + DialogRemoved,
+    + DialogRemoved,
 +
-  + UserAdded,
+    + UserAdded,
 +
-  + UserRemoved,
+    + UserRemoved,
 +
-  + BotStarted,
+    + BotStarted,
 +
-  + BotStopped,
+    + BotStopped,
 +
-  + ChatTitleChanged
+    + ChatTitleChanged
 
 Возвращает объект [**ApiResponse**](#model-apiresponse)
 
 #### Удаление подписки на события
+
 <a id="method-deletewebhook"></a>
+
 ```csharp
 async Task<ApiResponse> DeleteWebhook(string url)
 ```
@@ -272,9 +319,11 @@ async Task<ApiResponse> DeleteWebhook(string url)
 Возвращает объект [**ApiResponse**](#model-apiresponse)
 
 #### Получение подписок
+
 Запрос действующих подписок
 
 <a id="method-getwebhookinfo"></a>
+
 ```csharp
 async Task<Subscriptions> GetWebhookInfo()
 ```
@@ -284,12 +333,13 @@ async Task<Subscriptions> GetWebhookInfo()
 
 _Обратите внимание: для отправки вебхуков поддерживается только протокол HTTPS, включая самоподписанные сертификаты. HTTP не поддерживается_
 
-Возвращает объект [**Subscriptions**](#model-subscriptions) - список текущих  подписок
-
+Возвращает объект [**Subscriptions**](#model-subscriptions) - список текущих подписок
 
 #### Получение обновлений
+
 <a id="method-getupdates"></a>
 _применяется при long-polling подключении_
+
 ```csharp
 async Task<UpdatesResponse> GetUpdates(int limit = 100, int timeout = 30, long? marker = null, IEnumerable<UpdateType>? types = null)
 ```
@@ -306,7 +356,8 @@ async Task<UpdatesResponse> GetUpdates(int limit = 100, int timeout = 30, long? 
 + **limit** (int) Максимальное количество обновлений для получения, по умолчанию 100
 + **timeout** (int) Тайм-аут в секундах для долгого опроса, по умолчанию 30
 + **marker** (long?) Если передан, бот получит обновления, которые еще не были получены. Если не передан, получит все новые обновления
-+ **types** (IEnumerable<[UpdateType](#enum-updatetype)>?) Список типов обновлений, которые ваш бот хочет получать. Если передается null - бот будет получать все возможные
++ **types** (IEnumerable<[UpdateType](#enum-updatetype)>?) Список типов обновлений, которые ваш бот хочет получать. Если передается null - бот будет получать
+  все возможные
   обновления
 
 Возвращает объект [**UpdatesResponse**](#model-updatesresponse) содержащий массив [Update](#model-update)
@@ -332,22 +383,27 @@ ChatTitleChangedUpdate
 ### bot
 
 #### Получение информации о боте
+
 <a id="method-getme"></a>
+
 ```csharp
 async Task<BotInfo> GetMe()
 ```
 
-Метод возвращает информацию о боте, который идентифицируется с помощью токена доступа access_token. В ответе приходит объект [User](#model-user) с вариантом наследования
+Метод возвращает информацию о боте, который идентифицируется с помощью токена доступа access_token. В ответе приходит объект [User](#model-user) с вариантом
+наследования
 [BotInfo](#model-botinfo), который содержит идентификатор бота, его название, никнейм, время последней активности, описание и аватар (при наличии)
 
-
 #### Изменение информации о боте
+
 <a id="method-editme"></a>
+
 ```csharp
 
 async Task<ApiResponse> EditMe(string? name = null, string? description = null, 
     IEnumerable<BotCommand>? commands = null, PhotoAttachmentRequestPayload? photo = null) 
 ```
+
 + **name** (string?) - отображаемое имя бота
 + **description** (string?) - описание бота
 + **commands** (IEnumerable<[BotCommand](#model-botcommand)>?) - перечень доступных комманд бота
@@ -356,10 +412,13 @@ async Task<ApiResponse> EditMe(string? name = null, string? description = null,
 #### !Внимание! Данный метод не задокументирован в официальной документации и взят из исходников библиотек под TS. Использовать на свой страх и риск!
 
 Возвращает объект [**ApiResponse**](#model-apiresponse)
+
 ### messages
 
 #### Получение сообщений
+
 <a id="method-getmessages"></a>
+
 ```csharp
 async Task<MessagesResponse> GetMessages(long chat_id, DateTime? from = null, DateTime? to = null, int? count = null)
 async Task<MessagesResponse> GetMessages(IEnumerable<string> messages_ids, DateTime? from = null, DateTime? to = null, int? count = null)
@@ -382,7 +441,9 @@ async Task<MessagesResponse> GetMessages(IEnumerable<string> messages_ids, DateT
 Возвращает объект [**MessagesResponse**](#model-messagesresponse)
 
 #### Отправить сообщение
+
 <a id="method-sendmessage"></a>
+
 ```csharp
 async Task<ApiMessage> SendMessage(long user_id, string? text, bool disable_link_preview = false, bool notify = true,
             TextFormat? text_format = null,
@@ -404,24 +465,28 @@ async Task<ApiMessage> SendMessageToChat(long chat_id, string? text, bool disabl
 + **attachments** (IEnumerable<[AttachmentRequest](#model-attachmentrequest)>?) - Вложения сообщения. Если пусто, все вложения будут удалены
 + **link** ([NewMessageLink](#model-newmessagelink)?) - Ссылка на сообщение (для ответов и репостов)
 + **notify** (bool) - Если false, участники чата не будут уведомлены (по умолчанию true)
-+ **text_format** ([TextFormat](#enum-textformat)?) - Если установлен, текст сообщения будет форматирован данным способом, возможные варианты **Markdown** или **HTML**
++ **text_format** ([TextFormat](#enum-textformat)?) - Если установлен, текст сообщения будет форматирован данным способом, возможные варианты **Markdown** или *
+  *HTML**
 
 Возвращает объект [**ApiMessage**](#model-apimessage)
 
 #### Ответ на сообщение (вспомогательный метод)
+
 ```csharp
 async Task<ApiMessage> ReplyMessage(Message message, string? text, bool disable_link_preview = false,
             bool notify = true,
             TextFormat? text_format = null,
             NewMessageLink? link = null, IEnumerable<AttachmentRequest>? attachments = null)
 ```
+
 Данный метод отвечает на входящее сообщение, автоматически выбирая SendMessage или SendMessageToChat
 
 Возвращает объект [**ApiMessage**](#model-apimessage)
 
-
 #### Редактирование сообщения
+
 <a id="method-editmessage"></a>
+
 ```csharp
 async Task<ApiResponse> EditMessage(string message_id, string? text = null, IEnumberable<AttachmentRequest>? attachments = null, NewMessageLink? link = null,
             bool notify = true, TextFormat text_format = TextFormat.HTML)
@@ -437,12 +502,15 @@ _С помощью метода можно отредактировать соо
 + **attachments** (IEnumerable<[AttachmentRequest](#model-attachmentrequest)>) - Вложения сообщения. Если пусто, все вложения будут удалены
 + **link** ([NewMessageLink](#model-newmessagelink)?) - Ссылка на сообщение (для ответов и репостов)
 + **notify** (bool) - Если false, участники чата не будут уведомлены (по умолчанию true)
-+ **text_format** ([TextFormat](#enum-textformat)?) - Если установлен, текст сообщения будет форматирован данным способом, возможные варианты **Markdown** или **HTML**
++ **text_format** ([TextFormat](#enum-textformat)?) - Если установлен, текст сообщения будет форматирован данным способом, возможные варианты **Markdown** или *
+  *HTML**
 
 Возвращает объект [**ApiResponse**](#model-apiresponse)
 
 #### Удалить сообщение
+
 <a id="method-deletemessage"></a>
+
 ```csharp
 async Task<ApiResponse> DeleteMessage(string messageId)
 ```
@@ -456,7 +524,9 @@ _С помощью метода можно удалять сообщения, к
 Возвращает объект [**ApiResponse**](#model-apiresponse)
 
 #### Ответ на Callback
+
 <a id="method-answercallback"></a>
+
 ```csharp
 async Task<ApiResponse> SendCallbackReact(string callback_id, NewMessageBody? newMessageBody = null, string? notification = null)
 // дополнительное название одного и того же метода 
@@ -475,7 +545,9 @@ async Task<ApiResponse> AnswerCallback(string callback_id, NewMessageBody? newMe
 Возвращает объект [**ApiResponse**](#model-apiresponse)
 
 #### Получить сообщение
+
 <a id="method-getmessage"></a>
+
 ```csharp
 async Task<Message> GetMessage(string message_id)
 ```
@@ -487,7 +559,9 @@ async Task<Message> GetMessage(string message_id)
 Возвращает объект [**Message**](#model-message)
 
 #### Получить информацию о видео
+
 <a id="method-getvideoinfo"></a>
+
 ```csharp
 async Task<VideoInfo> GetVideoInfo(string video_token)                        
 ```
@@ -501,7 +575,9 @@ async Task<VideoInfo> GetVideoInfo(string video_token)
 ### chat
 
 #### Получение списка всех групповых чатов
+
 <a id="method-getchats"></a>
+
 ```csharp
 async Task<ChatsResponse> GetChats()
 async Task<ChatsResponse> GetChats(int count = 50, long? marker = null)
@@ -515,7 +591,9 @@ async Task<ChatsResponse> GetChats(int count = 50, long? marker = null)
 Возвращает объект [**ChatsResponse**](#model-chatsresponse)
 
 #### Получение информации о групповом чате
+
 <a id="method-getchat"></a>
+
 ```csharp
 async Task<Chat> GetChat(long chat_id)
 ```
@@ -527,7 +605,9 @@ async Task<Chat> GetChat(long chat_id)
 Возвращает объект [**Chat**](#model-chat)
 
 #### Изменение информации о групповом чате
+
 <a id="method-editchatinfo"></a>
+
 ```csharp
 async Task<Chat> EditChatInfo(long chat_id, PhotoAttachmentRequestPayload? icon = null, string? title = null, string? pin = null,
             bool? notify = null)
@@ -544,7 +624,9 @@ async Task<Chat> EditChatInfo(long chat_id, PhotoAttachmentRequestPayload? icon 
 Возвращает объект [**Chat**](#model-chat)
 
 #### Удаление группового чата
+
 <a id="method-deletechat"></a>
+
 ```csharp
 async Task<ApiResponse>DeleteChat(long chat_id)
 ```
@@ -556,7 +638,9 @@ async Task<ApiResponse>DeleteChat(long chat_id)
 Возвращает объект [**ApiResponse**](#model-apiresponse)
 
 #### Отправка действия бота в групповой чат
+
 <a id="method-sendchataction"></a>
+
 ```csharp
 async Task<ApiResponse> SendChatAction(long chat_id, SenderAction action)
 ```
@@ -566,22 +650,24 @@ async Task<ApiResponse> SendChatAction(long chat_id, SenderAction action)
 + **chat_id** (long) - ID группового чата
 + **action** ([SenderAction](#enum-senderaction)) - Действие, отправляемое участникам чата. Возможные значения:
 +
-  + TypingOn, — Бот набирает сообщение.
+    + TypingOn, — Бот набирает сообщение.
 +
-  + SendingPhoto, — Бот отправляет фото.
+    + SendingPhoto, — Бот отправляет фото.
 +
-  + SendingVideo, — Бот отправляет видео.
+    + SendingVideo, — Бот отправляет видео.
 +
-  + SendingAudio, — Бот отправляет аудиофайл.
+    + SendingAudio, — Бот отправляет аудиофайл.
 +
-  + SendingFile, — Бот отправляет файл.
+    + SendingFile, — Бот отправляет файл.
 +
-  + MarkSeen — Бот помечает сообщения как прочитанные.
+    + MarkSeen — Бот помечает сообщения как прочитанные.
 
 Возвращает объект [**ApiResponse**](#model-apiresponse)
 
 #### Получение закреплённого сообщения в групповом чате
+
 <a id="method-getchatpinnedmessage"></a>
+
 ```csharp
 async Task<ApiMessage> GetChatPinnedMessage(long chat_id)
 ```
@@ -593,7 +679,9 @@ async Task<ApiMessage> GetChatPinnedMessage(long chat_id)
 Возвращает объект [**ApiMessage**](#model-apimessage)
 
 #### Закрепление сообщения в групповом чате
+
 <a id="method-pinmessage"></a>
+
 ```csharp
 async Task<ApiResponse> PinMessage(long chat_id, string message_id, bool notify = true)
 ```
@@ -605,7 +693,9 @@ async Task<ApiResponse> PinMessage(long chat_id, string message_id, bool notify 
 Возвращает объект [**ApiResponse**](#model-apiresponse)
 
 #### Удаление закреплённого сообщения в групповом чате
+
 <a id="method-unpinmessage"></a>
+
 ```csharp
 async Task<ApiResponse> UnpinMessage(long chat_id)
 ```
@@ -617,7 +707,9 @@ async Task<ApiResponse> UnpinMessage(long chat_id)
 Возвращает объект [**ApiResponse**](#model-apiresponse)
 
 #### Получение информации о членстве бота в групповом чате
+
 <a id="method-getchatmyinfo"></a>
+
 ```csharp
 async Task<ChatMember> GetChatMyInfo(long chat_id)
 ```
@@ -629,7 +721,9 @@ async Task<ChatMember> GetChatMyInfo(long chat_id)
 Возвращает наследованный от [**User**](#model-user) объект [**ChatMember**](#model-chatmember)
 
 #### Удаление бота из группового чата
+
 <a id="method-leavechat"></a>
+
 ```csharp
 async Task<ApiResponse> LeaveChat(long chat_id)
 ```
@@ -641,7 +735,9 @@ async Task<ApiResponse> LeaveChat(long chat_id)
 Возвращает объект [**ApiResponse**](#model-apiresponse)
 
 #### Получение списка администраторов группового чата
+
 <a id="method-getchatadmins"></a>
+
 ```csharp
 async Task<ChatMembersResponse> GetChatAdmins(long chat_id, long? marker = null)
 ```
@@ -654,7 +750,9 @@ async Task<ChatMembersResponse> GetChatAdmins(long chat_id, long? marker = null)
 Возвращает объект [**ChatMembersResponse**](#model-chatmembersresponse)
 
 #### Назначить администратора группового чата
+
 <a id="method-addchatadmins"></a>
+
 ```csharp
 async Task<ApiResponse> AddChatAdmins(long chat_id, IEnumerable<ChatAdmin> admins)
 ```
@@ -669,7 +767,9 @@ _В группе может быть не более 50 администрато
 Возвращает объект [**ApiResponse**](#model-apiresponse)
 
 #### Отменить права администратора в групповом чате
+
 <a id="method-deletechatadmin"></a>
+
 ```csharp
 async Task<ApiResponse> DeleteChatAdmin(long chat_id, long user_id)
 ```
@@ -682,7 +782,9 @@ async Task<ApiResponse> DeleteChatAdmin(long chat_id, long user_id)
 Возвращает объект [**ApiResponse**](#model-apiresponse)
 
 #### Получение участников группового чата
+
 <a id="method-getchatmembers"></a>
+
 ```csharp
 async Task<ChatMembersResponse> GetChatMembers(long chat_id)
 async Task<ChatMembersResponse> GetChatMembers(long chat_id, long marker, int count = 20)
@@ -692,16 +794,19 @@ async Task<ChatMembersResponse> GetChatMembers(long chat_id, IEnumerable<long> u
 Возвращает список участников группового чата
 
 + **chat_id** (long) - ID группового чата
-+ **user_ids** (IEnumerable<**long**>) - Список ID пользователей, чье членство нужно получить. Когда этот параметр передан, параметры count и marker игнорируются
++ **user_ids** (IEnumerable<**long**>) - Список ID пользователей, чье членство нужно получить. Когда этот параметр передан, параметры count и marker
+  игнорируются
 + **marker** (long) - Указатель на следующую страницу данных
 + **count** (int) - Количество участников, которых нужно вернуть, по умолчанию 20
 
 Возвращает объект [**ChatMembersReponse**](#model-chatmembersresponse)
 
 #### Добавление участников в групповой чат
+
 <a id="method-inviteuser"></a>
+
 ```csharp
-async Task<ApiResponse> InviteUser(long chat_id, IEnumerable<long> user_ids)
+async Task<ApiInviteResponse> InviteUser(long chat_id, IEnumerable<long> user_ids)
 ```
 
 Добавляет участников в групповой чат. Для этого могут потребоваться дополнительные права
@@ -709,10 +814,12 @@ async Task<ApiResponse> InviteUser(long chat_id, IEnumerable<long> user_ids)
 + **chat_id** (long) - ID группового чата
 + **user_ids** (IEnumerable<**long**>) - Список ID пользователей для добавления в чат
 
-Возвращает объект [**ApiResponse**](#model-apiresponse)
+Возвращает объект [**ApiInviteResponse**](#model-apiinviteresponse)
 
 #### Удаление участника из группового чата
+
 <a id="method-kickuser"></a>
+
 ```csharp
 async Task<ApiResponse> KickUser(long chat_id, long user_id, bool block = false)            
 ```
@@ -727,22 +834,31 @@ async Task<ApiResponse> KickUser(long chat_id, long user_id, bool block = false)
 Возвращает объект [**ApiResponse**](#model-apiresponse)
 
 ### Upload
+
 #### Загрузка файлов
+
 <a id="method-uploadfile"></a>
+
 ```csharp
 async Task<UploadDataResponse> UploadFile(UploadType type, string filename, Stream? fileStream = null)       
 ```
+
 Делает полную операцию по загрузке файла: получет ссылку на загрузку и по ней загружает файл
+
 + **type** ([UploadType](#enum-uploadtype)) - тип загружаемого файла, может быть Image, Video, Audio, File
 + **filename** (string) - путь до загружаемого файла
 + **fileStream** (Stream?) - опциональный параметр для загрузки файлов с помощью Stream (с 1.0.11)
 
 #### Типы файлов:
-+ + image: JPG, JPEG, PNG, GIF, TIFF, BMP, HEIC
-+ + video: MP4, MOV, MKV, WEBM, MATROSKA
-+ + audio: MP3, WAV, M4A и другие
-+ + file: любые типы файлов
 
++
+    + image: JPG, JPEG, PNG, GIF, TIFF, BMP, HEIC
++
+    + video: MP4, MOV, MKV, WEBM, MATROSKA
++
+    + audio: MP3, WAV, M4A и другие
++
+    + file: любые типы файлов
 
 Может вызывать исключение типа **FileNotFoundException**.
 Возвращает объект [**UploadDataResponse**](#model-uploaddataresponse)
@@ -762,13 +878,15 @@ async Task<UploadDataResponse> UploadFile(UploadType type, string filename, Stre
     await bot.SendMessage(targetUid, "reply", attachments: attachments);
 ```
 
-
 ---
 <a id="datamodels"></a>
+
 ## Модели данных
 
 <a id="model-apimessage"></a>
+
 #### ApiMessage
+
 ```csharp
 public class ApiMessage
 {
@@ -777,7 +895,9 @@ public class ApiMessage
 ```
 
 #### ApiResponse
+
 <a id="model-apiresponse"></a>
+
 ```csharp
 public class ApiResponse
 {
@@ -789,9 +909,43 @@ public class ApiResponse
 }
 ```
 
+#### ApiInviteResponse
+
+<a id="model-apiinviteresponse"></a>
+
+```csharp
+public class ApiInviteResponse : ApiResponse
+{
+    // ID пользователей, которых не удалось добавить
+    public IEnumerable<long>? FailedUserIds { get; set; }
+
+    // Подробное описание, почему пользователь не был добавлен в чат
+    public IEnumerable<FailedUserDetails>? FailedUserDetails { get; set; }
+}
+```
+
+#### FailedUserDetails
+
+<a id="model-faileduserdetails"></a>
+
+```csharp
+public class FailedUserDetails
+{
+    // Код ошибки, возможные значения:
+    // add.participant.privacy — ошибки конфиденциальности при добавлении пользователей
+    // add.participant.not.found — пользователи не найдены
+    public required string ErrorCode { get; set; }
+
+    // ID пользователей с данной ошибкой
+    public required IEnumerable<long> UserIds { get; set; }
+}
+```
+
 <a id="model-attachment"></a>
+
 #### Attachment
-[ContactAttachemnt](#model-contactattachment) | 
+
+[ContactAttachemnt](#model-contactattachment) |
 [InlineKeyboardAttachment](#model-inlinekeyboardattachment) |
 [StickerAttachment](#model-stickerattachment) |
 [FileAttachment](#model-fileattachment) |
@@ -808,24 +962,33 @@ public abstract class Attachment
     public abstract AttachmentType Type { get; set; }
 }
 ```
+
 <a id="model-contactattachment"></a>
+
 - **ContactAttachment**
+
 ```csharp
 public class ContactAttachment : Attachment
 {
     public required ContactAttachmentPayload Payload { get; set; }    
 }
 ```
+
 <a id="model-inlinekeyboardattachment"></a>
+
 - **InlineKeyboardAttachment**
+
 ```csharp
 public class InlineKeyboardAttachment : Attachment
 {
     public required InlineKeyboard Payload { get; set; }
 }
 ```
+
 <a id="model-stickerattachment"></a>
+
 - **StickerAttachment**
+
 ```csharp
 public class StickerAttachment : Attachment
 {
@@ -838,8 +1001,11 @@ public class StickerAttachment : Attachment
     public int Height { get; set; }
 }
 ```
+
 <a id="model-fileattachment"></a>
+
 - **FileAttachment**
+
 ```csharp
 public class FileAttachment : Attachment
 {
@@ -852,8 +1018,11 @@ public class FileAttachment : Attachment
     public long Size { get; set; }
 }
 ```
+
 <a id="model-audioattachment"></a>
+
 - **AudioAttachment**
+
 ```csharp
 public class AudioAttachment : Attachment
 {
@@ -863,8 +1032,11 @@ public class AudioAttachment : Attachment
     public string? Transcription { get; set; }
 }
 ```
+
 <a id="model-videoattachment"></a>
+
 - **VideoAttachment**
+
 ```csharp
 public class VideoAttachment : Attachment
 {
@@ -883,8 +1055,11 @@ public class VideoAttachment : Attachment
     public int? Duration { get; set; }
 }
 ```
+
 <a id="model-shareattachment"></a>
+
 - **ShareAttachment**
+
 ```csharp
 public class ShareAttachment : Attachment
 {
@@ -900,16 +1075,22 @@ public class ShareAttachment : Attachment
     public string? ImageUrl { get; set; }
 }
 ```
+
 <a id="model-imageattachment"></a>
+
 - **ImageAttachment**
+
 ```csharp
 public class ImageAttachment : Attachment
 {
     public required PhotoAttachmentPayload Payload { get; set; }
 }
 ```
+
 <a id="model-locationattachment"></a>
+
 - **LocationAttachment**
+
 ```csharp
 
 public class LocationAttachment : Attachment
@@ -921,8 +1102,11 @@ public class LocationAttachment : Attachment
     public double Longitude { get; set; }
 }
 ```
+
 <a id="model-attachmentrequest"></a>
+
 #### AttachmentRequest
+
 [ImageAttachmentRequest](#model-imageattachmentrequest) |
 [VideoAttachmentRequest](#model-videoattachmentrequest) |
 [AudioAttachmentRequest](#model-audioattachmentrequest) |
@@ -932,6 +1116,7 @@ public class LocationAttachment : Attachment
 [InlineKeyboardAttachmentRequest](#model-inlinekeyboardattachmentrequest) |
 [LocationAttachmentRequest](#model-locationattachmentrequest) |
 [ShareAttachmentRequest](#model-shareattachmentrequest)
+
 ```csharp
 public abstract class AttachmentRequest
 {
@@ -939,8 +1124,11 @@ public abstract class AttachmentRequest
     public abstract AttachmentType Type { get; }    
 }
 ```
+
 <a id="model-imageattachmentrequest"></a>
+
 - **ImageAttachmentRequest**
+
 ```csharp
 public class ImageAttachmentRequest : AttachmentRequest
 {
@@ -948,8 +1136,11 @@ public class ImageAttachmentRequest : AttachmentRequest
     public required PhotoAttachmentRequestPayload  Payload { get; set; }    
 }
 ```
+
 <a id="model-videoattachmentrequest"></a>
+
 - **VideoAttachmentRequest**
+
 ```csharp
 public class VideoAttachmentRequest : AttachmentRequest
 {
@@ -957,8 +1148,11 @@ public class VideoAttachmentRequest : AttachmentRequest
     public required UploadedInfo Payload { get; set; }
 } 
 ```
+
 <a id="model-audioattachmentrequest"></a>
+
 - **AudioAttachmentRequest**
+
 ```csharp
 public class AudioAttachmentRequest : AttachmentRequest
 {
@@ -966,8 +1160,11 @@ public class AudioAttachmentRequest : AttachmentRequest
     public required UploadedInfo Payload { get; set; }
 }
 ```
+
 <a id="model-fileattachmentrequest"></a>
+
 - **FileAttachmentRequest**
+
 ```csharp
 public class FileAttachmentRequest : AttachmentRequest
 {
@@ -975,32 +1172,44 @@ public class FileAttachmentRequest : AttachmentRequest
     public required UploadedInfo Payload { get; set; }
 }
 ```
+
 <a id="model-stickerattachmentrequest"></a>
+
 - **StickerAttachmentRequest**
+
 ```csharp
 public class StickerAttachmentRequest : AttachmentRequest
 {
     public required StickerAttachmentRequestPayload Payload { get; set; }
 }
 ```
+
 <a id="model-contactattachmentrequest"></a>
+
 - **ContactAttachmentRequest**
+
 ```csharp
 public class ContactAttachmentRequest : AttachmentRequest
 {
     public required ContactAttachmentRequestPayload Payload { get; set; }
 }
 ```
+
 <a id="model-inlinekeyboardattachmentrequest"></a>
+
 - **InlineKeyboardAttachmentRequest**
+
 ```csharp
 public class InlineKeyboardAttachmentRequest : AttachmentRequest
 {
     public required InlineKeyboardAttachmentRequestPayload Payload { get; set; }
 }
 ```
+
 <a id="model-locationattachmentrequest"></a>
+
 - **LocationAttachmentRequest**
+
 ```csharp
 public class LocationAttachmentRequest : AttachmentRequest
 {
@@ -1011,8 +1220,11 @@ public class LocationAttachmentRequest : AttachmentRequest
     public double Longitude { get; set; }
 }
 ```
+
 <a id="model-shareattachmentrequest"></a>
+
 - **ShareAttachmentRequest**
+
 ```csharp
 public class ShareAttachmentRequest : AttachmentRequest
 {
@@ -1020,8 +1232,11 @@ public class ShareAttachmentRequest : AttachmentRequest
 }
 
 ```
+
 <a id="model-botcommand"></a>
+
 #### BotCommand
+
 ```csharp
 public class BotCommand
 {
@@ -1033,8 +1248,11 @@ public class BotCommand
 
 }
 ```
+
 <a id="model-botinfo"></a>
+
 #### BotInfo
+
 ```csharp
 public class BotInfo : User 
 {
@@ -1048,23 +1266,30 @@ public class BotInfo : User
     public BotCommand[]? Commands { get; set; }
 }    
 ```
+
 <a id="model-button"></a>
+
 ### Button
-[MessageButton](#model-messagebutton) | 
+
+[MessageButton](#model-messagebutton) |
 [OpenAppButton](#model-openappbutton) |
 [RequestContactButton](#model-requestcontactbutton) |
 [RequestGeoLocationButton](#model-requestgeolocationbutton) |
 [LinkButton](#model-linkbutton) |
 [CallbackButton](#model-callbackbutton) |
 [ClipboardButton](#model-clipboardbutton)
+
 ```csharp
 public abstract class Button
 {
     public abstract ButtonType Type { get; }
 }
 ```
+
 <a id="model-messagebutton"></a>
+
 - **MessageButton**
+
 ```csharp
 public class MessageButton : Button
 {
@@ -1073,8 +1298,11 @@ public class MessageButton : Button
     public required string Text { get; set; }
 }
 ```
+
 <a id="model-openappbutton"></a>
+
 - **OpenAppButton**
+
 ```csharp
 public class OpenAppButton : Button
 {
@@ -1092,8 +1320,11 @@ public class OpenAppButton : Button
     public string Payload { get; set; } = string.Empty;
 }
 ```
+
 <a id="model-requestcontactbutton"></a>
+
 - **RequestContactButton**
+
 ```csharp
 public class RequestContactButton : Button
 {
@@ -1102,8 +1333,11 @@ public class RequestContactButton : Button
     public required string Text { get; set; }
 }
 ```
+
 <a id="model-requestgeolocationbutton"></a>
+
 - **RequestGeoLocationButton**
+
 ```csharp
 public class RequestGeoLocationButton : Button
 {    
@@ -1115,8 +1349,11 @@ public class RequestGeoLocationButton : Button
     public bool Quick { get; set; }
 }
 ```
+
 <a id="model-linkbutton"></a>
+
 - **LinkButton**
+
 ```csharp
 public class LinkButton : Button
 {
@@ -1128,8 +1365,11 @@ public class LinkButton : Button
     public required string Url { get; set; }
 }
 ```
+
 <a id="model-callbackbutton"></a>
+
 - **CallbackButton**
+
 ```csharp
 public class CallbackButton : Button
 {
@@ -1143,8 +1383,11 @@ public class CallbackButton : Button
 }
 
 ```
+
 <a id="model-clipboardbutton"></a>
+
 - **ClipboardButton**
+
 ```csharp
 public class ClipboardButton : Button
 {
@@ -1158,7 +1401,9 @@ public class ClipboardButton : Button
 ```
 
 <a id="model-callback"></a>
+
 #### Callback
+
 ```csharp
 public class Callback
 {
@@ -1176,8 +1421,11 @@ public class Callback
 
 }
 ```
+
 <a id="model-chat"></a>
+
 #### Chat
+
 ```csharp
 public class Chat
 {
@@ -1227,7 +1475,9 @@ public class Chat
 ```
 
 <a id="model-chatadmin"></a>
+
 #### ChatAdmin
+
 ```csharp
 public class ChatAdmin
 {
@@ -1255,8 +1505,11 @@ public class ChatAdmin
 
 }
 ```
+
 <a id="model-chatmember"></a>
+
 #### ChatMember
+
 ```csharp
 public class ChatMember:User
 {
@@ -1297,8 +1550,11 @@ public class ChatMember:User
     public string? Alias { get; set; }    
 }
 ```
+
 <a id="model-chatmembersresponse"></a>
+
 #### ChatMembersResponse
+
 ```csharp
 public class ChatMembersResponse
 {
@@ -1311,7 +1567,9 @@ public class ChatMembersResponse
 ```
 
 <a id="model-chatsresponse"></a>
+
 #### ChatsResponse
+
 ```csharp
 public class ChatsResponse
 {
@@ -1320,7 +1578,9 @@ public class ChatsResponse
 ```
 
 <a id="model-inlinekeyboard"></a>
+
 #### InlineKeyboard
+
 ```csharp
 public class InlineKeyboard
 {
@@ -1330,8 +1590,11 @@ public class InlineKeyboard
 }
 
 ```
+
 <a id="model-linkedmessage"></a>
+
 #### LinkedMessage
+
 ```csharp
 public class LinkedMessage
 {
@@ -1349,13 +1612,16 @@ public class LinkedMessage
 
 }
 ```
+
 <a id="model-markupelement"></a>
+
 #### MarkupElement
+
 ```csharp
 public abstract class MarkupElement
 {
     // Тип элемента разметки. Может быть жирный, курсив, зачеркнутый, подчеркнутый, моноширинный, ссылка или упоминание пользователя
-    // strong , emphasized, monospaced, link, strikethrough, underline, user_mention
+    // strong , emphasized, monospaced, link, strikethrough, underline, user_mention, heading, highlighted, quote
     public abstract MarkupElementType Type { get; set; }
 
     // Индекс начала элемента разметки в тексте. Нумерация с нуля
@@ -1365,29 +1631,41 @@ public abstract class MarkupElement
     public int Length { get; set; } 
 }
 ```
+
 <a id="model-strongmarkupelement"></a>
+
 - **StrongMarkupElement**
+
 ```csharp
 public class StrongMarkupElement : MarkupElement
 {
 }
 ```
+
 <a id="model-emphasizedmarkupelement"></a>
+
 - **EmphasizedMarkupElement**
+
 ```csharp
 public class EmphasizedMarkupElement : MarkupElement
 {
 }
 ```
+
 <a id="model-monospacedmarkupelement"></a>
+
 - **MonospacedMarkupElement**
+
 ```csharp
 public class MonospacedMarkupElement : MarkupElement
 {
 }
 ```
+
 <a id="model-linkmarkupelement"></a>
+
 - **LinkMarkupElement**
+
 ```csharp
 public class LinkMarkupElement : MarkupElement
 {
@@ -1395,22 +1673,31 @@ public class LinkMarkupElement : MarkupElement
     public required string Url { get; set; }
 }
 ```
+
 <a id="model-strikethroughmarkupelement"></a>
+
 - **StrikethroughMarkupElement**
+
 ```csharp
 public class StrikethroughMarkupElement : MarkupElement
 {
 }
 ```
+
 <a id="model-underlinemarkupelement"></a>
+
 - **UnderlineMarkupElement**
+
 ```csharp
 public class UnderlineMarkupElement : MarkupElement
 {    
 }
 ```
+
 <a id="model-usermentionmarkupelement"></a>
+
 - **UserMentionMarkupElement**
+
 ```csharp
 public class UserMentionMarkupElement : MarkupElement
 {
@@ -1421,9 +1708,35 @@ public class UserMentionMarkupElement : MarkupElement
     public long? UserID { get; set; }
 }
 ```
+<a id="model-headingmarkupelement"></a>
+- **HeadingMarkupElement**
+```csharp
+public class HeadingMarkupElement : MarkupElement
+{
+}
+```
+<a id="model-highlightedmarkupelement"></a>
+- **HighlightedMarkupElement**
+
+```csharp
+public class HighlightedMarkupElement : MarkupElement
+{
+}
+
+```
+
+<a id="model-quotemarkupelement"></a>
+- **QuoteMarkupElement**
+```csharp
+public class QuoteMarkupElement : MarkupElement
+{
+}
+```
 
 <a id="model-message"></a>
+
 #### Message
+
 ```csharp
 public class Message
 {
@@ -1451,7 +1764,9 @@ public class Message
 ```
 
 <a id="model-messagebody"></a>
+
 #### MessageBody
+
 ```csharp
 public class MessageBody
 {
@@ -1471,8 +1786,11 @@ public class MessageBody
     public MarkupElement[]? Markup { get; set; }
 }
 ```
+
 <a id="model-messagesresponse"></a>
+
 #### MessagesResponse
+
 ```csharp
 public class MessagesResponse
 {
@@ -1482,15 +1800,20 @@ public class MessagesResponse
 ```
 
 <a id="model-messagestat"></a>
+
 #### MessageStat
+
 ```csharp
 public class MessageStat
 {
     public long Views { get; set; }
 }
 ```
+
 <a id="model-newmessagebody"></a>
+
 #### NewMessageBody
+
 ```csharp
 public class NewMessageBody
 {
@@ -1512,8 +1835,11 @@ public class NewMessageBody
     public TextFormat? TextFormat { get; set; }    
 }
 ```
+
 <a id="model-newmessagelink"></a>
+
 #### NewMessageLink
+
 ```csharp
 public class NewMessageLink
 {
@@ -1524,8 +1850,11 @@ public class NewMessageLink
     public required string MessageId { get; set; }    
 }
 ```
+
 <a id="model-recipient"></a>
+
 #### Recipient
+
 ```csharp
 public class Recipient
 {
@@ -1541,7 +1870,9 @@ public class Recipient
 ```
 
 <a id="model-subscription"></a>
+
 #### Subscription
+
 ```csharp
 public class Subscription
 {
@@ -1557,7 +1888,9 @@ public class Subscription
 ```
 
 <a id="model-subscriptions"></a>
+
 #### Subscriptions
+
 ```csharp
 public class Subscriptions 
 {
@@ -1566,7 +1899,9 @@ public class Subscriptions
 ```
 
 <a id="model-update"></a>
+
 #### Update
+
 [MessageCreatedUpdate](#model-messagecreatedupdate) |
 [MessageCallbackUpdate](#model-messagecallbackupdate) |
 [MessageEditedUpdate](#model-messageeditedupdate) |
@@ -1582,6 +1917,7 @@ public class Subscriptions
 [BotStartedUpdate](#model-botstartedupdate) |
 [BotStoppedUpdate](#model-botstoppedupdate) |
 [ChatTitleChangedUpdate](#model-chattitlechangedupdate)
+
 ```csharp
 public abstract class Update
 {
@@ -1593,8 +1929,11 @@ public abstract class Update
 
 }
 ```
+
 <a id="model-messagecreatedupdate"></a>
+
 - #### MessageCreatedUpdate
+
 ```csharp
 public class MessageCreatedUpdate : Update
 {
@@ -1606,8 +1945,11 @@ public class MessageCreatedUpdate : Update
  
 }
 ```
+
 <a id="model-messagecallbackupdate"></a>
+
 - #### MessageCallbackUpdate
+
 ```csharp
 public class MessageCallbackUpdate : Update
 {
@@ -1621,8 +1963,11 @@ public class MessageCallbackUpdate : Update
     public string? UserLocale { get; set; }   
 }
 ```
+
 <a id="model-messageeditedupdate"></a>
+
 - #### MessageEditedUpdate
+
 ```csharp
 public class MessageEditedUpdate : Update
 {
@@ -1630,8 +1975,11 @@ public class MessageEditedUpdate : Update
     public required Message Message { get; set; }
 }
 ```
+
 <a id="model-messageremovedupdate"></a>
+
 - #### MessageRemovedUpdate
+
 ```csharp
 public class MessageRemovedUpdate : Update
 {
@@ -1645,8 +1993,11 @@ public class MessageRemovedUpdate : Update
     public long UserId { get; set; }
 }
 ```
+
 <a id="model-botaddedupdate"></a>
+
 - #### BotAddedUpdate
+
 ```csharp
 public class BotAddedUpdate : Update
 {
@@ -1660,8 +2011,11 @@ public class BotAddedUpdate : Update
     public bool IsChannel { get; set; }
 }
 ```
+
 <a id="model-botremovedupdate"></a>
+
 - #### BotRemovedUpdate
+
 ```csharp
 public class BotRemovedUpdate : Update
 {
@@ -1675,8 +2029,11 @@ public class BotRemovedUpdate : Update
     public bool IsChannel { get; set; }
 }
 ```
+
 <a id="model-dialogmutedupdate"></a>
+
 - #### DialogMutedUpdate
+
 ```csharp
 public class DialogMutedUpdate : Update
 {
@@ -1693,8 +2050,11 @@ public class DialogMutedUpdate : Update
     public string? UserLocale { get; set; }
 }
 ```
+
 <a id="model-dialogunmutedupdate"></a>
+
 - #### DialogUnmutedUpdate
+
 ```csharp
 public class DialogUnmutedUpdate : Update
 {
@@ -1708,8 +2068,11 @@ public class DialogUnmutedUpdate : Update
     public string? UserLocale { get; set; }
 }
 ```
+
 <a id="model-dialogclearedupdate"></a>
+
 - #### DialogClearedUpdate
+
 ```csharp
 public class DialogClearedUpdate : Update
 {
@@ -1723,8 +2086,11 @@ public class DialogClearedUpdate : Update
     public string? UserLocale { get; set; }
 }
 ```
+
 <a id="model-dialogremovedupdate"></a>
+
 - #### DialogRemovedUpdate
+
 ```csharp
 public class DialogRemovedUpdate : Update
 {
@@ -1738,8 +2104,11 @@ public class DialogRemovedUpdate : Update
     public string? UserLocale { get; set; }
 }
 ```
+
 <a id="model-useraddedupdate"></a>
+
 - #### UserAddedUpdate
+
 ```csharp
 public class UserAddedUpdate : Update
 {
@@ -1756,8 +2125,11 @@ public class UserAddedUpdate : Update
     public bool IsChannel { get; set; }
 }
 ```
+
 <a id="model-userremovedupdate"></a>
+
 - #### UserRemovedUpdate
+
 ```csharp
 public class UserRemovedUpdate : Update
 {
@@ -1774,8 +2146,11 @@ public class UserRemovedUpdate : Update
     public bool IsChannel { get; set; }
 }
 ```
+
 <a id="model-botstartedupdate"></a>
+
 - #### BotStartedUpdate
+
 ```csharp
 public class BotStartedUpdate : Update
 {
@@ -1792,8 +2167,11 @@ public class BotStartedUpdate : Update
     public string? UserLocale { get; set; }
 }
 ```
+
 <a id="model-botstoppedupdate"></a>
+
 - #### BotStoppedUpdate
+
 ```csharp
 public class BotStoppedUpdate : Update
 {
@@ -1807,8 +2185,11 @@ public class BotStoppedUpdate : Update
     public string? UserLocale { get; set; }
 }
 ```
+
 <a id="model-chattitlechangedupdate"></a>
+
 - #### ChatTitleChangedUpdate
+
 ```csharp
 public class ChatTitleChangedUpdate : Update
 {
@@ -1821,8 +2202,11 @@ public class ChatTitleChangedUpdate : Update
     public required User User { get; set; }
 }
 ```
+
 <a id="model-updatesresponse"></a>
+
 #### UpdatesResponse
+
 ```csharp
 public class UpdatesResponse
 {
@@ -1834,7 +2218,9 @@ public class UpdatesResponse
 ```
 
 <a id="model-uploaddataresponse"></a>
+
 #### UploadDataResponse
+
 ```csharp
 public class UploadDataResponse
 {
@@ -1847,7 +2233,9 @@ public class UploadDataResponse
 ```
 
 <a id="model-uploadedinfo"></a>
+
 #### UploadedInfo
+
 ```csharp
 public class UploadedInfo
 {
@@ -1857,7 +2245,9 @@ public class UploadedInfo
 ```
 
 <a id="model-uploadurlresponse"></a>
+
 #### UploadUrlResponse
+
 ```csharp
 public class UploadUrlResponse
 {
@@ -1866,8 +2256,11 @@ public class UploadUrlResponse
     public string? Token { get; set; } 
 }
 ```
+
 <a id="model-user"></a>
+
 #### User
+
 ```csharp
 public class User : IEquatable<User>
 {
@@ -1893,8 +2286,11 @@ public class User : IEquatable<User>
     public DateTime LastActivityTime { get; set; }
 }
 ```
+
 <a id="model-userwithphoto"></a>
+
 #### UserWithPhoto
+
 ```csharp
 public class UserWithPhoto : User
 {
@@ -1909,8 +2305,11 @@ public class UserWithPhoto : User
     public string? FullAvatarUrl { get; set; }
 }
 ```
+
 <a id="model-videoinfo"></a>
+
 #### VideoInfo
+
 ```csharp
 public class VideoInfo
 {
@@ -1935,7 +2334,9 @@ public class VideoInfo
 ```
 
 <a id="model-videourls"></a>
+
 #### VideoUrls
+
 ```csharp
 public class VideoUrls
 {
@@ -1973,7 +2374,9 @@ public class VideoUrls
 <a id="model-stickerattachmentpayload"></a>
 <a id="model-stickerattachmentrequestpayload"></a>
 <a id="model-videothumbnail"></a>
+
 #### VideoThumbnail
+
 ```csharp
 public class VideoThumbnail
 {
@@ -1985,11 +2388,13 @@ public class VideoThumbnail
 
 ---
 <a id="enums"></a>
-## Перечисления типов 
 
+## Перечисления типов
 
 <a id="enum-attachmenttype"></a>
+
 #### AttachmentType
+
 ```csharp
 public enum AttachmentType
 {
@@ -2004,8 +2409,11 @@ public enum AttachmentType
     Location,
 }
 ```
+
 <a id="enum-buttontype"></a>
+
 #### ButtonType
+
 ```csharp
 public enum ButtonType
 {
@@ -2025,8 +2433,11 @@ public enum ButtonType
     Clipboard
 }
 ```
+
 <a id="enum-chatadminpermissions"></a>
+
 #### ChatAdminPermissions
+
 ```csharp
 public enum ChatAdminPermission
 {
@@ -2046,8 +2457,11 @@ public enum ChatAdminPermission
     Edit   
 }
 ```
+
 <a id="enum-chatstatus"></a>
+
 #### ChatStatus
+
 ```csharp
 public enum ChatStatus
 {
@@ -2057,8 +2471,11 @@ public enum ChatStatus
     Closed
 }
 ```
+
 <a id="enum-chattype"></a>
+
 #### ChatType
+
 ```csharp
 public enum ChatType
 {
@@ -2069,8 +2486,11 @@ public enum ChatType
     // канал
     Channel
 ```
+
 <a id="enum-markupelementtype"></a>
+
 #### MarkupElementType
+
 ```csharp
 public enum MarkupElementType
 {
@@ -2087,11 +2507,20 @@ public enum MarkupElementType
     // подчеркнутый
     Underline, 
     // упоминание пользователя
-    UserMention
+    UserMention,
+    // заголовок
+    Heading,
+    // выделение
+    Highlighted,
+    // цитата
+    Quote
 }
 ```
+
 <a id="enum-messagelinktype"></a>
+
 #### MessageLinkType
+
 ```csharp
 public enum MessageLinkType
 {
@@ -2101,8 +2530,11 @@ public enum MessageLinkType
     Reply
 }
 ```
+
 <a id="enum-senderaction"></a>
+
 #### SenderAction
+
 ```csharp
 public enum SenderAction
 {
@@ -2120,8 +2552,11 @@ public enum SenderAction
     MarkSeen
 }
 ```
+
 <a id="enum-textformat"></a>
+
 #### TextFormat
+
 ```csharp
 public enum TextFormat
 {
@@ -2131,7 +2566,9 @@ public enum TextFormat
 ```
 
 <a id="enum-updatetype"></a>
+
 #### UpdateType
+
 ```csharp
 public enum UpdateType
 {
@@ -2167,8 +2604,11 @@ public enum UpdateType
     ChatTitleChanged
 }
 ```
+
 <a id="enum-uploadtype"></a>
+
 #### UploadType
+
 ```csharp
 public enum UploadType
 {
@@ -2185,6 +2625,7 @@ public enum UploadType
 
 ---
 <a id="example"></a>
+
 ## Пример для minimal api (webhook)
 
 ```csharp
@@ -2279,7 +2720,9 @@ async Task ProcessMessage(Message message, string? userLocale)
 ```
 
 <a id="example2"></a>
+
 #### Минимальный рабочий пример long-polling исполнения:
+
 ```csharp
 using MaxBotApi;
 using MaxBotApi.Enums;
@@ -2330,9 +2773,10 @@ async Task OnMessage(Message msg, UpdateType type)
 }
 ```
 
-
 ---
+
 #### Данный клиент будет постепенно дорабатываться, документация дополняться.
 
 #### По любым вопросам, связанным с данным кодом и документацией к нему, можно писать мне в MAX
+
 ### [🔗 MaxBotApi - Группа разработки](https://max.ru/join/rGHhNOyyFyG4p2I7IwryhaWPxecPHqykNC0plzA3X2Q)

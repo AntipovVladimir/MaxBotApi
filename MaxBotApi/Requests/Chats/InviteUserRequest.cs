@@ -3,7 +3,7 @@ using MaxBotApi.Models;
 
 namespace MaxBotApi.Requests;
 
-public class InviteUserRequest: RequestBase<ApiResponse>
+public class InviteUserRequest: RequestBase<ApiInviteResponse>
 {
     public InviteUserRequest(long chatId) : base(string.Format("chats/{0}/members", chatId))
     {
