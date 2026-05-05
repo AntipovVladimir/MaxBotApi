@@ -18,5 +18,11 @@ public enum MarkupElementType
     [JsonStringEnumMemberName("underline")]
     Underline, 
     [JsonStringEnumMemberName("user_mention")]
-    UserMention
+    UserMention,
+    [JsonStringEnumMemberName("heading")]
+    Heading,
+    [JsonStringEnumMemberName("highlighted")]
+    Highlighted,
+    [JsonStringEnumMemberName("Quote")]
+    Quote,
 }

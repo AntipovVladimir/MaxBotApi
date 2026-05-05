@@ -15,6 +15,9 @@ namespace MaxBotApi.Models;
 [CustomJsonDerivedType(typeof(StrikethroughMarkupElement), "strikethrough")]
 [CustomJsonDerivedType(typeof(UnderlineMarkupElement), "underline")]
 [CustomJsonDerivedType(typeof(UserMentionMarkupElement), "user_mention")]
+[CustomJsonDerivedType(typeof(HeadingMarkupElement), "heading")]
+[CustomJsonDerivedType(typeof(HighlightedMarkupElement), "highlighted")]
+[CustomJsonDerivedType(typeof(QuoteMarkupElement), "quote")]
 public abstract class MarkupElement
 {
     /// <summary>
@@ -75,6 +78,21 @@ public class StrikethroughMarkupElement : MarkupElement
 public class UnderlineMarkupElement : MarkupElement
 {
     public override MarkupElementType Type { get; set; } = MarkupElementType.Underline;
+}
+
+public class HeadingMarkupElement : MarkupElement
+{
+    public override MarkupElementType Type { get; set; } = MarkupElementType.Heading;
+}
+
+public class HighlightedMarkupElement : MarkupElement
+{
+    public override MarkupElementType Type { get; set; } = MarkupElementType.Highlighted;
+}
+
+public class QuoteMarkupElement : MarkupElement
+{
+    public override MarkupElementType Type { get; set; } = MarkupElementType.Quote;
 }
 
 public class UserMentionMarkupElement : MarkupElement
