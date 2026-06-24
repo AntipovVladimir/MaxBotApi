@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Security;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
@@ -36,7 +37,14 @@ public class MaxBotClient : IMaxBotClient
     public MaxBotClient(MaxBotClientOptions options, HttpClient? httpClient = null, CancellationToken cancellationToken = default)
     {
         _options = options ?? throw new ArgumentNullException(nameof(options));
-        _httpClient = httpClient ?? new HttpClient(new SocketsHttpHandler { PooledConnectionLifetime = TimeSpan.FromMinutes(3) });
+        _httpClient = httpClient ?? new HttpClient(new SocketsHttpHandler
+        {
+            PooledConnectionLifetime = TimeSpan.FromMinutes(3), SslOptions = new SslClientAuthenticationOptions()
+            {
+                RemoteCertificateValidationCallback = (
+                    (sender, certificate, chain, errors) => (certificate?.Subject == "CN=Russian Trusted Sub CA"))
+            }
+        });
         _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
         GlobalCancelToken = cancellationToken;
     }
