@@ -2,7 +2,7 @@
 
 public class MaxBotClientOptions
 {
-    public const string BaseMaxUri = "https://platform-api.max.ru";
+    public const string BaseMaxUri = "https://platform-api2.max.ru";
 
     /// <summary>
     /// API токен
