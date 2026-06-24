@@ -37,10 +37,17 @@ public class MaxBotClient : IMaxBotClient
     public MaxBotClient(MaxBotClientOptions options, HttpClient? httpClient = null, CancellationToken cancellationToken = default)
     {
         _options = options ?? throw new ArgumentNullException(nameof(options));
-        _httpClient = httpClient ?? new HttpClient(new SocketsHttpHandler { PooledConnectionLifetime = TimeSpan.FromMinutes(3), SslOptions = new SslClientAuthenticationOptions() { RemoteCertificateValidationCallback = (
-            (sender, certificate, chain, errors) => errors == SslPolicyErrors.None || (bool)certificate?.Subject.Contains("CN=*.max.ru", StringComparison.Ordinal) &&
-                (bool)certificate?.Issuer.Equals("CN=Russian Trusted Sub CA, O=The Ministry of Digital Development and Communications, C=RU",
-                    StringComparison.Ordinal))}});
+        _httpClient = httpClient ?? new HttpClient(new SocketsHttpHandler
+        {
+            PooledConnectionLifetime = TimeSpan.FromMinutes(3), SslOptions = new SslClientAuthenticationOptions()
+            {
+                RemoteCertificateValidationCallback = ((sender, certificate, chain, errors) =>
+                    errors == SslPolicyErrors.None ||
+                    certificate is not null && certificate.Subject.Contains("CN=*.max.ru", StringComparison.Ordinal) &&
+                    certificate.Issuer.Equals("CN=Russian Trusted Sub CA, O=The Ministry of Digital Development and Communications, C=RU",
+                        StringComparison.Ordinal))
+            }
+        });
         _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
         GlobalCancelToken = cancellationToken;
     }
