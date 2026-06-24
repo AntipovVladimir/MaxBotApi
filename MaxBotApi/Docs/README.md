@@ -112,6 +112,8 @@ Install-Package MaxBotApi
 <a id="changelog"></a>
 
 ---
+## изменения 1.0.17
++ изменен адрес API на platform-api2.max.ru, добавлена обработка проверки сертификата, чтобы не требовалась установка корневых сертификатов минцифры.
 ## изменения 1.0.16.1
 + расширен ответ на запрос [InviteUser](#method-inviteuser) - теперь возвращается [ApiInviteResponse](#model-apiinviteresponse)
 ## изменения 1.0.16
