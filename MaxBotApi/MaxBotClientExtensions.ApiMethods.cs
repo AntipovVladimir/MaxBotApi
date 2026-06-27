@@ -308,6 +308,7 @@ public static partial class MaxBotClientExtensions
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns>ChatsResponse</returns>
+        [Obsolete("Начиная с июня 2026 метод GET /chats больше не поддерживается, и API не предоставляет готовой возможности для получения списка групповых чатов и каналов, в которые добавлен бот. https://dev.max.ru/docs-api/methods/GET/chats")]
         public async Task<ChatsResponse> GetChats(CancellationToken cancellationToken = default) =>
             await botClient.ThrowIfNull().SendRequest(new GetChatsRequest(), cancellationToken).ConfigureAwait(false);
 
@@ -318,6 +319,7 @@ public static partial class MaxBotClientExtensions
         /// <param name="marker">Указатель на следующую страницу данных. Для первой страницы передайте null</param>
         /// <param name="cancellationToken"></param>
         /// <returns>ChatsResponse</returns>
+        [Obsolete("Начиная с июня 2026 метод GET /chats больше не поддерживается, и API не предоставляет готовой возможности для получения списка групповых чатов и каналов, в которые добавлен бот. https://dev.max.ru/docs-api/methods/GET/chats")]
         public async Task<ChatsResponse> GetChats(int count = 50, long? marker = null, CancellationToken cancellationToken = default)
             => await botClient.ThrowIfNull().SendRequest(new GetChatsRequest(count, marker), cancellationToken).ConfigureAwait(false);
 
@@ -330,6 +332,15 @@ public static partial class MaxBotClientExtensions
         /// <returns>ChatFullInfo</returns>
         public async Task<Chat> GetChat(long chat_id, CancellationToken cancellationToken = default) =>
             await botClient.ThrowIfNull().SendRequest(new GetChatInfoRequest(chat_id), cancellationToken).ConfigureAwait(false);
+
+        /// <summary>
+        /// Возвращает информацию о групповом чате по его ID
+        /// </summary>
+        /// <param name="chat_link">Публичная ссылка на канал (regexp pattern: @?[a-zA-Z]+[\\w-]*)</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>ChatFullInfo</returns>
+        public async Task<Chat> GetChat(string chat_link, CancellationToken cancellationToken = default) =>
+            await botClient.ThrowIfNull().SendRequest(new GetChatInfoRequest(chat_link), cancellationToken).ConfigureAwait(false);
 
         /// <summary>
         /// Позволяет редактировать информацию о групповом чате, включая название, иконку и закреплённое сообщение
