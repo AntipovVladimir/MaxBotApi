@@ -8,4 +8,9 @@ public class GetChatInfoRequest :ParameterlessRequest<Chat>
     {
         HttpMethod = HttpMethod.Get;
     }
+
+    public GetChatInfoRequest(string chatLink) : base(string.Format("chats/{0}", chatLink))
+    {
+        HttpMethod = HttpMethod.Get;
+    }
 }

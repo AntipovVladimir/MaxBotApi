@@ -55,24 +55,25 @@ Install-Package MaxBotApi
 
 ### chats
 
-|          | метод                                       | описание                                                                           |
-|----------|---------------------------------------------|------------------------------------------------------------------------------------|
-| &#10004; | **GET** /chats                              | [Получение списка всех групповых чатов](#method-getchats)                          |
-| &#10004; | **GET** /chats/{_chatId_}                   | [Получение информации о групповом чате](#method-getchat)                           |
-| &#10004; | **PATCH** /chats/{_chatId_}                 | [Изменение информации о групповом чате](#method-editchatinfo)                      |
-| &#10004; | **DELETE** /chats/{_chatId_}                | [Удаление группового чата](#method-deletechat)                                     |                
-| &#10004; | **POST** /chats/{_chatId_}/actions          | [Отправка действия в групповой чат](#method-sendchataction)                        |          
-| &#10004; | **GET** /chats/{_chatId_}/pin               | [Получение закрепленного сообщения в групповом чате](#method-getchatpinnedmessage) |        
-| &#10004; | **PUT** /chats/{_chatId_}/pin               | [Закрепление сообщения в групповом чате](#method-pinmessage)                       |      
-| &#10004; | **DELETE** /chats/{_chatId_}/pin            | [Удаление закрепленного сообщения в групповом чате](#method-unpinmessage)          |    
-| &#10004; | **GET** /chats/{_chatId_}/members/me        | [Получение информации о членстве бота в групповом чате](#method-getchatmyinfo)     |  
-| &#10004; | **DELETE** /chats/{_chatId_}/members/me     | [Удаление бота из группового чата](#method-leavechat)                              |
-| &#10004; | **GET** /chats/{_chatId_}/members/admins    | [Получение списка администраторов группового чата](#method-getchatadmins)          |
-| &#10004; | **POST** /chats/{_chatId_}/members/admins   | [Назначить администратора группового чата](#method-addchatadmins)                  |
-| &#10004; | **DELETE** /chats/{_chatId_}/members/admins | [Отменить права администратора группового чата](#method-deletechatadmin)           |
-| &#10004; | **GET** /chats/{_chatId_}/members           | [Получение участников группового чата](#method-getchatmembers)                     |
-| &#10004; | **POST** /chats/{_chatId_}/members          | [Добавление участников в групповой чат](#method-inviteuser)                        |
-| &#10004; | **DELETE** /chats/{_chatId_}/members        | [Удаление участников из группового чата](#method-kickuser)                         |
+|          | метод                                       | описание                                                                               |
+|----------|---------------------------------------------|----------------------------------------------------------------------------------------|
+| &#10044; | **GET** /chats                              | [Получение списка всех групповых чатов](#method-getchats) (удалено из API с июня 2026) |
+| &#10004; | **GET** /chats/{_chatId_}                   | [Получение информации о групповом чате](#method-getchat)                               |
+| &#10004; | **GET** /chats/{_chatLink_}                 | [Получение информации о групповом чате](#method-getchat)                               |
+| &#10004; | **PATCH** /chats/{_chatId_}                 | [Изменение информации о групповом чате](#method-editchatinfo)                          |
+| &#10004; | **DELETE** /chats/{_chatId_}                | [Удаление группового чата](#method-deletechat)                                         |                
+| &#10004; | **POST** /chats/{_chatId_}/actions          | [Отправка действия в групповой чат](#method-sendchataction)                            |          
+| &#10004; | **GET** /chats/{_chatId_}/pin               | [Получение закрепленного сообщения в групповом чате](#method-getchatpinnedmessage)     |        
+| &#10004; | **PUT** /chats/{_chatId_}/pin               | [Закрепление сообщения в групповом чате](#method-pinmessage)                           |      
+| &#10004; | **DELETE** /chats/{_chatId_}/pin            | [Удаление закрепленного сообщения в групповом чате](#method-unpinmessage)              |    
+| &#10004; | **GET** /chats/{_chatId_}/members/me        | [Получение информации о членстве бота в групповом чате](#method-getchatmyinfo)         |  
+| &#10004; | **DELETE** /chats/{_chatId_}/members/me     | [Удаление бота из группового чата](#method-leavechat)                                  |
+| &#10004; | **GET** /chats/{_chatId_}/members/admins    | [Получение списка администраторов группового чата](#method-getchatadmins)              |
+| &#10004; | **POST** /chats/{_chatId_}/members/admins   | [Назначить администратора группового чата](#method-addchatadmins)                      |
+| &#10004; | **DELETE** /chats/{_chatId_}/members/admins | [Отменить права администратора группового чата](#method-deletechatadmin)               |
+| &#10004; | **GET** /chats/{_chatId_}/members           | [Получение участников группового чата](#method-getchatmembers)                         |
+| &#10004; | **POST** /chats/{_chatId_}/members          | [Добавление участников в групповой чат](#method-inviteuser)                            |
+| &#10004; | **DELETE** /chats/{_chatId_}/members        | [Удаление участников из группового чата](#method-kickuser)                             |
 
 ### upload
 
@@ -112,6 +113,10 @@ Install-Package MaxBotApi
 <a id="changelog"></a>
 
 ---
+## изменения 1.0.17.1
++ методы GetChats помечены как Obsole: Начиная с июня 2026 метод GET /chats больше не поддерживается, и API не предоставляет готовой возможности для получения списка групповых чатов и каналов, в которые добавлен бот. см. https://dev.max.ru/docs-api/methods/GET/chats
++ добавлен вариант метода GetChat с ссылкой на канал в качестве параметра.
+
 ## изменения 1.0.17
 + изменен адрес API на platform-api2.max.ru, добавлена обработка проверки сертификата, чтобы не требовалась установка корневых сертификатов минцифры.
 ## изменения 1.0.16.1
@@ -578,19 +583,23 @@ async Task<VideoInfo> GetVideoInfo(string video_token)
 
 #### Получение списка всех групповых чатов
 
+### Внимание!!! 
+**Начиная с июня 2026 метод GET /chats больше не поддерживается, и API не предоставляет готовой возможности для получения списка групповых чатов и каналов, в которые добавлен бот**
 <a id="method-getchats"></a>
 
 ```csharp
+[Obsolete]
 async Task<ChatsResponse> GetChats()
+[Obsolete]
 async Task<ChatsResponse> GetChats(int count = 50, long? marker = null)
 ```
 
-Возвращает список групповых чатов, в которых участвовал бот, информацию о каждом чате и маркер для перехода к следующей странице списка
+~~Возвращает список групповых чатов, в которых участвовал бот, информацию о каждом чате и маркер для перехода к следующей странице списка~~
 
-+ **count** (int) - Количество запрашиваемых чатов, по умолчанию 50
-+ **marker** (long?) - Указатель на следующую страницу данных. Для первой страницы передайте null
+~~+ **count** (int) - Количество запрашиваемых чатов, по умолчанию 50~~
+~~+ **marker** (long?) - Указатель на следующую страницу данных. Для первой страницы передайте null~~
 
-Возвращает объект [**ChatsResponse**](#model-chatsresponse)
+~~Возвращает объект [**ChatsResponse**](#model-chatsresponse)~~
 
 #### Получение информации о групповом чате
 
@@ -598,11 +607,13 @@ async Task<ChatsResponse> GetChats(int count = 50, long? marker = null)
 
 ```csharp
 async Task<Chat> GetChat(long chat_id)
+async Task<Chat> GetChat(string chat_link)
 ```
 
 Возвращает информацию о групповом чате по его ID
 
 + **chat_id** (long) - ID запрашиваемого чата
++ **chat_link** (string) - Публичная ссылка на канал (формат @?[a-zA-Z]+[\\\\w-]*)
 
 Возвращает объект [**Chat**](#model-chat)
 
