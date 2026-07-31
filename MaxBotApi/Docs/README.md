@@ -113,8 +113,11 @@ Install-Package MaxBotApi
 <a id="changelog"></a>
 
 ---
+## измененяи 1.0.18
++ изменен метод EditMe - теперь можно изменять только список команд бота. Возвращает список команд бота. https://dev.max.ru/docs-api/methods/PATCH/me/commands
+
 ## изменения 1.0.17.1
-+ методы GetChats помечены как Obsole: Начиная с июня 2026 метод GET /chats больше не поддерживается, и API не предоставляет готовой возможности для получения списка групповых чатов и каналов, в которые добавлен бот. см. https://dev.max.ru/docs-api/methods/GET/chats
++ методы GetChats помечены как Obsolete: Начиная с июня 2026 метод GET /chats больше не поддерживается, и API не предоставляет готовой возможности для получения списка групповых чатов и каналов, в которые добавлен бот. см. https://dev.max.ru/docs-api/methods/GET/chats
 + добавлен вариант метода GetChat с ссылкой на канал в качестве параметра.
 
 ## изменения 1.0.17
@@ -407,18 +410,14 @@ async Task<BotInfo> GetMe()
 
 ```csharp
 
-async Task<ApiResponse> EditMe(string? name = null, string? description = null, 
-    IEnumerable<BotCommand>? commands = null, PhotoAttachmentRequestPayload? photo = null) 
+async Task<ApiResponse> EditMe(IEnumerable<BotCommand>? commands = null) 
 ```
 
-+ **name** (string?) - отображаемое имя бота
-+ **description** (string?) - описание бота
 + **commands** (IEnumerable<[BotCommand](#model-botcommand)>?) - перечень доступных комманд бота
-+ **photo** ([PhotoAttachmentRequestPayload](#model-photoattachmentrequestpayload?)) - изображение для профиля бота
 
 #### !Внимание! Данный метод не задокументирован в официальной документации и взят из исходников библиотек под TS. Использовать на свой страх и риск!
 
-Возвращает объект [**ApiResponse**](#model-apiresponse)
+Возвращает объект [**CommandsResponse**](#model-commandsresponse)
 
 ### messages
 
@@ -1589,6 +1588,21 @@ public class ChatsResponse
     public required IEnumerable<Chat> Chats { get; set; }
 }
 ```
+
+<a id="model-commandsresponse"></a>
+
+#### CommandsResponse
+
+```csharp
+public class CommandsResponse {
+    /// до 32 элементов
+    /// Команды, поддерживаемые ботом
+    public BotCommand[]? Commands { get; set; }
+}
+```
+
+
+
 
 <a id="model-inlinekeyboard"></a>
 

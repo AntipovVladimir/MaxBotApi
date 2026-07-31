@@ -4,18 +4,20 @@ using MaxBotApi.Models.Payloads;
 
 namespace MaxBotApi.Requests;
 
-public class EditMeRequest : RequestBase<ApiResponse>
+public class EditMeRequest : RequestBase<CommandsResponse>
 {
     /// <summary>
     /// Отображаемое имя бота
     /// </summary>
-    [JsonPropertyName("name")]
+    [Obsolete("Согласно документации, изменить можно только BotCommands: https://dev.max.ru/docs-api/methods/PATCH/me/commands")]
+    [JsonIgnore]
     public string? Name { get; set; }
 
     /// <summary>
     /// Описание бота
     /// </summary>
-    [JsonPropertyName("description")]
+    [Obsolete("Согласно документации, изменить можно только BotCommands: https://dev.max.ru/docs-api/methods/PATCH/me/commands")]
+    [JsonIgnore]
     public string? Description { get; set; }
 
     /// <summary>
@@ -27,10 +29,11 @@ public class EditMeRequest : RequestBase<ApiResponse>
     /// <summary>
     /// Картинка для профиля бота
     /// </summary>
+    [Obsolete("Согласно документации, изменить можно только BotCommands: https://dev.max.ru/docs-api/methods/PATCH/me/commands")]
     [JsonPropertyName("photo")]
     public PhotoAttachmentRequestPayload? Photo { get; set; }
 
-    public EditMeRequest() : base("me")
+    public EditMeRequest() : base("me/commands")
     {
         HttpMethod = HttpMethod.Patch;
     }

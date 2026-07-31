@@ -7,14 +7,13 @@
         <Title>.NET Client for Max Bot API </Title>
         <Authors>Vladimir Antipov</Authors>
         <Description>.NET Client for Max Bot API
-Изменение адреса API. Рекомендуется обновить в срок до 19.07.2026
-Метод GetChats с июня 2026 более не поддерживается API, см. https://dev.max.ru/docs-api/methods/GET/chats
+Изменение команды EditMe - теперь через нее можно менять только список команд бота, на запрос возвращает список команд бота.	
 		Library used for developing bots for messenger MAX 
                 https://dev.max.ru/docs-api
 	</Description>
         <PackageProjectUrl>https://github.com/AntipovVladimir/MaxBotApi</PackageProjectUrl>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
-        <Version>1.0.17.1</Version>
+        <Version>1.0.18</Version>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>

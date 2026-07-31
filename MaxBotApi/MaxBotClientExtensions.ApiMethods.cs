@@ -89,14 +89,19 @@ public static partial class MaxBotClientExtensions
         /// <param name="photo">Изображение для профиля бота</param>
         /// <param name="cancellationToken"></param>
         /// <returns>ApiResponse</returns>
-        public async Task<ApiResponse> EditMe(string? name = null, string? description = null, IEnumerable<BotCommand>? commands = null,
+        [Obsolete("Запрос устарел: изменить имя, фото и описание более нельзя, используйте EditMe(IEnumerable<BotCommand>? commands)")]
+        public async Task<CommandsResponse> EditMe(string? name = null, string? description = null, IEnumerable<BotCommand>? commands = null,
             PhotoAttachmentRequestPayload? photo = null, CancellationToken cancellationToken = default)
-            => await botClient.ThrowIfNull().SendRequest(new EditMeRequest()
-            {
-                Name = name,
-                Description = description,
-                Commands = commands,
-            }, cancellationToken).ConfigureAwait(false);
+            => await botClient.ThrowIfNull().SendRequest(new EditMeRequest() { Commands = commands, }, cancellationToken).ConfigureAwait(false);
+
+        /// <summary>
+        /// Метод изменяет информацию в профиле бота
+        /// </summary>
+        /// <param name="commands">Перечень доступных комманд</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>ApiResponse</returns>
+        public async Task<CommandsResponse> EditMe(IEnumerable<BotCommand>? commands = null, CancellationToken cancellationToken = default)
+            => await botClient.ThrowIfNull().SendRequest(new EditMeRequest() { Commands = commands, }, cancellationToken).ConfigureAwait(false);
 
         #region Upload
 
@@ -308,7 +313,8 @@ public static partial class MaxBotClientExtensions
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns>ChatsResponse</returns>
-        [Obsolete("Начиная с июня 2026 метод GET /chats больше не поддерживается, и API не предоставляет готовой возможности для получения списка групповых чатов и каналов, в которые добавлен бот. https://dev.max.ru/docs-api/methods/GET/chats")]
+        [Obsolete(
+            "Начиная с июня 2026 метод GET /chats больше не поддерживается, и API не предоставляет готовой возможности для получения списка групповых чатов и каналов, в которые добавлен бот. https://dev.max.ru/docs-api/methods/GET/chats")]
         public async Task<ChatsResponse> GetChats(CancellationToken cancellationToken = default) =>
             await botClient.ThrowIfNull().SendRequest(new GetChatsRequest(), cancellationToken).ConfigureAwait(false);
 
@@ -319,7 +325,8 @@ public static partial class MaxBotClientExtensions
         /// <param name="marker">Указатель на следующую страницу данных. Для первой страницы передайте null</param>
         /// <param name="cancellationToken"></param>
         /// <returns>ChatsResponse</returns>
-        [Obsolete("Начиная с июня 2026 метод GET /chats больше не поддерживается, и API не предоставляет готовой возможности для получения списка групповых чатов и каналов, в которые добавлен бот. https://dev.max.ru/docs-api/methods/GET/chats")]
+        [Obsolete(
+            "Начиная с июня 2026 метод GET /chats больше не поддерживается, и API не предоставляет готовой возможности для получения списка групповых чатов и каналов, в которые добавлен бот. https://dev.max.ru/docs-api/methods/GET/chats")]
         public async Task<ChatsResponse> GetChats(int count = 50, long? marker = null, CancellationToken cancellationToken = default)
             => await botClient.ThrowIfNull().SendRequest(new GetChatsRequest(count, marker), cancellationToken).ConfigureAwait(false);
 
