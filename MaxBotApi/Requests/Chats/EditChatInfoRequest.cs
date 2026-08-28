@@ -24,6 +24,13 @@ public class EditChatInfoRequest:RequestBase<Chat>
     public string? Title { get; set; }
     
     /// <summary>
+    /// от 1 до 16000 символов
+    /// </summary>
+    [JsonPropertyName("description")]
+    public string? Description { get; set; }
+
+    
+    /// <summary>
     /// ID сообщения для закрепления в чате. Чтобы удалить закреплённое сообщение, используйте метод unpin
     /// </summary>
     [JsonPropertyName("pin")]
