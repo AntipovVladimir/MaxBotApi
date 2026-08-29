@@ -546,10 +546,21 @@ public static partial class MaxBotClientExtensions
         /// Для получения комментариев к посту бот, чей токен access_token используется для авторизации, должен быть администратором этого канала с правом read_all_messages
         /// </summary>
         /// <param name="messageId">Идентификатор поста (mid), к которому относится комментарий</param>
+        /// <param name="commentIds">Список идентификаторов комментариев, которые вы хотите получить</param>
+        /// <param name="before">Время, до которого будут запрошены все комментарии с начала чата</param>
+        /// <param name="after">Время, начиная с которого будут запрошены все комментарии до конца чата</param>
+        /// <param name="count">По умолчанию: 50. Количество комментариев, которое вы хотите получить в ответе: от 1 до 100</param>
         /// <param name="cancellationToken"></param>
         /// <returns>CommentsResponse</returns>
-        public async Task<CommentsResponse> GetComments(string messageId, CancellationToken cancellationToken = default) =>
-            await botClient.ThrowIfNull().SendRequest(new GetCommentsRequest(messageId), cancellationToken).ConfigureAwait(false);
+        public async Task<CommentsResponse> GetComments(string messageId, IEnumerable<string>? commentIds = null, DateTime? before = null,
+            DateTime? after = null, int? count = null, CancellationToken cancellationToken = default) =>
+            await botClient.ThrowIfNull().SendRequest(new GetCommentsRequest(messageId)
+            {
+                CommentIds = commentIds,
+                Before = before,
+                After = after,
+                Count = count
+            }, cancellationToken).ConfigureAwait(false);
 
 
         /// <summary>

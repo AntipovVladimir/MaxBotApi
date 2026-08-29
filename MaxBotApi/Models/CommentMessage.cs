@@ -32,10 +32,10 @@ public class CommentMessage
     public CommentLinkedMessage? Link { get; set; }
     
     /// <summary>
-    /// 
+    /// Информация о комментарии
     /// </summary>
-    [JsonPropertyName("message")]
-    public CommentMessageBody Message { get; set; }
+    [JsonPropertyName("body")]
+    public required CommentMessageBody Body { get; set; }
     
     public override string ToString() => this.SerializeToString();
 }
