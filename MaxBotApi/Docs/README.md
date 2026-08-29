@@ -41,6 +41,16 @@ Install-Package MaxBotApi
 | &#10004; | **GET** /me   | [Получение информации о боте](#method-getme)  |
 | &#10004; | **PATCH** /me | [Изменение информации о боте](#method-editme) |
 
+### comments
+
+|          | метод                                              | описание                                                   |
+|----------|----------------------------------------------------|------------------------------------------------------------|
+| &#10004; | **GET** /messages/{messageId}/comments             | [Получение всех комментариев к посту](#method-getcomments) |
+| &#10004; | **POST** /messages/{messageId}/comments            | [Отправить комментарий к посту](#method-sendcomment)       |
+| &#10004; | **PUT** /messages/{messageId}/comments             | [Отредактировать комментарий к посту](#method-editcomment) |
+| &#10004; | **DELETE** /messages/{messageId}/comments          | [Удалить комментарий к посту](#method-deletecomment)       |
+| &#10004; | **GET** /messages/{messageId}/comments/{commentId} | [Получить комментарий к посту](#method-getcomment)         |
+
 ### messages
 
 |          | метод                           | описание                                            |
@@ -113,19 +123,36 @@ Install-Package MaxBotApi
 <a id="changelog"></a>
 
 ---
-## измененяи 1.0.18
+
+## изменения 1.0.19
+
++ добавлены типы обновления CommentCreated, CommentEdited, CommentRemoved
++ добавлены методы SendComment, GetComment, GetComments, EditComment, DeleteComment
++ в [EditChatInfo](#method-editchatinfo) добавлен параметр description
++ в [AnswerCallback](#method-answercallback) добавлен параметр disableLinkPreview
+
+## изменения 1.0.18
+
 + изменен метод EditMe - теперь можно изменять только список команд бота. Возвращает список команд бота. https://dev.max.ru/docs-api/methods/PATCH/me/commands
 
 ## изменения 1.0.17.1
-+ методы GetChats помечены как Obsolete: Начиная с июня 2026 метод GET /chats больше не поддерживается, и API не предоставляет готовой возможности для получения списка групповых чатов и каналов, в которые добавлен бот. см. https://dev.max.ru/docs-api/methods/GET/chats
+
++ методы GetChats помечены как Obsolete: Начиная с июня 2026 метод GET /chats больше не поддерживается, и API не предоставляет готовой возможности для получения
+  списка групповых чатов и каналов, в которые добавлен бот. см. https://dev.max.ru/docs-api/methods/GET/chats
 + добавлен вариант метода GetChat с ссылкой на канал в качестве параметра.
 
 ## изменения 1.0.17
+
 + изменен адрес API на platform-api2.max.ru, добавлена обработка проверки сертификата, чтобы не требовалась установка корневых сертификатов минцифры.
+
 ## изменения 1.0.16.1
+
 + расширен ответ на запрос [InviteUser](#method-inviteuser) - теперь возвращается [ApiInviteResponse](#model-apiinviteresponse)
+
 ## изменения 1.0.16
-+ добавлены новые типы markup: [HeadingMarkupElement](#model-headingmarkupelement), [HighlightedMarkupElement](#model-highlightedmarkupelement), [QuoteMarkupElement](#model-quotemarkupelement)
+
++ добавлены новые типы
+  markup: [HeadingMarkupElement](#model-headingmarkupelement), [HighlightedMarkupElement](#model-highlightedmarkupelement), [QuoteMarkupElement](#model-quotemarkupelement)
 
 ## изменения 1.0.15
 
@@ -310,6 +337,12 @@ async Task<ApiRespone> SetWebhook(string url, string? secretToken = null, IEnume
     + BotStopped,
 +
     + ChatTitleChanged
++
+    + CommentCreated
++
+    + CommentEdited
++
+    + CommentRemoved
 
 Возвращает объект [**ApiResponse**](#model-apiresponse)
 
@@ -388,6 +421,9 @@ DialogRemovedUpdate
 BotStartedUpdate
 BotStoppedUpdate
 ChatTitleChangedUpdate
+CommentCreatedUpdate
+CommentEditedUpdate
+CommentRemovedUpdate
 ```
 
 ### bot
@@ -418,6 +454,119 @@ async Task<ApiResponse> EditMe(IEnumerable<BotCommand>? commands = null)
 #### !Внимание! Данный метод не задокументирован в официальной документации и взят из исходников библиотек под TS. Использовать на свой страх и риск!
 
 Возвращает объект [**CommandsResponse**](#model-commandsresponse)
+
+### comments
+
+#### Получение всех комментариев к посту
+
+<a id="method-getcomments"></a>
+
+```csharp
+async Task<CommentsResponse> GetComments(string messageId, IEnumerable<string>? commentIds = null, DateTime? before = null, DateTime? after = null, int? count = null)
+        
+```
+
+Возвращает все комментарии к посту в канале по его ID: страницу результата и маркер на следующую страницу. Вы можете отфильтровать комментарии: указать
+промежуток времени, за который хотите их получить, и/или запросить N последних
+
+Для получения комментариев к посту бот, чей токен access_token используется для авторизации, должен быть администратором этого канала с правом read_all_messages
+
++ **messageId** (string) - Идентификатор поста (mid), к которому относится комментарий
++ **commentIds** (IEnumerable\<string\>?) - Список идентификаторов комментариев, которые вы хотите получить
++ **before** (DateTime?) - Время, до которого будут запрошены все комментарии с начала чата
++ **after** (DateTime?) - Время, начиная с которого будут запрошены все комментарии до конца чата
++ **count** (int?) - По умолчанию: 50. Количество комментариев, которое вы хотите получить в ответе: от 1 до 100
+
+Возвращает объект [CommentsResponse](#model-commentsresponse)
+
+#### Отправка комментария
+
+<a id="method-sendcomment"></a>
+
+```csharp
+async Task<ApiCommentMessage> SendComment(string messageId, string? text, bool disableLinkPreview = false, NewMessageLink? link = null, TextFormat? format = null)
+```
+
+Отправляет комментарий к посту в канале.
+
+Для этого:
+
++ В настройках канала должны быть включены комментарии
++ Бот, чей токен access_token используется для авторизации, должен быть администратором этого канала c правами read_all_messages и write
+
++ **messageId** (string) - Идентификатор поста (mid), к которому относится комментарий
++ **text** (string?) - до 4000 символов. Текст комментария
++ **disableLinkPreview** (bool?) - Если false, сервер не будет генерировать предпросмотр для ссылок в тексте. Работает только для десктоп-клиента
++ **link** ([NewMessageLink](#model-newmessagelink)?) - Ссылка на комментарий
++ **format** ([TextFormat](#enum-textformat)?) - Возможные значения в enum: "markdown" "html" (по умолчанию html). Разметка текста комментария. Для комментариев
+  не поддерживается упоминание других пользователей и гиперссылки.
+
+Возвращает объект [ApiCommentMessage](#model-apicommentmessage)
+
+#### Редактирование комментария
+
+<a id="method-editcomment"></a>
+
+```csharp
+async Task<ApiResponse> EditComment(string messageId, string commentId, string? text, NewMessageLink? link = null, TextFormat? format = null)
+```
+
+Редактирует комментарий бота к посту в канале
+
+Для редактирования комментария бот, чей токен access_token используется для авторизации, должен быть участником этого канала
+
+С помощью метода можно редактировать:
+
++ Комментарии, которые опубликованы от имени канала, — если боту назначено право администратора edit
++ Только свои комментарии — если у бота нет права администратора edit
+
+Если канал архивирован или в нём отключены комментарии, бот может редактировать старые комментарии
+
++ **messageId** (string) - Идентификатор поста (mid), к которому относится комментарий
++ **commentId** (string) - Идентификатор комментария (mid)
++ **text** (string?) - до 4000 символов. Текст комментария
++ **link** ([NewMessageLink](#model-newmessagelink)?) - Ссылка на комментарий
++ **format** ([TextFormat](#enum-textformat)?) - Возможные значения в enum: "markdown" "html" (по умолчанию html). Разметка текста комментария. Для комментариев
+  не поддерживается упоминание других пользователей и гиперссылки.
+
+Возвращает объект [**ApiResponse**](#model-apiresponse)
+
+#### Удаление комментария
+
+<a id="method-deletecomment"></a>
+
+```csharp
+async Task<ApiResponse> DeleteComment(string messageId, string commentId)
+```
+
+Удаляет комментарий пользователя или бота к посту в канале
+
++ С помощью метода можно удалять как чужие комментарии, так и свои
++ Если канал архивирован или в нём отключены комментарии, по-прежнему можно удалять старые комментарии
++ Если комментарий удалён ошибочно, восстановить его нельзя
+
+Для удаления комментария бот, чей токен access_token используется для авторизации, должен быть администратором этого канала с правами read_all_messages и delete
+
++ **messageId** (string) - Идентификатор поста (mid), к которому относится комментарий
++ **commentId** (string) - Идентификатор комментария (mid)
+
+Возвращает объект [**ApiResponse**](#model-apiresponse)
+
+#### Получение комментария по его ID
+
+<a id="method-getcomment"></a>
+
+```csharp
+async Task<CommentMessage> GetComment(string messageId, string commentId)
+```
+
+Возвращает информацию о комментарии к посту в канале по его идентификатору (mid)
+Для этого бот, чей токен access_token используется для авторизации, должен быть администратором этого канала с правом read_all_messages
+
++ **messageId** (string) - Идентификатор поста (mid), к которому относится комментарий
++ **commentId** (string) - Идентификатор комментария (mid)
+
+Возвращает объект [**CommentMessage**](#model-commentmessage)
 
 ### messages
 
@@ -534,9 +683,9 @@ _С помощью метода можно удалять сообщения, к
 <a id="method-answercallback"></a>
 
 ```csharp
-async Task<ApiResponse> SendCallbackReact(string callback_id, NewMessageBody? newMessageBody = null, string? notification = null)
+async Task<ApiResponse> SendCallbackReact(string callback_id, NewMessageBody? newMessageBody = null, string? notification = null,  bool? disableLinkPreview = null)
 // дополнительное название одного и того же метода 
-async Task<ApiResponse> AnswerCallback(string callback_id, NewMessageBody? newMessageBody = null, string? notification = null)    
+async Task<ApiResponse> AnswerCallback(string callback_id, NewMessageBody? newMessageBody = null, string? notification = null,  bool? disableLinkPreview = null)    
 ```
 
 Этот метод используется для отправки ответа после того, как пользователь нажал на кнопку. Ответом может быть обновленное сообщение и/или одноразовое уведомление
@@ -547,6 +696,7 @@ async Task<ApiResponse> AnswerCallback(string callback_id, NewMessageBody? newMe
 + **newMessageBody** ([NewMessageBody](#model-newmessagebody)?) - Заполните это, если хотите изменить текущее сообщение (текст, вложения, кнопки)
 + **notification** (string?) - Заполните это, если хотите просто отправить одноразовое уведомление пользователю (не отображается в десктоп-клиенте, возможно
   временно, но есть в мобильных приложениях)
++ **disableLinkPreview** - Если true, сервер не будет генерировать превью для ссылок в тексте сообщения или поста
 
 Возвращает объект [**ApiResponse**](#model-apiresponse)
 
@@ -582,8 +732,10 @@ async Task<VideoInfo> GetVideoInfo(string video_token)
 
 #### Получение списка всех групповых чатов
 
-### Внимание!!! 
-**Начиная с июня 2026 метод GET /chats больше не поддерживается, и API не предоставляет готовой возможности для получения списка групповых чатов и каналов, в которые добавлен бот**
+### Внимание!!!
+
+**Начиная с июня 2026 метод GET /chats больше не поддерживается, и API не предоставляет готовой возможности для получения списка групповых чатов и каналов, в
+которые добавлен бот**
 <a id="method-getchats"></a>
 
 ```csharp
@@ -621,8 +773,8 @@ async Task<Chat> GetChat(string chat_link)
 <a id="method-editchatinfo"></a>
 
 ```csharp
-async Task<Chat> EditChatInfo(long chat_id, PhotoAttachmentRequestPayload? icon = null, string? title = null, string? pin = null,
-            bool? notify = null)
+async Task<Chat> EditChatInfo(long chat_id, PhotoAttachmentRequestPayload? icon = null, string? title = null, 
+    string? description = null, string? pin = null, bool? notify = null)
 ```
 
 Позволяет редактировать информацию о групповом чате, включая название, иконку и закреплённое сообщение
@@ -630,6 +782,7 @@ async Task<Chat> EditChatInfo(long chat_id, PhotoAttachmentRequestPayload? icon 
 + **chat_id** (long) - ID редактируемого чата
 + **icon** ([PhotoAttachmentRequestPayload](#model-photoattachmentrequestpayload)?) - Запрос на прикрепление изображения (все поля являются взаимоисключающими)
 + **title** (string?) - от 1 до 200 символов
++ **description** (string?) - от 1 до 16000 символов - описание канала
 + **pin** (string?) - ID сообщения для закрепления в чате. Чтобы удалить закреплённое сообщение, используйте метод **UnpinMessage**
 + **notify** (bool?) - Если true, участники получат системное уведомление об изменении
 
@@ -894,6 +1047,93 @@ async Task<UploadDataResponse> UploadFile(UploadType type, string filename, Stre
 <a id="datamodels"></a>
 
 ## Модели данных
+
+<a id="model-apicommentmessage"></a>
+
+### ApiCommentMessage
+
+```csharp
+public class ApiCommentMessage
+{
+    public required CommentMessage Message { get; set; }
+}
+```
+
+<a id="model-commentmessage"></a>
+
+#### CommentMessage
+
+```csharp
+public class CommentMessage
+{
+    // Пользователь, отправивший комментарий. Может быть null, если сообщение было опубликовано от имени канала
+    public User? Sender { get; set; }
+    
+    // Получатель сообщения: для комментариев — канал
+    public required Recipient Recipient { get; set; }
+    
+    // Время создания сообщения в формате Unix-time
+    public DateTime TimeStamp { get; set; }
+
+    // Комментарий, на который получен ответ
+    public CommentLinkedMessage? Link { get; set; }
+    
+    // Информация о комментарии
+    public required CommentMessageBody Body { get; set; }    
+}
+```
+<a id="model-commentlinkedmessage"></a>
+#### CommentLinkedMessage
+```csharp
+class CommentLinkedMessage
+{
+    // Для комментариев поддерживается только тип reply
+    public MessageLinkType Type { get; set; }
+    
+    // Пользователь или бот, отправивший комментарий
+    public User? Sender { get; set; }
+    
+    // Чат или канал, в котором сообщение было изначально опубликовано. Только для пересланных сообщений с type = forward.
+    public long? ChatId { get; set; }
+
+    // Информация о комментарии
+    public required CommentMessageBody Message { get; set; }    
+}
+```
+
+
+<a id="model-commentmessagebody"></a>
+
+#### CommentMessageBody
+
+```csharp
+public class CommentMessageBody
+{
+    // Уникальный ID комментария
+    public required string MessageId { get; set; }
+    
+    // Порядковый номер расположения комментария в посте
+    public long SequenceId { get; set; }
+
+    // Текст комментария
+    public string? Text { get; set; }
+    
+    // Разметка текста комментария. Обратите внимание: в тексте комментариев не поддерживаются гиперссылки и упоминание пользователя
+    public MarkupElement[]? Markup { get; set; }
+}
+```
+
+<a id="model-commentsresponse"></a>
+
+#### CommentsResponse
+
+```csharp
+public class CommentsResponse
+{
+    // Массив комментариев
+    public required CommentMessage[] Messages { get; set; }
+}
+```
 
 <a id="model-apimessage"></a>
 
@@ -1601,9 +1841,6 @@ public class CommandsResponse {
 }
 ```
 
-
-
-
 <a id="model-inlinekeyboard"></a>
 
 #### InlineKeyboard
@@ -1735,14 +1972,19 @@ public class UserMentionMarkupElement : MarkupElement
     public long? UserID { get; set; }
 }
 ```
+
 <a id="model-headingmarkupelement"></a>
+
 - **HeadingMarkupElement**
+
 ```csharp
 public class HeadingMarkupElement : MarkupElement
 {
 }
 ```
+
 <a id="model-highlightedmarkupelement"></a>
+
 - **HighlightedMarkupElement**
 
 ```csharp
@@ -1753,7 +1995,9 @@ public class HighlightedMarkupElement : MarkupElement
 ```
 
 <a id="model-quotemarkupelement"></a>
+
 - **QuoteMarkupElement**
+
 ```csharp
 public class QuoteMarkupElement : MarkupElement
 {
@@ -1943,7 +2187,10 @@ public class Subscriptions
 [UserRemovedUpdate](#model-userremovedupdate) |
 [BotStartedUpdate](#model-botstartedupdate) |
 [BotStoppedUpdate](#model-botstoppedupdate) |
-[ChatTitleChangedUpdate](#model-chattitlechangedupdate)
+[ChatTitleChangedUpdate](#model-chattitlechangedupdate) |
+[CommentCreatedUpdate](#model-commentcreatedupdate) |
+[CommentEditedUpdate](#model-commenteditedupdate) |
+[CommentRemovedUpdate](#model-commentremovedupdate)
 
 ```csharp
 public abstract class Update
@@ -2227,6 +2474,51 @@ public class ChatTitleChangedUpdate : Update
 
     // Пользователь, который изменил название
     public required User User { get; set; }
+}
+```
+
+<a id="model-commentcreatedupdate"></a>
+
+- #### CommentCreatedUpdate
+
+```csharp
+public class CommentCreatedUpdate : Update
+{
+    // Новый созданный комментарий
+    public required Message Message { get; set; }
+}
+```
+
+<a id="model-commenteditedupdate"></a>
+
+- #### CommentEditedUpdate
+
+```csharp
+public class CommentEditedUpdate : Update
+{
+    // Отредактированный комментарий
+    public required Message Message { get; set; }
+}
+```
+
+<a id="model-commentremovedupdate"></a>
+
+- #### CommentRemovedUpdate
+
+```csharp
+public class CommentRemovedUpdate : Update
+{
+    // ID удалённого комментария
+    public required string MessageId { get; set; }
+
+    // ID чата, где комментарий был удалён
+    public long ChatId { get; set; }
+
+    // Пользователь, удаливший комментарий
+    public long UserId { get; set; }
+
+    // Идентификатор поста в канале
+    public string? PostId { get; set; }
 }
 ```
 
@@ -2547,6 +2839,8 @@ public enum MarkupElementType
 <a id="enum-messagelinktype"></a>
 
 #### MessageLinkType
+
+Для комментариев поддерживается только тип reply
 
 ```csharp
 public enum MessageLinkType

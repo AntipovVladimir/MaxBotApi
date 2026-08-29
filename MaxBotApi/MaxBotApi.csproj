@@ -7,13 +7,13 @@
         <Title>.NET Client for Max Bot API </Title>
         <Authors>Vladimir Antipov</Authors>
         <Description>.NET Client for Max Bot API
-Изменение команды EditMe - теперь через нее можно менять только список команд бота, на запрос возвращает список команд бота.	
+Добавлена работа с комментариями в каналах (получение, отправка, изменение, удаление), обновлены EditChatInfo и AnswerCallback
 		Library used for developing bots for messenger MAX 
                 https://dev.max.ru/docs-api
 	</Description>
         <PackageProjectUrl>https://github.com/AntipovVladimir/MaxBotApi</PackageProjectUrl>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
-        <Version>1.0.18</Version>
+        <Version>1.0.19</Version>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>

@@ -259,14 +259,16 @@ public static partial class MaxBotClientExtensions
         /// <param name="callback_id">Идентификатор кнопки, по которой пользователь кликнул. Бот получает идентификатор как часть Update с типом message_callback.</param>
         /// <param name="newMessageBody">Заполните это, если хотите изменить текущее сообщение</param>
         /// <param name="notification">Заполните это, если хотите просто отправить одноразовое уведомление пользователю</param>
+        /// <param name="disableLinkPreview">Если true, сервер не будет генерировать превью для ссылок в тексте сообщения или поста</param>
         /// <param name="cancellationToken"></param>
         /// <returns>ApiResponse</returns>
         public async Task<ApiResponse> SendCallbackReact(string callback_id, NewMessageBody? newMessageBody = null, string? notification = null,
-            CancellationToken cancellationToken = default)
+            bool? disableLinkPreview = null, CancellationToken cancellationToken = default)
             => await botClient.ThrowIfNull().SendRequest(new SendCallbackReactRequest(callback_id)
                 {
                     Message = newMessageBody,
                     Notification = notification,
+                    DisableLinkPreview = disableLinkPreview
                 },
                 cancellationToken).ConfigureAwait(false);
 
@@ -276,13 +278,16 @@ public static partial class MaxBotClientExtensions
         /// <param name="callback_id">Идентификатор кнопки, по которой пользователь кликнул. Бот получает идентификатор как часть Update с типом message_callback.</param>
         /// <param name="newMessageBody">Заполните это, если хотите изменить текущее сообщение</param>
         /// <param name="notification">Заполните это, если хотите просто отправить одноразовое уведомление пользователю</param>
+        /// <param name="disableLinkPreview">Если true, сервер не будет генерировать превью для ссылок в тексте сообщения или поста</param>
         /// <param name="cancellationToken"></param>
         /// <returns>ApiResponse</returns>
         public async Task<ApiResponse> AnswerCallback(string callback_id, NewMessageBody? newMessageBody = null, string? notification = null,
-            CancellationToken cancellationToken = default) => await botClient.ThrowIfNull().SendRequest(new SendCallbackReactRequest(callback_id)
+            bool? disableLinkPreview = null, CancellationToken cancellationToken = default) => await botClient.ThrowIfNull().SendRequest(
+            new SendCallbackReactRequest(callback_id)
             {
                 Message = newMessageBody,
                 Notification = notification,
+                DisableLinkPreview = disableLinkPreview
             },
             cancellationToken).ConfigureAwait(false);
 
@@ -355,16 +360,18 @@ public static partial class MaxBotClientExtensions
         /// <param name="chat_id">ID чата</param>
         /// <param name="icon">Запрос на прикрепление изображения (все поля являются взаимоисключающими)</param>
         /// <param name="title">от 1 до 200 символов</param>
+        /// <param name="description">от 1 до 16000 символов. Новое описание чата или канала. Чтобы удалить описание, передайте пустую строку</param>
         /// <param name="pin">ID сообщения для закрепления в чате. Чтобы удалить закреплённое сообщение, используйте метод unpin</param>
         /// <param name="notify">Если true, участники получат системное уведомление об изменении</param>
         /// <param name="cancellationToken"></param>
         /// <returns>ChatFullInfo</returns>
-        public async Task<Chat> EditChatInfo(long chat_id, PhotoAttachmentRequestPayload? icon = null, string? title = null, string? pin = null,
-            bool? notify = null, CancellationToken cancellationToken = default)
+        public async Task<Chat> EditChatInfo(long chat_id, PhotoAttachmentRequestPayload? icon = null, string? title = null, string? description = null,
+            string? pin = null, bool? notify = null, CancellationToken cancellationToken = default)
             => await botClient.ThrowIfNull().SendRequest(new EditChatInfoRequest(chat_id)
             {
                 Icon = icon,
                 Title = title,
+                Description = description,
                 Pin = pin,
                 Notify = notify,
             }, cancellationToken).ConfigureAwait(false);
@@ -529,6 +536,102 @@ public static partial class MaxBotClientExtensions
             => block
                 ? await botClient.ThrowIfNull().SendRequest(new KickUserRequest(chat_id, user_id), cancellationToken).ConfigureAwait(false)
                 : await botClient.ThrowIfNull().SendRequest(new KickBanRequest(chat_id, user_id), cancellationToken).ConfigureAwait(false);
+
+        #endregion
+
+        #region Comments
+
+        /// <summary>
+        /// озвращает все комментарии к посту в канале по его ID: страницу результата и маркер на следующую страницу. Вы можете отфильтровать комментарии: указать промежуток времени, за который хотите их получить, и/или запросить N последних
+        /// Для получения комментариев к посту бот, чей токен access_token используется для авторизации, должен быть администратором этого канала с правом read_all_messages
+        /// </summary>
+        /// <param name="messageId">Идентификатор поста (mid), к которому относится комментарий</param>
+        /// <param name="commentIds">Список идентификаторов комментариев, которые вы хотите получить</param>
+        /// <param name="before">Время, до которого будут запрошены все комментарии с начала чата</param>
+        /// <param name="after">Время, начиная с которого будут запрошены все комментарии до конца чата</param>
+        /// <param name="count">По умолчанию: 50. Количество комментариев, которое вы хотите получить в ответе: от 1 до 100</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>CommentsResponse</returns>
+        public async Task<CommentsResponse> GetComments(string messageId, IEnumerable<string>? commentIds = null, DateTime? before = null,
+            DateTime? after = null, int? count = null, CancellationToken cancellationToken = default) =>
+            await botClient.ThrowIfNull().SendRequest(new GetCommentsRequest(messageId)
+            {
+                CommentIds = commentIds,
+                Before = before,
+                After = after,
+                Count = count
+            }, cancellationToken).ConfigureAwait(false);
+
+
+        /// <summary>
+        /// Отправляет комментарий к посту в канале
+        /// </summary>
+        /// <param name="messageId">Идентификатор сообщения (mid), к которому относится комментарий</param>
+        /// <param name="text">до 4000 символов. Текст комментария</param>
+        /// <param name="disableLinkPreview">Если false, сервер не будет генерировать предпросмотр для ссылок в тексте. Работает только для десктоп-клиента</param>
+        /// <param name="link">Ссылка на комментарий</param>
+        /// <param name="format">Возможные значения в enum: "markdown" "html". Разметка текста комментария. Для комментариев не поддерживается упоминание других пользователей и гиперссылки</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>ApiCommentMessage</returns>
+        public async Task<ApiCommentMessage> SendComment(string messageId, string? text, bool disableLinkPreview = false, NewMessageLink? link = null,
+            TextFormat? format = null, CancellationToken cancellationToken = default)
+            => await botClient.ThrowIfNull().SendRequest(new SendCommentRequest(messageId, disableLinkPreview)
+            {
+                Text = text,
+                Format = format ?? TextFormat.HTML,
+                Link = link,
+            }, cancellationToken).ConfigureAwait(false);
+
+
+        /// <summary>
+        /// Редактирует комментарий бота к посту в канале
+        /// Для редактирования комментария бот, чей токен access_token используется для авторизации, должен быть участником этого канала
+        /// С помощью метода можно редактировать:
+        /// • Комментарии, которые опубликованы от имени канала,  — если боту назначено право администратора edit
+        /// • Только свои комментарии — если у бота нет права администратора edit
+        /// Если канал архивирован или в нём отключены комментарии, бот может редактировать старые комментарии
+        /// </summary>
+        /// <param name="messageId">Идентификатор поста (mid), комментарий к которому вы хотите отредактировать</param>
+        /// <param name="commentId">Идентификатор редактируемого комментария</param>
+        /// <param name="text">до 4000 символов. Текст комментария</param>
+        /// <param name="link">Ссылка на комментарий</param>
+        /// <param name="format">Возможные значения в enum: "markdown" "html". Разметка текста комментария. Для комментариев не поддерживается упоминание других пользователей и гиперссылки</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>ApiResponse</returns>
+        public async Task<ApiResponse> EditComment(string messageId, string commentId, string? text, NewMessageLink? link = null, TextFormat? format = null,
+            CancellationToken cancellationToken = default)
+            => await botClient.ThrowIfNull().SendRequest(new EditCommentRequest(messageId, commentId)
+            {
+                Text = text,
+                Link = link,
+                Format = format ?? TextFormat.HTML,
+            }, cancellationToken).ConfigureAwait(false);
+
+        /// <summary>
+        /// Удаляет комментарий пользователя или бота к посту в канале
+        /// • С помощью метода можно удалять как чужие комментарии, так и свои
+        /// • Если канал архивирован или в нём отключены комментарии, по-прежнему можно удалять старые комментарии
+        /// • Если комментарий удалён ошибочно, восстановить его нельзя
+        /// Для удаления комментария бот, чей токен access_token используется для авторизации, должен быть администратором этого канала с правами read_all_messages и delete
+        /// </summary>
+        /// <param name="messageId">Идентификатор поста (mid), комментарий к которому надо удалить</param>
+        /// <param name="commentId">Идентификатор удаляемого комментария</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>ApiResponse</returns>
+        public async Task<ApiResponse> DeleteComment(string messageId, string commentId, CancellationToken cancellationToken = default) =>
+            await botClient.ThrowIfNull().SendRequest(new DeleteCommentRequest(messageId, commentId), cancellationToken).ConfigureAwait(false);
+
+
+        /// <summary>
+        /// Возвращает информацию о комментарии к посту в канале по его идентификатору (mid)
+        /// Для этого бот, чей токен access_token используется для авторизации, должен быть администратором этого канала с правом read_all_messages
+        /// </summary>
+        /// <param name="messageId">Идентификатор поста (mid), к которому относится комментарий</param>
+        /// <param name="commentId">Идентификатор комментария (mid)</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>CommentMessage</returns>
+        public async Task<CommentMessage> GetComment(string messageId, string commentId, CancellationToken cancellationToken = default) =>
+            await botClient.ThrowIfNull().SendRequest(new GetCommentRequest(messageId, commentId), cancellationToken).ConfigureAwait(false);
 
         #endregion
     }

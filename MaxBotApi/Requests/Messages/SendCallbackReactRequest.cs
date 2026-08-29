@@ -18,7 +18,11 @@ public class SendCallbackReactRequest : RequestBase<ApiResponse>
     [JsonPropertyName("message")]
     public NewMessageBody? Message { get; set; }
 
-
+    /// <summary>
+    /// Если true, сервер не будет генерировать превью для ссылок в тексте сообщения или поста
+    /// </summary>
+    [JsonPropertyName("disable_link_preview")]
+    public bool? DisableLinkPreview { get; set; }
     /// <summary>
     /// Заполните это, если хотите просто отправить одноразовое уведомление пользователю
     /// </summary>
