@@ -21,16 +21,18 @@ namespace MaxBotApi.Models;
 [CustomJsonDerivedType(typeof(BotStartedUpdate), "bot_started")]
 [CustomJsonDerivedType(typeof(BotStoppedUpdate), "bot_stopped")]
 [CustomJsonDerivedType(typeof(ChatTitleChangedUpdate), "chat_title_changed")]
-[CustomJsonDerivedType(typeof(UserAddedUpdate),"user_added")]
+[CustomJsonDerivedType(typeof(UserAddedUpdate), "user_added")]
 [CustomJsonDerivedType(typeof(UserRemovedUpdate), "user_removed")]
+[CustomJsonDerivedType(typeof(CommentCreatedUpdate), "comment_created")]
+[CustomJsonDerivedType(typeof(CommentEditedUpdate), "comment_edited")]
+[CustomJsonDerivedType(typeof(CommentRemovedUpdate), "comment_removed")]
 public abstract class Update
 {
     /// <summary>
     /// ОбъектUpdate представляет различные типы событий, произошедших в чате. См. его наследников
     /// </summary>
     [JsonPropertyName("update_type")]
-   
-    public  UpdateType UpdateType { get; set; }
+    public UpdateType UpdateType { get; set; }
 
     /// <summary>
     /// Unix-время, когда произошло событие
@@ -56,7 +58,10 @@ public abstract class Update
         UpdateType.UserRemoved,
         UpdateType.BotStarted,
         UpdateType.BotStopped,
-        UpdateType.ChatTitleChanged
+        UpdateType.ChatTitleChanged,
+        UpdateType.CommentCreated,
+        UpdateType.CommentEdited,
+        UpdateType.CommentRemoved
     ];
 
     public override string ToString() => this.SerializeToString();
@@ -77,7 +82,6 @@ public class MessageCreatedUpdate : Update
     /// </summary>
     [JsonPropertyName("user_locale")]
     public string? UserLocale { get; set; }
- 
 }
 
 public class MessageCallbackUpdate : Update
@@ -101,7 +105,6 @@ public class MessageCallbackUpdate : Update
     /// </summary>
     [JsonPropertyName("user_locale")]
     public string? UserLocale { get; set; }
-   
 }
 
 public class MessageEditedUpdate : Update
@@ -113,7 +116,6 @@ public class MessageEditedUpdate : Update
     /// </summary>
     [JsonPropertyName("message")]
     public required Message Message { get; set; }
-
 }
 
 public class MessageRemovedUpdate : Update
@@ -137,7 +139,6 @@ public class MessageRemovedUpdate : Update
     /// </summary>
     [JsonPropertyName("user_id")]
     public long UserId { get; set; }
-
 }
 
 public class BotAddedUpdate : Update
@@ -161,7 +162,6 @@ public class BotAddedUpdate : Update
     /// </summary>
     [JsonPropertyName("is_channel")]
     public bool IsChannel { get; set; }
-
 }
 
 public class BotRemovedUpdate : Update
@@ -185,7 +185,6 @@ public class BotRemovedUpdate : Update
     /// </summary>
     [JsonPropertyName("is_channel")]
     public bool IsChannel { get; set; }
-
 }
 
 public class DialogMutedUpdate : Update
@@ -216,7 +215,6 @@ public class DialogMutedUpdate : Update
     /// </summary>
     [JsonPropertyName("user_locale")]
     public string? UserLocale { get; set; }
-
 }
 
 public class DialogUnmutedUpdate : Update
@@ -240,7 +238,6 @@ public class DialogUnmutedUpdate : Update
     /// </summary>
     [JsonPropertyName("user_locale")]
     public string? UserLocale { get; set; }
-
 }
 
 public class DialogClearedUpdate : Update
@@ -264,7 +261,6 @@ public class DialogClearedUpdate : Update
     /// </summary>
     [JsonPropertyName("user_locale")]
     public string? UserLocale { get; set; }
-
 }
 
 public class DialogRemovedUpdate : Update
@@ -288,7 +284,6 @@ public class DialogRemovedUpdate : Update
     /// </summary>
     [JsonPropertyName("user_locale")]
     public string? UserLocale { get; set; }
-
 }
 
 public class UserAddedUpdate : Update
@@ -318,7 +313,6 @@ public class UserAddedUpdate : Update
     /// </summary>
     [JsonPropertyName("is_channel")]
     public bool IsChannel { get; set; }
-
 }
 
 public class UserRemovedUpdate : Update
@@ -348,7 +342,6 @@ public class UserRemovedUpdate : Update
     /// </summary>
     [JsonPropertyName("is_channel")]
     public bool IsChannel { get; set; }
-
 }
 
 public class BotStartedUpdate : Update
@@ -378,7 +371,6 @@ public class BotStartedUpdate : Update
     /// </summary>
     [JsonPropertyName("user_locale")]
     public string? UserLocale { get; set; }
-
 }
 
 public class BotStoppedUpdate : Update
@@ -402,7 +394,6 @@ public class BotStoppedUpdate : Update
     /// </summary>
     [JsonPropertyName("user_locale")]
     public string? UserLocale { get; set; }
-
 }
 
 public class ChatTitleChangedUpdate : Update
@@ -426,5 +417,49 @@ public class ChatTitleChangedUpdate : Update
     /// </summary>
     [JsonPropertyName("user")]
     public required User User { get; set; }
+}
 
+public class CommentCreatedUpdate : Update
+{
+    /// <summary>
+    /// Новый созданный комментарий
+    /// </summary>
+    [JsonPropertyName("message")]
+    public required Message Message { get; set; }
+}
+
+public class CommentEditedUpdate : Update
+{
+    /// <summary>
+    /// Отредактированный комментарий
+    /// </summary>
+    [JsonPropertyName("message")]
+    public required Message Message { get; set; }
+}
+
+public class CommentRemovedUpdate : Update
+{
+    /// <summary>
+    /// ID удалённого комментария
+    /// </summary>
+    [JsonPropertyName("message_id")]
+    public required string MessageId { get; set; }
+
+    /// <summary>
+    /// ID чата, где комментарий был удалён
+    /// </summary>
+    [JsonPropertyName("chat_id")]
+    public long ChatId { get; set; }
+
+    /// <summary>
+    /// Пользователь, удаливший комментарий
+    /// </summary>
+    [JsonPropertyName("user_id")]
+    public long UserId { get; set; }
+
+    /// <summary>
+    /// Идентификатор поста в канале
+    /// </summary>
+    [JsonPropertyName("post_id")]
+    public string? PostId { get; set; }
 }
