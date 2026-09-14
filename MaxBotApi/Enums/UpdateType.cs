@@ -112,4 +112,16 @@ public enum UpdateType
     /// </summary>
     [JsonStringEnumMemberName("comment_removed")]
     CommentRemoved,
+
+    [JsonStringEnumMemberName("message_chat_created")]
+    MessageChatCreated,
+
+    [JsonStringEnumMemberName("bot_admin_permissions_changed")]
+    BotAdminPermissionsChanged,
+
+    [JsonStringEnumMemberName("message_delivered")]
+    MessageDelivered,
+
+    [JsonStringEnumMemberName("message_read")]
+    MessageRead
 }
