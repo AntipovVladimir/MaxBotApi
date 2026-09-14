@@ -521,6 +521,7 @@ public static partial class MaxBotClientExtensions
         /// <param name="user_ids">Массив ID пользователей для добавления в чат</param>
         /// <param name="cancellationToken"></param>
         /// <returns>ApiResponse</returns>
+        [Obsolete("Запрос устарел: С 30 сентября API MAX не предоставляет готовой возможности для добавления участников в групповой чат")]
         public async Task<ApiResponse> InviteUser(long chat_id, IEnumerable<long> user_ids, CancellationToken cancellationToken = default)
             => await botClient.ThrowIfNull().SendRequest(new InviteUserRequest(chat_id) { UserIds = user_ids }, cancellationToken).ConfigureAwait(false);
 
