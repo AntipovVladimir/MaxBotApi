@@ -1,5 +1,4 @@
-﻿using System.Text;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using MaxBotApi.Enums;
 using MaxBotApi.Extensions;
 using MaxBotApi.Serialization;
@@ -26,6 +25,10 @@ namespace MaxBotApi.Models;
 [CustomJsonDerivedType(typeof(CommentCreatedUpdate), "comment_created")]
 [CustomJsonDerivedType(typeof(CommentEditedUpdate), "comment_edited")]
 [CustomJsonDerivedType(typeof(CommentRemovedUpdate), "comment_removed")]
+[CustomJsonDerivedType(typeof(MessageChatCreatedUpdate), "message_chat_created")]
+[CustomJsonDerivedType(typeof(BotAdminPermissionsUpdate), "bot_admin_permissions_changed")]
+[CustomJsonDerivedType(typeof(MessageDeliveredUpdate), "message_delivered")]
+[CustomJsonDerivedType(typeof(MessageReadUpdate), "message_read")]
 public abstract class Update
 {
     /// <summary>
@@ -462,4 +465,22 @@ public class CommentRemovedUpdate : Update
     /// </summary>
     [JsonPropertyName("post_id")]
     public string? PostId { get; set; }
+}
+
+public class MessageChatCreatedUpdate : Update
+{
+    // Заглушка, апдейт еще не задокументирован
+}
+public class BotAdminPermissionsUpdate : Update
+{
+    // Заглушка, апдейт еще не задокументирован
+}
+ 
+public class MessageDeliveredUpdate : Update
+{
+    // Заглушка, апдейт еще не задокументирован
+}
+public class MessageReadUpdate : Update
+{
+    // Заглушка, апдейт еще не задокументирован
 }
