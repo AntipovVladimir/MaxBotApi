@@ -471,9 +471,44 @@ public class MessageChatCreatedUpdate : Update
 {
     // Заглушка, апдейт еще не задокументирован
 }
+
 public class BotAdminPermissionsUpdate : Update
 {
-    // Заглушка, апдейт еще не задокументирован
+    /// <summary>
+    /// Идентификатор группового чата или канала, в котором произошло событие
+    /// </summary>
+    [JsonPropertyName("chat_id")]
+    public long ChatId { get; set; }
+
+    /// <summary>
+    /// Идентификатор пользователя или бота, который изменил права администратора
+    /// </summary>
+    [JsonPropertyName("user_id")]
+    public long UserId { get; set; }
+
+    /// <summary>
+    /// Идентификатор бота, чьи права администратора были изменены 
+    /// </summary>
+    [JsonPropertyName("bot_id")]
+    public long BotId { get; set; }
+
+    /// <summary>
+    /// Признак того, что событие произошло в канале 
+    /// </summary>
+    [JsonPropertyName("is_channel")]
+    public bool IsChannel { get; set; }
+
+    /// <summary>
+    /// Признак того, является ли бот администратором канала или группового чата или нет
+    /// </summary>
+    [JsonPropertyName("is_admin")]
+    public bool IsAdmin { get; set; }
+
+    /// <summary>
+    /// Возможные значения в enum: "read_all_messages" "add_remove_members" "add_admins" "change_chat_info" "pin_message" "write" "can_call" "edit_link" "post_edit_delete_message" "edit_message" "delete_message" "edit" "delete"
+    /// </summary>
+    [JsonPropertyName("permissions")]
+    public ChatAdminPermission[]? Permissions { get; set; }
 }
  
 public class MessageDeliveredUpdate : Update

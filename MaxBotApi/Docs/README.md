@@ -123,6 +123,9 @@ Install-Package MaxBotApi
 <a id="changelog"></a>
 
 ---
+## изменения 1.0.19.3
++ Добавлены заглушки для анонсированных апдейтов message_chat_created, message_delived, message_read
++ Реализован апдейт bot_admin_permissions_changed
 
 ## изменения 1.0.19
 
@@ -424,6 +427,10 @@ ChatTitleChangedUpdate
 CommentCreatedUpdate
 CommentEditedUpdate
 CommentRemovedUpdate
+MessageChatCreated
+BotAdminPermissionsChanged
+MessageDelivered
+MessageRead
 ```
 
 ### bot
@@ -2191,6 +2198,7 @@ public class Subscriptions
 [CommentCreatedUpdate](#model-commentcreatedupdate) |
 [CommentEditedUpdate](#model-commenteditedupdate) |
 [CommentRemovedUpdate](#model-commentremovedupdate)
+[BotAdminPermissionsUpdate](#model-botadminpermissionsupdate)
 
 ```csharp
 public abstract class Update
@@ -2519,6 +2527,33 @@ public class CommentRemovedUpdate : Update
 
     // Идентификатор поста в канале
     public string? PostId { get; set; }
+}
+```
+
+<a id="model-botadminpermissionsupdate"></a>
+
+- #### BotAdminPermissionsUpdate
+
+```csharp
+class BotAdminPermissionsUpdate : Update
+{
+    // Идентификатор группового чата или канала, в котором произошло событие
+    public long ChatId { get; set; }
+    
+    // Идентификатор пользователя или бота, который изменил права администратора
+    public long UserId { get; set; }
+    
+    // Идентификатор бота, чьи права администратора были изменены 
+    public long BotId { get; set; }
+
+    // Признак того, что событие произошло в канале 
+    public bool IsChannel { get; set; }
+
+    // Признак того, является ли бот администратором канала или группового чата или нет
+    public bool IsAdmin { get; set; }
+
+    // Возможные значения в enum: "read_all_messages" "add_remove_members" "add_admins" "change_chat_info" "pin_message" "write" "can_call" "edit_link" "post_edit_delete_message" "edit_message" "delete_message" "edit" "delete"
+    public ChatAdminPermission[]? Permissions { get; set; }    
 }
 ```
 
@@ -2922,7 +2957,15 @@ public enum UpdateType
     // Прекращен диалог с ботом
     BotStopped,
     // Произошла смена названия группы
-    ChatTitleChanged
+    ChatTitleChanged,
+    // заглушка для анонсированного апдейта
+    MessageChatCreated,
+    // Событие изменение прав бота
+    BotAdminPermissionsChanged,
+    // заглушка для анонсированного апдейта
+    MessageDelivered,
+    // заглушка для анонсированного апдейта
+    MessageRead
 }
 ```
 
