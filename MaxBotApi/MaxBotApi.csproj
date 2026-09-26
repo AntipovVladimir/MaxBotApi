@@ -7,13 +7,13 @@
         <Title>.NET Client for Max Bot API </Title>
         <Authors>Vladimir Antipov</Authors>
         <Description>.NET Client for Max Bot API
-Добавлены заглушки для незадокументированных апдейтов, при объявлении которых происходит исключение.
-		Library used for developing bots for messenger MAX 
+		Реализован апдейт BotAdminPermissionsUpdate 
+            Library used for developing bots for messenger MAX 
                 https://dev.max.ru/docs-api
 	</Description>
         <PackageProjectUrl>https://github.com/AntipovVladimir/MaxBotApi</PackageProjectUrl>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
-        <Version>1.0.19.1</Version>
+        <Version>1.0.19.3</Version>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
