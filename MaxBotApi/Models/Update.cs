@@ -471,6 +471,7 @@ public class MessageChatCreatedUpdate : Update
 {
     // Заглушка, апдейт еще не задокументирован
 }
+
 public class BotAdminPermissionsUpdate : Update
 {
     /// <summary>
@@ -478,13 +479,13 @@ public class BotAdminPermissionsUpdate : Update
     /// </summary>
     [JsonPropertyName("chat_id")]
     public long ChatId { get; set; }
-    
+
     /// <summary>
     /// Идентификатор пользователя или бота, который изменил права администратора
     /// </summary>
     [JsonPropertyName("user_id")]
     public long UserId { get; set; }
-    
+
     /// <summary>
     /// Идентификатор бота, чьи права администратора были изменены 
     /// </summary>
@@ -508,7 +509,6 @@ public class BotAdminPermissionsUpdate : Update
     /// </summary>
     [JsonPropertyName("permissions")]
     public ChatAdminPermission[]? Permissions { get; set; }
-    
 }
  
 public class MessageDeliveredUpdate : Update
