@@ -123,6 +123,9 @@ Install-Package MaxBotApi
 <a id="changelog"></a>
 
 ---
+## изменения 1.0.19.4
+- Удалено поле User из BotAddedUpdate (см https://dev.max.ru/docs-api/changelog-api/ за ноябрь 2026)
+
 ## изменения 1.0.19.3
 + Добавлены заглушки для анонсированных апдейтов message_chat_created, message_delived, message_read
 + Реализован апдейт bot_admin_permissions_changed
