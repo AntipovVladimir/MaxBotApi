@@ -153,13 +153,7 @@ public class BotAddedUpdate : Update
     /// </summary>
     [JsonPropertyName("chat_id")]
     public long ChatId { get; set; }
-
-    /// <summary>
-    /// Пользователь, добавивший бота в чат
-    /// </summary>
-    [JsonPropertyName("user")]
-    public required User User { get; set; }
-
+  
     /// <summary>
     /// Указывает, был ли бот добавлен в канал или нет
     /// </summary>

@@ -61,17 +61,8 @@ async Task HandleUpdate(MaxBotClient _bot, Update update)
 async Task ProcessBotAdded(BotAddedUpdate bau)
 {
     long chatId = bau.ChatId;
-    if (settings.OwnerId != 0 && bau.User.UserID == settings.OwnerId)
-    {
-        settings.ZabbixReportChatId = chatId;
-        settings.Save();
-    }
-    else
-    {
-        await Task.Run(async () => await bot.LeaveChat(chatId));
-        System.Diagnostics.Debug.WriteLine("Нас попытались добавить в чат, но добавлял нас не владелец, мы покинули этот чат:");
-        System.Diagnostics.Debug.WriteLine(bau.ToString());
-    }
+    settings.ZabbixReportChatId = chatId;
+    settings.Save();
 }
 
 async Task ProcessBotRemoved(BotRemovedUpdate bru)
